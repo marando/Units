@@ -16,7 +16,6 @@ class TimeTest extends \PHPUnit_Framework_TestCase {
 
   /**
    * @covers Marando\Units\Time::fromMinutes
-   * @todo   Implement testFromMinutes().
    */
   public function testFromMinutes() {
     $this->assertEquals(182, Time::fromMinutes(182)->minutes);
@@ -24,50 +23,36 @@ class TimeTest extends \PHPUnit_Framework_TestCase {
 
   /**
    * @covers Marando\Units\Time::fromHours
-   * @todo   Implement testFromHours().
    */
   public function testFromHours() {
-    // Remove the following lines when you implement this test.
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
+    $this->assertEquals(182, Time::fromHours(182)->hours);
   }
 
   /**
    * @covers Marando\Units\Time::fromDayFrac
-   * @todo   Implement testFromDayFrac().
    */
   public function testFromDayFrac() {
-
-    //$m = get_class_methods('\Marando\Units\Time');
-    //var_dump($m);
-//$this->assertEquals(12, Time::fromDayFrac(0.5)->hours);
-    // Remove the following lines when you implement this test.
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
+    $this->assertEquals(12, Time::fromDayFrac(0.5)->hours);
   }
 
   /**
    * @covers Marando\Units\Time::subtract
-   * @todo   Implement testSubtract().
    */
   public function testSubtract() {
-    // Remove the following lines when you implement this test.
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
+    $t1 = Time::fromHours(4);
+    $t2 = Time::fromSeconds(60);
+
+    $this->assertEquals(14340, $t1->subtract($t2)->seconds);
   }
 
   /**
    * @covers Marando\Units\Time::add
-   * @todo   Implement testAdd().
    */
   public function testAdd() {
-    // Remove the following lines when you implement this test.
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
+    $t1 = Time::fromHours(4);
+    $t2 = Time::fromSeconds(60);
+
+    $this->assertEquals(14460, $t1->add($t2)->seconds);
   }
 
   /**
@@ -75,10 +60,7 @@ class TimeTest extends \PHPUnit_Framework_TestCase {
    * @todo   Implement testToAngle().
    */
   public function testToAngle() {
-    // Remove the following lines when you implement this test.
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
+    $this->assertEquals(180, time::fromDayFrac(0.5)->toAngle()->deg);
   }
 
 }
