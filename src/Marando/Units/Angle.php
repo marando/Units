@@ -33,8 +33,8 @@ class Angle {
    * Creates a new angle instance
    */
   protected function __construct($deg = null, $rad = null) {
-    $angle->deg = $deg;
-    $angle->rad = $rad;
+    $this->deg = $deg;
+    $this->rad = $rad;
   }
 
   // // // Static

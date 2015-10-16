@@ -13,5 +13,10 @@
       "name": "Ashley Marando",
       "email": "a.marando@me.com"
     }
-  ]
+  ],
+  "autoload": {
+    "psr-0": {
+      "Marando": "src/"
+    }
+  }
 }

@@ -15,6 +15,8 @@ use Marando\Units\Angle;
  * @property float $minutes Total number of minutes
  * @property float $hours   Total number of hours
  * @property float $day     Time interval as fraction of a day
+ *
+ * @author Ashley Marando <a.marando@me.com>
  */
 class Time {
   //----------------------------------------------------------------------------
@@ -75,13 +77,8 @@ class Time {
     return new static($hours * static::SEC_IN_HOUR);
   }
 
-  /**
-   * Creates a new Time instance from a fraction of a day
-   * @param type $day
-   * @return static
-   */
-  public static function fromDayFrac($day) {
-    return new static($day * static::SEC_IN_DAY);
+  public static function fromDayFrac($dayFrac) {
+    return new static($dayFrac * static::SEC_IN_DAY);
   }
 
   //----------------------------------------------------------------------------
@@ -100,26 +97,26 @@ class Time {
         return $this->seconds;
 
       case 'minutes':
-        return $this->seconds / 60;
+        return $this->seconds / Time::SEC_IN_MIN;
 
       case 'hours':
-        return $this->seconds / 3600;
+        return $this->seconds / Time::SEC_IN_HOUR;
 
       case 'day':
-        return $this->seconds / 86400;
+        return $this->seconds / Time::SEC_IN_DAY;
 
       case 'h':
-        return intval($this->seconds / 3600);
+        return intval($this->seconds / Time::SEC_IN_HOUR);
 
       case 'm':
-        return intval($this->seconds % 3600 / 60);
+        return intval($this->seconds % Time::SEC_IN_HOUR / Time::SEC_IN_MIN);
 
       case 's':
-        return intval($this->seconds % 3600 % 60);
+        return intval($this->seconds % Time::SEC_IN_HOUR % Time::SEC_IN_MIN);
 
       case 'micro':
-        return $this->seconds -
-                ($this->h * 3600 + $this->m * 60 + $this->s);
+        return $this->seconds - ($this->h * Time::SEC_IN_HOUR + $this->m *
+                Time::SEC_IN_MIN + $this->s);
     }
   }
 
@@ -148,33 +145,23 @@ class Time {
   }
 
   /**
-   * Subtracts from this instance another Time instance or a duration of a
-   * specified time unit
+   * Subtracts from this instance another Time instance
    *
-   * @param Time     $time
-   * @param TimeUnit $unit
+   * @param Time $time
    * @return static
    */
-  public function subtract($time, $unit = TimeUnit::Seconds) {
-    if ($time instanceof Time)
-      return new Time($this->seconds - $time->seconds);
-    else
-      return new Time($this->seconds - ($time / $unit));
+  public function subtract(Time $time) {
+    return new Time($this->seconds - $time->seconds);
   }
 
   /**
-   * Adds to this instance another Time instance or a duration of a specified
-   * time unit
+   * Adds to this instance another Time instance
    *
-   * @param Time     $time
-   * @param TimeUnit $unit
+   * @param Time $time
    * @return static
    */
-  public function add($time, $unit = TimeUnit::Seconds) {
-    if ($time instanceof Time)
-      return new Time($this->seconds + $time->seconds);
-    else
-      return new Time($this->seconds + ($time / $unit));
+  public function add(Time $time) {
+    return new Time($this->seconds + $time->seconds);
   }
 
   /**
