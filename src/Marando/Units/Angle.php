@@ -172,7 +172,7 @@ class Angle {
    * @param type $lBound Lower bound
    * @param type $uBound Upper bound
    *
-   * @return Angle
+   * @return Angle 
    */
   public function norm($lBound = 0, $uBound = 360) {
     $sign = $this->deg < 0 ? -1 : 1;
