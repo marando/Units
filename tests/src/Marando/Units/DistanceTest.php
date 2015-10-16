@@ -12,57 +12,82 @@ class DistanceTest extends \PHPUnit_Framework_TestCase {
 
   /**
    * @covers Marando\Units\Distance::mm
-   * @todo   Implement testMm().
    */
   public function test_mm() {
-    // Remove the following lines when you implement this test.
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
+    $dist = Distance::mm(224396806050000);
+
+    $this->assertEquals(224396806050000, $dist->mm, 'mm');
+    $this->assertEquals(22439680605000, $dist->cm, 'cm');
+    $this->assertEquals(224396806050, $dist->m, 'm');
+    $this->assertEquals(224396806.050, $dist->km, 'km');
+    $this->assertEquals(139433710.9095383, $dist->mi, 'mi');
+    $this->assertEquals(1.5, $dist->au, 'au');
+    $this->assertEquals(0.000023718761113304037, $dist->ly, 'ly');
+    $this->assertEquals(7.2722052154443E-6, $dist->pc, 'pc');
   }
 
   /**
    * @covers Marando\Units\Distance::cm
-   * @todo   Implement testCm().
    */
   public function test_cm() {
-    // Remove the following lines when you implement this test.
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
+    $dist = Distance::cm(22439680605000);
+
+    $this->assertEquals(224396806050000, $dist->mm, 'mm');
+    $this->assertEquals(22439680605000, $dist->cm, 'cm');
+    $this->assertEquals(224396806050, $dist->m, 'm');
+    $this->assertEquals(224396806.050, $dist->km, 'km');
+    $this->assertEquals(139433710.9095383, $dist->mi, 'mi');
+    $this->assertEquals(1.5, $dist->au, 'au');
+    $this->assertEquals(0.000023718761113304037, $dist->ly, 'ly');
+    $this->assertEquals(7.2722052154443E-6, $dist->pc, 'pc');
   }
 
   /**
    * @covers Marando\Units\Distance::m
-   * @todo   Implement testM().
    */
   public function test_m() {
-    // Remove the following lines when you implement this test.
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
+    $dist = Distance::m(224396806050);
+
+    $this->assertEquals(224396806050000, $dist->mm, 'mm');
+    $this->assertEquals(22439680605000, $dist->cm, 'cm');
+    $this->assertEquals(224396806050, $dist->m, 'm');
+    $this->assertEquals(224396806.050, $dist->km, 'km');
+    $this->assertEquals(139433710.9095383, $dist->mi, 'mi');
+    $this->assertEquals(1.5, $dist->au, 'au');
+    $this->assertEquals(0.000023718761113304037, $dist->ly, 'ly');
+    $this->assertEquals(7.2722052154443E-6, $dist->pc, 'pc');
   }
 
   /**
    * @covers Marando\Units\Distance::km
-   * @todo   Implement testKm().
    */
   public function test_km() {
-    // Remove the following lines when you implement this test.
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
+    $dist = Distance::km(224396806.050);
+
+    $this->assertEquals(224396806050000, $dist->mm, 'mm');
+    $this->assertEquals(22439680605000, $dist->cm, 'cm');
+    $this->assertEquals(224396806050, $dist->m, 'm');
+    $this->assertEquals(224396806.050, $dist->km, 'km');
+    $this->assertEquals(139433710.9095383, $dist->mi, 'mi');
+    $this->assertEquals(1.5, $dist->au, 'au');
+    $this->assertEquals(0.000023718761113304037, $dist->ly, 'ly');
+    $this->assertEquals(7.2722052154443E-6, $dist->pc, 'pc');
   }
 
   /**
    * @covers Marando\Units\Distance::mi
-   * @todo   Implement testMi().
    */
   public function test_mi() {
-    // Remove the following lines when you implement this test.
-    $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-    );
+    $dist = Distance::mi(139433710.9095383);
+
+    $this->assertEquals(224396806050000, $dist->mm, 'mm');
+    $this->assertEquals(22439680605000, $dist->cm, 'cm');
+    $this->assertEquals(224396806050, $dist->m, 'm');
+    $this->assertEquals(224396806.050, $dist->km, 'km');
+    $this->assertEquals(139433710.9095383, $dist->mi, 'mi');
+    $this->assertEquals(1.5, $dist->au, 'au');
+    $this->assertEquals(0.000023718761113304037, $dist->ly, 'ly');
+    $this->assertEquals(7.2722052154443E-6, $dist->pc, 'pc');
   }
 
   /**

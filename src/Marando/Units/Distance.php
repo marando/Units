@@ -56,7 +56,7 @@ class Distance {
    * @return Distance
    */
   public static function mm($mm) {
-    return new Distance($mm * static::mm_in_m);
+    return new Distance($mm / static::mm_in_m);
   }
 
   /**
@@ -65,7 +65,7 @@ class Distance {
    * @return Distance
    */
   public static function cm($cm) {
-    return new Distance($cm * static::cm_in_m);
+    return new Distance($cm / static::cm_in_m);
   }
 
   /**
