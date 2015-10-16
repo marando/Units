@@ -5,7 +5,7 @@ namespace Marando\Units;
 use Marando\Units\Time;
 
 /**
- * Represents a gemoetric angle measurement
+ * Represents a geometric angle measurement
  *
  * @property float $deg Angle expressed in degrees
  * @property float $rad Angle expressed in radians
