@@ -75,13 +75,8 @@ class Time {
     return new static($hours * static::SEC_IN_HOUR);
   }
 
-  /**
-   * Creates a new Time instance from a fraction of a day
-   * @param type $day
-   * @return static
-   */
-  public static function fromDayFrac($day) {
-    return new static($day * static::SEC_IN_DAY);
+  public static function fromDayFrac($dayFrac) {
+    return new static($dayFrac * static::SEC_IN_DAY);
   }
 
   //----------------------------------------------------------------------------
