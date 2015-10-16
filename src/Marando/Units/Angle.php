@@ -172,7 +172,7 @@ class Angle {
    * @param type $lBound Lower bound
    * @param type $uBound Upper bound
    *
-   * @return Angle 
+   * @return Angle
    */
   public function norm($lBound = 0, $uBound = 360) {
     $sign = $this->deg < 0 ? -1 : 1;
@@ -200,8 +200,9 @@ class Angle {
   }
 
   /**
-   * Converts this instance to a duration of time for a specific interval in
+   * Converts this instance to a time duration for a specified interval of
    * seconds, the default being the number of seconds in one day.
+   *
    * @return Time The time duration representative of this instance.
    */
   public function toTime($interval = Time::SEC_IN_DAY) {
@@ -210,8 +211,9 @@ class Angle {
 
   /**
    * Adds an angle to this instance
-   * @param Angle $angle The angle to add.
-   * @return Angle The resulting angle.
+   *
+   * @param Angle $angle
+   * @return Angle The
    */
   public function add(Angle $angle) {
     return Angle::fromDeg($this->deg + $angle->deg);
@@ -219,38 +221,34 @@ class Angle {
 
   /**
    * Multiplies an angle to this instance
-   * @param Angle $angle The angle to multiplu
-   * @return Angle The resulting angle
+   *
+   * @param Angle $angle
+   * @return Angle
    */
   public function multiply(Angle $angle) {
     return Angle::fromDeg($this->deg * $angle->deg);
   }
 
   /**
-   * Subtracts an angle from this instance.
-   * @param Angle $angle The angle to subtract.
-   * @return Angle The resulting angle.
+   * Subtracts an angle from this instance
+   * @param Angle $angle
+   * @return Angle
    */
   public function subtract(Angle $angle) {
     return Angle::fromDeg($this->deg - $angle->deg);
   }
 
+  /**
+   * Negates the value of this instance
+   * @return Angle
+   */
   public function negate() {
     return $this->multiply(Angle::fromDeg(-1));
   }
 
   /**
-   * Returns if the angle is small, such that the accuracy of trignonometric
-   * functions is questionable.
-   *
-   * @return bool
-   */
-  public function isSmall() {
-    return $this->rad < static::SmallAngleRad;
-  }
-
-  /**
-   * Arc tangent of two variables
+   * Returns a new angle from the arc tangent of two other angle instances or
+   * float values expressed in radians
    *
    * @param float|Angle $y Dividend parameter
    * @param float|Angle $x Divisor parameter
@@ -266,16 +264,16 @@ class Angle {
   // // // Protected
 
   /**
-   * Calculates the integer value of minutes in this instance.
-   * @return int The number of minutes.
+   * Calculates the integer minute segment of this instance
+   * @return int
    */
   protected function calcMinutes() {
     return intval(($this->deg - $this->d) * 60);
   }
 
   /**
-   * Calculates the integer value of seconds in this instance.
-   * @return int The number of seconds.
+   * Calculates the integer second segment of this instance
+   * @return int
    */
   protected function calcSeconds() {
     return ($this->deg - $this->d - $this->m / 60) * 3600;
