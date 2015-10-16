@@ -18,6 +18,8 @@ class Velocity {
   use \Marando\Units\Traits\RoundingTrait,
       \Marando\Units\Traits\SetUnitTrait;
 
+  const c_ms = 299792458;
+
   //----------------------------------------------------------------------------
   // Constructors
   //----------------------------------------------------------------------------

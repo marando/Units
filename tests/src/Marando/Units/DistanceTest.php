@@ -176,7 +176,7 @@ class DistanceTest extends \PHPUnit_Framework_TestCase {
     $dist  = Distance::ly(0.000023718761113304037, $old_c, $bYear);
 
     // Define ration between two definitions
-    $ratio = (Distance::c_ms * 365.25) / ($old_c->ms * $bYear);
+    $ratio = (Velocity::c_ms * 365.25) / ($old_c->ms * $bYear);
 
     $this->assertEquals(224396806050000 / $ratio, $dist->mm, 'mm', 1e5);
     $this->assertEquals(22439680605000 / $ratio, $dist->cm, 'cm', 1e4);
