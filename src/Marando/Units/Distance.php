@@ -126,6 +126,7 @@ class Distance {
     else
       $dist->def['m/AU'] = static::m_in_AU;
 
+    // Find the number of meters in one parsec
     $au_in_pc          = 6.48e5 / Angle::Pi;
     $dist->def['m/pc'] = $au_in_pc * $dist->def['m/AU'];
 
@@ -143,15 +144,19 @@ class Distance {
    * @return static
    */
   public static function ly($ly, Velocity $c = null, $year = 365.25) {
-    return;
+    $dist = new Distance(0);
+
     if ($c)
-      $this->def['c'] = $def->m;
+      $dist->def['c'] = $c->ms;
+    else
+      $dist->def['c'] = static::c_ms;
 
     // Find the number of meters in one light-year
     $secInYear         = Time::SEC_IN_DAY * $year;
-    $this->def['m/ly'] = $secInYear * $this->def['c'];
+    $dist->def['m/ly'] = $secInYear * $dist->def['c'];
 
-    return new static($ly * $this->def['m/ly']);
+    $dist->m = $ly * $dist->def['m/ly'];
+    return $dist;
   }
 
   //----------------------------------------------------------------------------
