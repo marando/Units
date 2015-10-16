@@ -3,16 +3,16 @@
 namespace Marando\Units;
 
 /**
- * Represents a measure of distance.
+ * Represents a measure of distance
  *
- * @property float $mm The distance in millimeters
- * @property float $cm The distance in centimeters
- * @property float $m  The distance in meters
- * @property float $km The distance in kilometers
- * @property float $au The distance in astronomical units
- * @property float $pc The distance in parsecs
- * @property float $ly The distance in light-years
- * @property float $mi The distance in miles
+ * @property float $mm Distance in millimeters
+ * @property float $cm Distance in centimeters
+ * @property float $m  Distance in meters
+ * @property float $km Distance in kilometers
+ * @property float $au Distance in astronomical units
+ * @property float $pc Distance in parsecs
+ * @property float $ly Distance in light-years
+ * @property float $mi Distance in miles
  */
 class Distance {
 
@@ -20,15 +20,32 @@ class Distance {
       \Marando\Units\Traits\SetUnitTrait;
 
   //----------------------------------------------------------------------------
+  // Constants
+  //----------------------------------------------------------------------------
+
+  const c_ms    = 299792458;
+  const cm_in_m = 1e2;
+  const m_in_AU = 149597870700;
+  const m_in_mi = 1609.344;
+  const m_in_km = 1e3;
+  const mm_in_m = 1e3;
+
+  //----------------------------------------------------------------------------
   // Constructors
   //----------------------------------------------------------------------------
 
   /**
-   * Creates a new distance instance from a number of meters.
+   * Creates a new distance instance from a number of meters
    * @param float $meters The number of meters.
    */
-  public function __construct($meters) {
+  protected function __construct($meters) {
     $this->m = $meters;
+
+    $this->def = [
+        'm/AU' => 149597870700,
+        'm/ly' => 9.4607304725808E15,
+        'm/pc' => 3.085677582E16,
+    ];
   }
 
   // // // Static
@@ -39,7 +56,7 @@ class Distance {
    * @return Distance
    */
   public static function mm($mm) {
-    return new Distance($mm * 1e3);
+    return new Distance($mm * static::mm_in_m);
   }
 
   /**
@@ -48,7 +65,7 @@ class Distance {
    * @return Distance
    */
   public static function cm($cm) {
-    return new Distance($cm * 1e2);
+    return new Distance($cm * static::cm_in_m);
   }
 
   /**
@@ -66,7 +83,7 @@ class Distance {
    * @return Distance
    */
   public static function km($km) {
-    return new Distance($km * 1e3);
+    return new Distance($km * static::m_in_km);
   }
 
   /**
@@ -75,16 +92,25 @@ class Distance {
    * @return Distance
    */
   public static function mi($mi) {
-    return new Distance($mi * 0.000621371192);
+    return new Distance($mi * static::m_in_mi);
   }
 
   /**
    * Creates a new distance instance from a number of astronomical units.
-   * @param float $au The number of astronomical units.
+   * @param float $au  The number of astronomical units.
+   * @param flost $def Optional definition of an astronomical unit
    * @return Distance
    */
-  public static function au($au) {
-    return new Distance($au * 149597870700);
+  public static function au($au, Distance $def = null) {
+    $dist = new Distance(0);
+
+    if ($def)
+      $dist->def['m/AU'] = $def->m;
+    else
+      $dist->def['m/AU'] = static::m_in_AU;
+
+    $dist->m = $au * $dist->def['m/AU'];
+    return $dist;
   }
 
   /**
@@ -92,22 +118,47 @@ class Distance {
    * @param float $pc The number of parsecs.
    * @return Distance
    */
-  public static function pc($pc) {
-    return new Distance($pc * 3.08567758e16);
+  public static function pc($pc, Distance $au = null) {
+    $dist = new Distance(0);
+
+    if ($au)
+      $dist->def['m/AU'] = $au->m;
+    else
+      $dist->def['m/AU'] = static::m_in_AU;
+
+    $au_in_pc          = 6.48e5 / Angle::Pi;
+    $dist->def['m/pc'] = $au_in_pc * $dist->def['m/AU'];
+
+    $dist->m = $pc * $dist->def['m/pc'];
+    return $dist;
   }
 
   /**
    * Creates a new distance instance from a number of light-years.
-   * @param float $ly The number of light-years.
+   *
+   * @param float    $ly   Number of light years to store
+   * @param Velocity $c    Speed of light in m/s
+   * @param float    $year Number of days per year, default is julian year
+   *
    * @return static
    */
-  public static function ly($ly) {
-    return new static($ly * 9460730472580800);
+  public static function ly($ly, Velocity $c = null, $year = 365.25) {
+    return;
+    if ($c)
+      $this->def['c'] = $def->m;
+
+    // Find the number of meters in one light-year
+    $secInYear         = Time::SEC_IN_DAY * $year;
+    $this->def['m/ly'] = $secInYear * $this->def['c'];
+
+    return new static($ly * $this->def['m/ly']);
   }
 
   //----------------------------------------------------------------------------
   // Properties
   //----------------------------------------------------------------------------
+
+  private $def = [];
 
   /**
    * Stores the properties of this instance.
@@ -118,28 +169,28 @@ class Distance {
   public function __get($name) {
     switch ($name) {
       case 'mm':
-        return $this->m * 1e3;
+        return $this->m * static::mm_in_m;
 
       case 'cm':
-        return $this->m * 1e2;
+        return $this->m * static::cm_in_m;
 
       case 'm':
         return $this->properties[$name];
 
       case 'km':
-        return $this->m * 1e-3;
+        return $this->m / static::m_in_km;
 
       case 'mi':
-        return $this->m * 0.000621371;
+        return $this->m / static::m_in_mi;
 
       case 'au':
-        return $this->m / 149597870700;
+        return $this->m / $this->def['m/AU'];
 
       case 'pc':
-        return $this->m / 3.08567758e16;
+        return $this->m / $this->def['m/pc'];
 
       case 'ly':
-        return $this->m / 9460730472580800;
+        return $this->m / $this->def['m/ly'];
     }
   }
 
