@@ -5,13 +5,13 @@ namespace Marando\Units;
 use Marando\Units\Time;
 
 /**
- * Represents a gemoetric Angle.
+ * Represents a gemoetric angle measurement
  *
- * @property float $deg The angle expressed in degrees.
- * @property float $rad The angle expressed in radians.
- * @property int   $d   The integer degree value of the angle.
- * @property int   $m   The integer minute value of the angle.
- * @property float $s   The second value of the angle.
+ * @property float $deg Angle expressed in degrees
+ * @property float $rad Angle expressed in radians
+ * @property int   $d   Integer degree segment of the angle
+ * @property int   $m   Integer minute segment of the angle
+ * @property float $s   Second segment of the angle with decimals
  */
 class Angle {
 
@@ -21,94 +21,78 @@ class Angle {
   // Constants
   //----------------------------------------------------------------------------
 
-  /**
-   * Represents the cosine of a small angle, which is the angle at which
-   * trigonometric functions lose accuracy.
-   */
-  const SmallAngleCosine = 0.9999957692;
-
-  /**
-   * Represents a small angle in degrees, which is the angle at which
-   * trigonometric functions lose accuracy.
-   */
-  const SmallAngleDec = 0.1666666667;
-
-  /**
-   * Represents a small angle in radians, which is the angle at which
-   * trigonometric functions lose accuracy.
-   */
-  const SmallAngleRad = 0.002908882087;
+  const Pi = 3.1415926535897932384626433832795028841971693993751058209749445923;
 
   //----------------------------------------------------------------------------
   // Constructors
   //----------------------------------------------------------------------------
 
   /**
-   * Creates a new Angle instance.
+   * Creates a new angle instance
    */
-  protected function __construct() {
-
+  protected function __construct($deg = null, $rad = null) {
+    $angle->deg = $deg;
+    $angle->rad = $rad;
   }
 
   // // // Static
 
   /**
-   * Creates a new angle from a number of degrees.
-   * @param float $deg The number of degrees.
+   * Creates a new angle from a number of degrees
+   * @param float $deg
    * @return static
    */
   public static function fromDeg($deg) {
-    $angle      = new static();
-    $angle->deg = $deg;
-    $angle->rad = deg2rad($deg);
-
-    return $angle;
+    return new static($deg, deg2rad($deg));
   }
 
   /**
-   * Creates a new angle from a number of radians.
-   * @param float $rad The number of radians
+   * Creates a new angle from a number of radians
+   * @param float $rad
    * @return static
    */
   public static function fromRad($rad) {
-    $angle      = new static();
-    $angle->rad = $rad;
-    $angle->deg = rad2deg($rad);
-
-    return $angle;
+    return new static(rad2deg($rad), $rad);
   }
 
   /**
-   * Creates a new angle from degree, minute and second components.
-   * @param int   $d The integer degree value of the angle.
-   * @param int   $m The integer minute value of the angle.
-   * @param float $s The second value of the angle.
+   * Creates a new angle from degree, minute and second components
+   *
+   * @param int   $d Degree value
+   * @param int   $m Minute value
+   * @param float $s Second value
+   *
    * @return static
    */
   public static function fromDMS($d, $m, $s) {
-    if ($d < 0 || $m < 0 || $s < 0) {
-      $deg = $d - (abs($m) / 60) - (abs($s) / 3600);
-      return static::fromDeg($deg);
-    }
-    else {
-      $deg = $d + (abs($m) / 60) + (abs($s) / 3600);
-      return static::fromDeg($deg);
-    }
+    if ($d < 0 || $m < 0 || $s < 0)
+    // Negative angle
+      return static::fromDeg($d - (abs($m) / 60) - (abs($s) / 3600));
+    else
+    // Positive angle
+      return static::fromDeg($d + (abs($m) / 60) + (abs($s) / 3600));
   }
 
   /**
-   * Creates a new angle from a duration of time within an interval, the default
-   * being the number of seconds in one day.
-   * @param Time  $time     The time duration.
-   * @param float $interval The interval in seconds.
+   * Creates a new angle from a time duration within a specified interval, the
+   * default being the number of seconds in one day. This is usefun in
+   * astronomy applications.
+   *
+   * @param Time  $time     Time duration
+   * @param float $interval Time interval
+   *
    * @return static
    */
   public static function fromTime($time, $interval = Time::SEC_IN_DAY) {
     return static::fromDeg($time->seconds / $interval * 360)->norm();
   }
 
+  /**
+   * Creates a new angle based on the value of π radians
+   * @return static
+   */
   public static function Pi() {
-    return Angle::fromDeg(180);
+    return static::fromRad(static::Pi);
   }
 
   //----------------------------------------------------------------------------
@@ -158,31 +142,37 @@ class Angle {
   //----------------------------------------------------------------------------
 
   /**
-   * Represents this instance as a string.
+   * Represents this instance as a string
    * @return string
    */
   public function __toString() {
+    // Figure out numeric sign of the instance
     $sign = $this->deg < 0 && $this->d == 0 ? '-' : '';
 
+    // Obtain D M S
     $d = $this->d;
     $m = abs($this->m);
     $s = abs($this->s);
 
-    $sI = intval($s);
-    $sD = str_replace('0.', '', round(($s - $sI), $this->decimalPlaces));
+    // Split the seconds into integer and decimal components
+    $sint = intval($s);
+    $sdec = str_replace('0.', '', round(($s - $sint), $this->decimalPlaces));
 
+    // Format the string depending on if the seconds has a decimal, value
     if ($this->decimalPlaces > 0)
-      return "{$sign}{$d}°{$m}'{$sI}\".{$sD}";
+      return "{$sign}{$d}°{$m}'{$sint}\".{$sdec}";
     else {
-      return "{$sign}{$d}°{$m}'{$sI}\"";
+      return "{$sign}{$d}°{$m}'{$sint}\"";
     }
   }
 
   /**
-   * Normalizes the degrees in this instance.
-   * @param type $lBound The lower bound.
-   * @param type $uBound The upper bound.
-   * @return Angle This instance normalized.
+   * Normalizes the degrees in this instance to a specified interval
+   *
+   * @param type $lBound Lower bound
+   * @param type $uBound Upper bound
+   *
+   * @return Angle
    */
   public function norm($lBound = 0, $uBound = 360) {
     $sign = $this->deg < 0 ? -1 : 1;
@@ -191,8 +181,8 @@ class Angle {
       return $this;
     }
     else {
-      $rev       = intval($this->deg / $uBound);
-      $this->deg = $this->deg - $rev * $uBound;
+      $revolutions = intval($this->deg / $uBound);
+      $this->deg   = $this->deg - $revolutions  * $uBound;
 
       while ($this->deg > $uBound) {
         $this->deg -= $uBound;
