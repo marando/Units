@@ -1,16 +1,17 @@
 {
-    "name": "marando/units",
-    "description": "A PHP package consisting of classes representing units of measure",
-    "require": {
-        "php": "^5.4"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^5.0"
-    },
-    "authors": [
-        {
-            "name": "Ashley Marando",
-            "email": "a.marando@me.com"
-        }
-    ]
+  "name": "marando/units",
+  "description": "A PHP package consisting of classes representing units of measure",
+  "license": "GNU2",
+  "require": {
+    "php": "^5.4"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.0"
+  },
+  "authors": [
+    {
+      "name": "Ashley Marando",
+      "email": "a.marando@me.com"
+    }
+  ]
 }

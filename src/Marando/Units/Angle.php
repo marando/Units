@@ -12,6 +12,8 @@ use Marando\Units\Time;
  * @property int   $d   Integer degree segment of the angle
  * @property int   $m   Integer minute segment of the angle
  * @property float $s   Second segment of the angle with decimals
+ *
+ * @author Ashley Marando <a.marando@me.com>
  */
 class Angle {
 
@@ -182,7 +184,7 @@ class Angle {
     }
     else {
       $revolutions = intval($this->deg / $uBound);
-      $this->deg   = $this->deg - $revolutions  * $uBound;
+      $this->deg   = $this->deg - $revolutions * $uBound;
 
       while ($this->deg > $uBound) {
         $this->deg -= $uBound;
