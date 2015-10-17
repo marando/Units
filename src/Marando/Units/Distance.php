@@ -87,7 +87,7 @@ class Distance {
    * @return static
    */
   public static function mm($mm) {
-    return new Distance($mm / static::mm_in_m);
+    return (new Distance($mm / static::mm_in_m))->setUnit('mm');
   }
 
   /**
@@ -96,7 +96,7 @@ class Distance {
    * @return static
    */
   public static function cm($cm) {
-    return new Distance($cm / static::cm_in_m);
+    return (new Distance($cm / static::cm_in_m))->setUnit('cm');
   }
 
   /**
@@ -105,7 +105,7 @@ class Distance {
    * @return static
    */
   public static function m($m) {
-    return new Distance($m);
+    return (new Distance($m))->setUnit('m');
   }
 
   /**
@@ -114,7 +114,7 @@ class Distance {
    * @return static
    */
   public static function km($km) {
-    return new Distance($km * static::m_in_km);
+    return (new Distance($km * static::m_in_km))->setUnit('km');
   }
 
   /**
@@ -123,7 +123,7 @@ class Distance {
    * @return static
    */
   public static function mi($mi) {
-    return new Distance($mi * static::m_in_mi);
+    return (new Distance($mi * static::m_in_mi))->setUnit('mi');
   }
 
   /**
@@ -137,6 +137,7 @@ class Distance {
    */
   public static function au($au, Distance $def = null) {
     $dist = new Distance(0);
+    $dist->setUnit('au');
 
     if ($def)
       $dist->def['m/AU'] = $def->m;
@@ -154,6 +155,7 @@ class Distance {
    */
   public static function pc($pc, Distance $au = null) {
     $dist = new Distance(0);
+    $dist->setUnit('pc');
 
     if ($au)
       $dist->def['m/AU'] = $au->m;
@@ -181,6 +183,7 @@ class Distance {
    */
   public static function ly($ly, Velocity $c = null, $year = 365.25) {
     $dist = new Distance(0);
+    $dist->setUnit('ly');
 
     if ($c)
       $dist->def['c'] = $c->ms;
@@ -263,31 +266,32 @@ class Distance {
     $value = $this->m;
     $units = 'm';
 
-    if (($this->unit == null && $this->pc > 1) || $this->unit == 'pc') {
+    $unit = strtolower($this->unit);
+    if (($unit == null && $this->pc > 1) || $unit == 'pc') {
       $value = $this->pc;
       $units = 'pc';
     }
-    else if (($this->unit == null && $this->au > 1 ) || $this->unit == 'au') {
+    else if (($unit == null && $this->au > 1 ) || $unit == 'au') {
       $value = $this->au;
       $units = 'AU';
     }
-    else if (($this->unit == null && $this->km > 1 ) || $this->unit == 'km') {
+    else if (($unit == null && $this->km > 1 ) || $unit == 'km') {
       $value = $this->km;
       $units = 'km';
     }
-    else if (($this->unit == null && $this->mi > 1 ) || $this->unit == 'mi') {
+    else if (($unit == null && $this->mi > 1 ) || $unit == 'mi') {
       $value = $this->mi;
       $units = 'mi';
     }
-    else if (($this->unit == null && $this->m > 1 ) || $this->unit == 'm') {
+    else if (($unit == null && $this->m > 1 ) || $unit == 'm') {
       $value = $this->m;
       $units = 'm';
     }
-    else if (($this->unit == null && $this->cm > 1) || $this->unit == 'cm') {
+    else if (($unit == null && $this->cm > 1) || $unit == 'cm') {
       $value = $this->cm;
       $units = 'cm';
     }
-    else if (($this->unit == null && $this->mm > 1) || $this->unit == 'mm') {
+    else if (($unit == null && $this->mm > 1) || $unit == 'mm') {
       $value = $this->mm;
       $units = 'mm';
     }

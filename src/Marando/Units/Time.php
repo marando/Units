@@ -19,6 +19,10 @@ use Marando\Units\Angle;
  * @author Ashley Marando <a.marando@me.com>
  */
 class Time {
+
+  use \Marando\Units\Traits\SetUnitTrait,
+      \Marando\Units\Traits\RoundingTrait;
+
   //----------------------------------------------------------------------------
   // Constants
   //----------------------------------------------------------------------------
@@ -57,8 +61,8 @@ class Time {
    * @param float $sec
    * @return static
    */
-  public static function fromSeconds($sec) {
-    return new static($sec);
+  public static function sec($sec) {
+    return (new static($sec))->setUnit('s');
   }
 
   /**
@@ -66,8 +70,8 @@ class Time {
    * @param float $min
    * @return static
    */
-  public static function fromMinutes($min) {
-    return new static($min * static::SEC_IN_MIN);
+  public static function min($min) {
+    return (new static($min * static::SEC_IN_MIN))->setUnit('m');
   }
 
   /**
@@ -75,8 +79,8 @@ class Time {
    * @param float $hours
    * @return static
    */
-  public static function fromHours($hours) {
-    return new static($hours * static::SEC_IN_HOUR);
+  public static function hours($hours) {
+    return (new static($hours * static::SEC_IN_HOUR))->setUnit('h');
   }
 
   /**
@@ -84,19 +88,24 @@ class Time {
    * @param float $days
    * @return static
    */
-  public static function fromDays($days) {
-    return new static($days * static::SEC_IN_DAY);
+  public static function days($days) {
+    return (new static($days * static::SEC_IN_DAY))->setUnit('d');
+  }
+
+  /**
+   * Creates a new Time instance from hour minute and second components
+   * @param int   $h
+   * @param int   $m
+   * @param float $s
+   * @return static
+   */
+  public static function hms($h, $m, $s) {
+    return new static($h * static::SEC_IN_HOUR + $m * static::SEC_IN_MIN + $s);
   }
 
   //----------------------------------------------------------------------------
   // Properties
   //----------------------------------------------------------------------------
-
-  /**
-   * This instance represented as seconds
-   * @var float
-   */
-  protected $sec;
 
   public function __get($name) {
     switch ($name) {
@@ -169,6 +178,31 @@ class Time {
    * @return string
    */
   public function __toString() {
+    switch (strtolower($this->unit)) {
+      case 's':
+      case 'sec':
+      case 'second':
+      case 'seconds':
+        return round($this->sec, $this->decimalPlaces) . " sec";
+
+      case 'm':
+      case 'min':
+      case 'minutes':
+        return round($this->min, $this->decimalPlaces) . " min";
+
+      case 'h':
+      case 'hour':
+      case 'hours':
+        $hours = round($this->hours, $this->decimalPlaces);
+        return $hours == 1 ? "{$hours} hour" : "{$hours} hours";
+
+      case 'd':
+      case 'day':
+      case 'days':
+        $days = round($this->days, $this->decimalPlaces);
+        return $days == 1 ? "{$days} day" : "{$days} days";
+    }
+
     $decimals = 4;
     $micro    = substr(round($this->micro, $decimals), 1, $decimals);
 

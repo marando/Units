@@ -58,7 +58,7 @@ class Velocity {
    * @return static
    */
   public static function ms($ms) {
-    return new static(Distance::m($ms), Time::fromSeconds(1));
+    return new static(Distance::m($ms), Time::sec(1));
   }
 
   /**
@@ -67,7 +67,7 @@ class Velocity {
    * @return static
    */
   public static function kms($kms) {
-    return new static(Distance::km($kms), Time::fromSeconds(1));
+    return new static(Distance::km($kms), Time::sec(1));
   }
 
   /**
@@ -76,7 +76,7 @@ class Velocity {
    * @return static
    */
   public static function kmh($kmh) {
-    return new static(Distance::km($kmh), Time::fromHours(1));
+    return new static(Distance::km($kmh), Time::hours(1));
   }
 
   /**
@@ -85,7 +85,7 @@ class Velocity {
    * @return static
    */
   public static function kmd($kmd) {
-    return new static(Distance::km($kmd), Time::fromDays(1));
+    return new static(Distance::km($kmd), Time::days(1));
   }
 
   /**
@@ -94,7 +94,7 @@ class Velocity {
    * @return static
    */
   public static function mph($mph) {
-    return new static(Distance::mi($mph), Time::fromHours(1));
+    return new static(Distance::mi($mph), Time::hours(1));
   }
 
   /**
@@ -103,7 +103,7 @@ class Velocity {
    * @return static
    */
   public static function aud($aud) {
-    return new static(Distance::au($aud), Time::fromDays(1));
+    return new static(Distance::au($aud), Time::days(1));
   }
 
   /**
@@ -112,7 +112,7 @@ class Velocity {
    * @return static
    */
   public static function pcy($pcy, $year = Time::JulianYear) {
-    return new static(Distance::pc($pcy), Time::fromDays($year));
+    return new static(Distance::pc($pcy), Time::days($year));
   }
 
   //----------------------------------------------------------------------------
