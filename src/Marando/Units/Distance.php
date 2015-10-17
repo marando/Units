@@ -87,7 +87,7 @@ class Distance {
    * @return static
    */
   public static function mm($mm) {
-    return new Distance($mm / static::mm_in_m);
+    return (new Distance($mm / static::mm_in_m))->setUnit('mm');
   }
 
   /**
@@ -96,7 +96,7 @@ class Distance {
    * @return static
    */
   public static function cm($cm) {
-    return new Distance($cm / static::cm_in_m);
+    return (new Distance($cm / static::cm_in_m))->setUnit('cm');
   }
 
   /**
@@ -105,7 +105,7 @@ class Distance {
    * @return static
    */
   public static function m($m) {
-    return new Distance($m);
+    return (new Distance($m))->setUnit('m');
   }
 
   /**
@@ -114,7 +114,7 @@ class Distance {
    * @return static
    */
   public static function km($km) {
-    return new Distance($km * static::m_in_km);
+    return (new Distance($km * static::m_in_km))->setUnit('km');
   }
 
   /**
@@ -123,7 +123,7 @@ class Distance {
    * @return static
    */
   public static function mi($mi) {
-    return new Distance($mi * static::m_in_mi);
+    return (new Distance($mi * static::m_in_mi))->setUnit('mi');
   }
 
   /**
@@ -137,6 +137,7 @@ class Distance {
    */
   public static function au($au, Distance $def = null) {
     $dist = new Distance(0);
+    $dist->setUnit('au');
 
     if ($def)
       $dist->def['m/AU'] = $def->m;
@@ -154,6 +155,7 @@ class Distance {
    */
   public static function pc($pc, Distance $au = null) {
     $dist = new Distance(0);
+    $dist->setUnit('pc');
 
     if ($au)
       $dist->def['m/AU'] = $au->m;
@@ -181,6 +183,7 @@ class Distance {
    */
   public static function ly($ly, Velocity $c = null, $year = 365.25) {
     $dist = new Distance(0);
+    $dist->setUnit('ly');
 
     if ($c)
       $dist->def['c'] = $c->ms;
