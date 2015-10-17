@@ -59,9 +59,9 @@ echo Angle::fromDeg(90)->negate();                      // negation        Outpu
 #### String Value of an Angle
 By default the string value of an `Angle` is expressed in the format `180°0'0".0` up to three decimal places. You can use the round method to specify the number of decimal places to display:
 ```php
-echo Angle::fromRad(3)->round(0);  // round to nearest second  Output: 171°53'14"
-echo Angle::fromRad(3)->round(3);  // round to 3 places        Output: 171°53'14".419
-echo Angle::fromRad(3)->round(3);  // round to 10 places       Output: 171°53'14".4187412891
+echo Angle::fromRad(3)->round(0);   // round to nearest second  Output: 171°53'14"
+echo Angle::fromRad(3)->round(3);   // round to 3 places        Output: 171°53'14".419
+echo Angle::fromRad(3)->round(10);  // round to 10 places       Output: 171°53'14".4187412891
 ```
 
 
@@ -69,10 +69,35 @@ Distance
 --------
 #### Creating Distances
 ```php
+// Metric
 echo Distance::mm(1);  // create distance from millimeters         Output: 1.000 mm
 echo Distance::cm(1);  // create distance from centimeters         Output: 1.000 cm
+echo Distance::m(1);   // create distance from meters              Output: 1.000 m
+echo Distance::km(1);  // create distance from kilometers          Output: 1.000 km
+
+// Imperial
+echo Distance::mi(1);  // create distance from miles               Output: 1.000 mi
+
+// Astronomy
 echo Distance::au(1);  // create distance from astronomical units  Output: 1.000 AU
+echo Distance::pc(1);  // create distance from parsecs             Output: 1.000 pc
+echo Distance::ly(1);  // create distance from light-years         Output: 1.000 ly
 ```
 
+#### String Value of a Distance
+By default the string value of a `Distance` is expressed in the format `1.000 km` using three decimal places. You can use the round method to specify the number of decimal places to display:
+```php
+echo Distance::km(2/3)->round(0);   // round to nearest unit  Output: 1 km
+echo Distance::km(2/3)->round(3);   // round to 3 places      Output: 0.667 km
+echo Distance::km(2/3)->round(10);  // round to 10 places     Output: 0.6666666667 km
+```
+
+#### Conversion between Units
+Once you have created a `Distance` instance, conversion between different units is simple:
+```php
+echo Distance::mi(1)->km              // get the raw kilometer value  Output: 1.609344
+echo Distance::mi(1)->setUnit('km');  // set units to kilometers      Output: 1.609 km
+```
+Valid values for the `setUnit()` are as follows: `mm`, `cm`, `m`, `km`, `mi`, `au`, `pc`, and `ly`
 
 
