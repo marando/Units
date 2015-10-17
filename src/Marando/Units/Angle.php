@@ -44,7 +44,7 @@ class Angle {
    * @param float $deg
    * @return static
    */
-  public static function fromDeg($deg) {
+  public static function deg($deg) {
     return new static($deg, deg2rad($deg));
   }
 
@@ -53,7 +53,7 @@ class Angle {
    * @param float $rad
    * @return static
    */
-  public static function fromRad($rad) {
+  public static function rad($rad) {
     return new static(rad2deg($rad), $rad);
   }
 
@@ -66,13 +66,13 @@ class Angle {
    *
    * @return static
    */
-  public static function fromDMS($d, $m, $s) {
+  public static function dms($d, $m, $s) {
     if ($d < 0 || $m < 0 || $s < 0)
     // Negative angle
-      return static::fromDeg($d - (abs($m) / 60) - (abs($s) / 3600));
+      return static::deg($d - (abs($m) / 60) - (abs($s) / 3600));
     else
     // Positive angle
-      return static::fromDeg($d + (abs($m) / 60) + (abs($s) / 3600));
+      return static::deg($d + (abs($m) / 60) + (abs($s) / 3600));
   }
 
   /**
@@ -86,7 +86,7 @@ class Angle {
    * @return static
    */
   public static function fromTime($time, $interval = Time::SEC_IN_DAY) {
-    return static::fromDeg($time->sec / $interval * 360)->norm();
+    return static::deg($time->sec / $interval * 360)->norm();
   }
 
   /**
@@ -94,7 +94,7 @@ class Angle {
    * @return static
    */
   public static function Pi() {
-    return static::fromRad(static::Pi);
+    return static::rad(static::Pi);
   }
 
   //----------------------------------------------------------------------------
@@ -146,8 +146,8 @@ class Angle {
   /**
    * Normalizes the degrees in this instance to a specified interval
    *
-   * @param type $lBound Lower bound
-   * @param type $uBound Upper bound
+   * @param float $lBound Lower bound
+   * @param float $uBound Upper bound
    *
    * @return Angle
    */
@@ -193,7 +193,7 @@ class Angle {
    * @return Angle The
    */
   public function add(Angle $angle) {
-    return Angle::fromDeg($this->deg + $angle->deg);
+    return Angle::deg($this->deg + $angle->deg);
   }
 
   /**
@@ -203,7 +203,7 @@ class Angle {
    * @return Angle
    */
   public function multiply(Angle $angle) {
-    return Angle::fromDeg($this->deg * $angle->deg);
+    return Angle::deg($this->deg * $angle->deg);
   }
 
   /**
@@ -212,7 +212,7 @@ class Angle {
    * @return Angle
    */
   public function subtract(Angle $angle) {
-    return Angle::fromDeg($this->deg - $angle->deg);
+    return Angle::deg($this->deg - $angle->deg);
   }
 
   /**
@@ -220,7 +220,7 @@ class Angle {
    * @return Angle
    */
   public function negate() {
-    return $this->multiply(Angle::fromDeg(-1));
+    return $this->multiply(Angle::deg(-1));
   }
 
   /**
@@ -235,7 +235,7 @@ class Angle {
     $y = $y instanceof Angle ? $y->rad : $y;
     $x = $x instanceof Angle ? $x->rad : $x;
 
-    return Angle::fromRad(atan2($y, $x));
+    return Angle::rad(atan2($y, $x));
   }
 
   // // // Protected
