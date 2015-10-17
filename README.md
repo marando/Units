@@ -100,6 +100,23 @@ echo Distance::mi(1)->setUnit('km');   // set units to kilometers      Output: 1
 ```
 Valid values for the `setUnit()` are as follows: `mm`, `cm`, `m`, `km`, `mi`, `au`, `pc`, and `ly`
 
+#### Overriding Unit Definitions
+Sometimes you may wish to provide the parameters for the definition of a distance unit (usually in the case of historic applications). For example, you may wish to create a distance of 5 astronomica units, but using the old definition of `149597870.691` kilometers/AU instead of the current definition. This is possible as follows:
+```php
+// Create distance with default and custom AU definitions
+$default = Distance::au(1.5); 
+$custom  = Distance::au(1.5, Distance::km(149597870.691)); 
+
+// AU is the same since that's what we supplied
+echo $default;      // Output: 1.500 AU 
+echo $custom;       // Output: 1.500 AU 
+
+// Conveersions are different depending on the AU definition
+echo $default->km;  // Output: 224396806.05
+echo $custom->km;   // Output: 224396806.0365
+```
+Overriding definition parameters is currenly only possible for astronomical units, light-years and parsecs.
+
 
 Time
 ----
@@ -145,6 +162,77 @@ echo $time->h; // degree component  Output: 21
 echo $time->m; // minute component  Output: 8
 echo $time->s; // second component  Output: 43
 ```
+
+
+Velocity
+--------
+
+#### Creating a Velocity Instance
+A `Velocity` instance can be created two ways:
+
+  1. By providing distance and time components, and  
+  2. By using a pre-defined static constructor  
+
+```php
+echo new Velocity(Distance::m(5), Time::sec(1));  // Method 1  Output: 5 m/s
+echo Velocity::ms(5);                             // Method 2  Output: 5 m/s
+```
+
+The first method is especially powerful for cases with non-uniform time denominators. By creating a velocity instance this way you can for example easily resolve unknown velocities from observational data:
+```php
+$velocity = new Velocity(Distance::m(507), Time::sec(14.532));
+
+echo $velocity->ms;              // in m/s  Output: 34.888521882742
+echo $velocity->setUnit('ms');   // in m/s  Output: 34.889 m/s
+
+echo $velocity->mph;             // in mph  Output: 78.043400775639
+echo $velocity->setUnit('mph');  // in mph  Output: 78.043 mph
+```
+
+As per the second method, the following pre-defined unit constructors exist:
+
+Method            | Unit | Description
+----------------- | ---- | ----------------------
+`Velocity::kmd()` | km/d | kilometers per day
+`Velocity::kmh()` | km/h | kilometers per hour
+`Velocity::kms()` | km/s | kilometers per second
+`Velocity::mph()` | mph  | miles per hour
+`Velocity::ms()`  | m/s  | meters per second
+`Velocity::pcy()` | pc/y | parsecs per year
+
+
+
+#### String Value of a Velocity Instance
+By default the string value of a `Velocity` instance is expressed using three decimal places. You can use the round method to specify the number of decimal places to display:
+```php
+echo Velocity::mph(2/3)->round(0);   // round to nearest unit  Output: 1 mph
+echo Velocity::mph(2/3)->round(3);   // round to 3 places      Output: 0.667 mph
+echo Velocity::mph(2/3)->round(10);  // round to 10 places     Output: 0.6666666667 mph
+```
+
+#### Conversion between Units
+Once you have created a `Velocity` instance, conversion between different units is simple:
+```php
+echo Velocity::mph(60)->ms;              // get the raw m/s value  Output: 26.8224
+echo Velocity::mph(60)->setUnit('m/s');  // set units to m/s       Output: 26.822 m/s
+```
+Valid values for the `setUnit()` are as follows: `km/d`, `km/h`, `km/s`, `mph`, `m/s`, and `pc/y`
+
+#### Distance and Time Components of a Velocity
+You can get the distance and time components of a `Velocity` instance as follows:
+```php
+echo Velocity::kmh(10)->getDistance();  // get distance component  Output: 10.000 km
+echo Velocity::kmh(10)->getTime();      // get time component      Output: 1 hour
+```
+
+
+
+
+
+
+
+
+
 
 
 
