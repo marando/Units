@@ -7,14 +7,14 @@ use Marando\Units\Angle;
 /**
  * Represents a measurement of time duration
  *
- * @property float $h       Integer hour segment
- * @property float $m       Integer minute segment
- * @property float $s       Integer second segment
- * @property float $micro   Integer micro (seconds decimal) segment
- * @property float $seconds Total number of seconds
- * @property float $minutes Total number of minutes
- * @property float $hours   Total number of hours
- * @property float $day     Time interval as fraction of a day
+ * @property float $h     Integer hour segment
+ * @property float $m     Integer minute segment
+ * @property float $s     Integer second segment
+ * @property float $micro Integer micro (seconds decimal) segment
+ * @property float $sec   Total number of seconds
+ * @property float $min   Total number of minutes
+ * @property float $hours Total number of hours
+ * @property float $days  Total number of days
  *
  * @author Ashley Marando <a.marando@me.com>
  */
@@ -36,7 +36,9 @@ class Time {
   /**
    * The number of seconds in one day
    */
-  const SEC_IN_DAY = 86400;
+  const SEC_IN_DAY    = 86400;
+  const JulianYear    = 365.25;
+  const JulianCentury = 36525;
 
   //----------------------------------------------------------------------------
   // Constructors
@@ -44,28 +46,28 @@ class Time {
 
   /**
    * Creates a new Time instance from a number of seconds
-   * @param float $seconds
+   * @param float $sec
    */
-  public function __construct($seconds) {
-    $this->seconds = $seconds;
+  public function __construct($sec) {
+    $this->sec = $sec;
   }
 
   /**
    * Creates a new Time instance from a number of seconds
-   * @param float $seconds
+   * @param float $sec
    * @return static
    */
-  public static function fromSeconds($seconds) {
-    return new static($seconds);
+  public static function fromSeconds($sec) {
+    return new static($sec);
   }
 
   /**
    * Creates a new Time instance from a number of minutes
-   * @param float $minutes
+   * @param float $min
    * @return static
    */
-  public static function fromMinutes($minutes) {
-    return new static($minutes * static::SEC_IN_MIN);
+  public static function fromMinutes($min) {
+    return new static($min * static::SEC_IN_MIN);
   }
 
   /**
@@ -77,8 +79,13 @@ class Time {
     return new static($hours * static::SEC_IN_HOUR);
   }
 
-  public static function fromDayFrac($dayFrac) {
-    return new static($dayFrac * static::SEC_IN_DAY);
+  /**
+   * Creates a new Time instance from a number of days
+   * @param float $days
+   * @return static
+   */
+  public static function fromDays($days) {
+    return new static($days * static::SEC_IN_DAY);
   }
 
   //----------------------------------------------------------------------------
@@ -89,33 +96,33 @@ class Time {
    * This instance represented as seconds
    * @var float
    */
-  protected $seconds;
+  protected $sec;
 
   public function __get($name) {
     switch ($name) {
-      case 'seconds':
-        return $this->seconds;
+      case 'sec':
+        return $this->sec;
 
-      case 'minutes':
-        return $this->seconds / Time::SEC_IN_MIN;
+      case 'min':
+        return $this->sec / Time::SEC_IN_MIN;
 
       case 'hours':
-        return $this->seconds / Time::SEC_IN_HOUR;
+        return $this->sec / Time::SEC_IN_HOUR;
 
-      case 'day':
-        return $this->seconds / Time::SEC_IN_DAY;
+      case 'days':
+        return $this->sec / Time::SEC_IN_DAY;
 
       case 'h':
-        return intval($this->seconds / Time::SEC_IN_HOUR);
+        return intval($this->sec / Time::SEC_IN_HOUR);
 
       case 'm':
-        return intval($this->seconds % Time::SEC_IN_HOUR / Time::SEC_IN_MIN);
+        return intval($this->sec % Time::SEC_IN_HOUR / Time::SEC_IN_MIN);
 
       case 's':
-        return intval($this->seconds % Time::SEC_IN_HOUR % Time::SEC_IN_MIN);
+        return intval($this->sec % Time::SEC_IN_HOUR % Time::SEC_IN_MIN);
 
       case 'micro':
-        return $this->seconds - ($this->h * Time::SEC_IN_HOUR + $this->m *
+        return $this->sec - ($this->h * Time::SEC_IN_HOUR + $this->m *
                 Time::SEC_IN_MIN + $this->s);
     }
   }
@@ -123,6 +130,39 @@ class Time {
   //----------------------------------------------------------------------------
   // Functions
   //----------------------------------------------------------------------------
+
+  /**
+   * Subtracts from this instance another Time instance
+   *
+   * @param Time $time
+   * @return static
+   */
+  public function subtract(Time $time) {
+    return new Time($this->sec - $time->sec);
+  }
+
+  /**
+   * Adds to this instance another Time instance
+   *
+   * @param Time $time
+   * @return static
+   */
+  public function add(Time $time) {
+    return new Time($this->sec + $time->sec);
+  }
+
+  /**
+   * Converts this instance to an angle within a specified time interval, the
+   * default being the number of seconds in one day. This is usefun in
+   * astronomy applications.
+   *
+   * @return Angle
+   */
+  public function toAngle($interval = Time::SEC_IN_DAY) {
+    return Angle::fromTime($this, $interval);
+  }
+
+  // // // Overrides
 
   /**
    * Represents this instance as a string
@@ -136,43 +176,12 @@ class Time {
     $m = abs($this->m);
     $s = abs($this->s);
 
-    $sign = $this->seconds < 0 ? '-' : '';
+    $sign = $this->sec < 0 ? '-' : '';
 
     if ($micro)
       return "{$sign}{$h}ʰ{$m}ᵐ{$s}ˢ{$micro}";
     else
       return "{$sign}{$h}ʰ{$m}ᵐ{$s}ˢ";
-  }
-
-  /**
-   * Subtracts from this instance another Time instance
-   *
-   * @param Time $time
-   * @return static
-   */
-  public function subtract(Time $time) {
-    return new Time($this->seconds - $time->seconds);
-  }
-
-  /**
-   * Adds to this instance another Time instance
-   *
-   * @param Time $time
-   * @return static
-   */
-  public function add(Time $time) {
-    return new Time($this->seconds + $time->seconds);
-  }
-
-  /**
-   * Converts this instance to an angle within a specified time interval, the
-   * default being the number of seconds in one day. This is usefun in
-   * astronomy applications.
-   *
-   * @return Angle
-   */
-  public function toAngle($interval = Time::SEC_IN_DAY) {
-    return Angle::fromTime($this, $interval);
   }
 
 }

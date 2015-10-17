@@ -11,14 +11,14 @@ class TimeTest extends \PHPUnit_Framework_TestCase {
    * @covers Marando\Units\Time::fromSeconds
    */
   public function testFromSeconds() {
-    $this->assertEquals(182, Time::fromSeconds(182)->seconds);
+    $this->assertEquals(182, Time::fromSeconds(182)->sec);
   }
 
   /**
    * @covers Marando\Units\Time::fromMinutes
    */
   public function testFromMinutes() {
-    $this->assertEquals(182, Time::fromMinutes(182)->minutes);
+    $this->assertEquals(182, Time::fromMinutes(182)->min);
   }
 
   /**
@@ -29,10 +29,10 @@ class TimeTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @covers Marando\Units\Time::fromDayFrac
+   * @covers Marando\Units\Time::fromDays
    */
-  public function testFromDayFrac() {
-    $this->assertEquals(12, Time::fromDayFrac(0.5)->hours);
+  public function testFromDays() {
+    $this->assertEquals(12, Time::fromDays(0.5)->hours);
   }
 
   /**
@@ -42,7 +42,7 @@ class TimeTest extends \PHPUnit_Framework_TestCase {
     $t1 = Time::fromHours(4);
     $t2 = Time::fromSeconds(60);
 
-    $this->assertEquals(14340, $t1->subtract($t2)->seconds);
+    $this->assertEquals(14340, $t1->subtract($t2)->sec);
   }
 
   /**
@@ -52,7 +52,7 @@ class TimeTest extends \PHPUnit_Framework_TestCase {
     $t1 = Time::fromHours(4);
     $t2 = Time::fromSeconds(60);
 
-    $this->assertEquals(14460, $t1->add($t2)->seconds);
+    $this->assertEquals(14460, $t1->add($t2)->sec);
   }
 
   /**
@@ -60,7 +60,7 @@ class TimeTest extends \PHPUnit_Framework_TestCase {
    * @todo   Implement testToAngle().
    */
   public function testToAngle() {
-    $this->assertEquals(180, time::fromDayFrac(0.5)->toAngle()->deg);
+    $this->assertEquals(180, time::fromDays(0.5)->toAngle()->deg);
   }
 
 }

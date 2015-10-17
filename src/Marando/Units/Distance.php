@@ -13,6 +13,8 @@ namespace Marando\Units;
  * @property float $pc Distance in parsecs
  * @property float $ly Distance in light-years
  * @property float $mi Distance in miles
+ *
+ * @author Ashley Marando <a.marando@me.com>
  */
 class Distance {
 
@@ -23,12 +25,40 @@ class Distance {
   // Constants
   //----------------------------------------------------------------------------
 
-  const c_ms    = 299792458;
+  /**
+   * Number of centimeters in one meter
+   */
   const cm_in_m = 1e2;
+
+  /**
+   * Number of meters in one astronomical unit
+   */
   const m_in_AU = 149597870700;
+
+  /**
+   * Number of meters in one mile
+   */
   const m_in_mi = 1609.344;
+
+  /**
+   * Number of meters in one kilometer
+   */
   const m_in_km = 1e3;
+
+  /**
+   * Number of milimeters in one meter
+   */
   const mm_in_m = 1e3;
+
+  /**
+   * Number of meters in one light year
+   */
+  const m_in_ly = 9.4607304725808E15;
+
+  /**
+   * Number of meters in one parsec
+   */
+  const m_in_pc = 3.085677582E16;
 
   //----------------------------------------------------------------------------
   // Constructors
@@ -41,65 +71,69 @@ class Distance {
   protected function __construct($meters) {
     $this->m = $meters;
 
+    // Store base definitions for properties that can be overriden
     $this->def = [
-        'm/AU' => 149597870700,
-        'm/ly' => 9.4607304725808E15,
-        'm/pc' => 3.085677582E16,
+        'm/AU' => static::m_in_AU,
+        'm/ly' => static::m_in_ly,
+        'm/pc' => static::m_in_pc,
     ];
   }
 
   // // // Static
 
   /**
-   * Creates a new distance instance from a number of millimeters.
-   * @param float $mm The number of millimeters.
-   * @return Distance
+   * Creates a new distance instance from a number of millimeters
+   * @param float $mm
+   * @return static
    */
   public static function mm($mm) {
     return new Distance($mm / static::mm_in_m);
   }
 
   /**
-   * Creates a new distance instance from a number of centiimeters.
-   * @param float $cm The number of centimeters.
-   * @return Distance
+   * Creates a new distance instance from a number of centimeters
+   * @param float $cm
+   * @return static
    */
   public static function cm($cm) {
     return new Distance($cm / static::cm_in_m);
   }
 
   /**
-   * Creates a new distance instance from a number of meters.
-   * @param float $m The number of meters.
-   * @return Distance
+   * Creates a new distance instance from a number of meters
+   * @param float $m
+   * @return static
    */
   public static function m($m) {
     return new Distance($m);
   }
 
   /**
-   * Creates a new distance instance from a number of kilometers.
-   * @param float $km The number of kilometers.
-   * @return Distance
+   * Creates a new distance instance from a number of kilometers
+   * @param float $km
+   * @return static
    */
   public static function km($km) {
     return new Distance($km * static::m_in_km);
   }
 
   /**
-   * Creates a new distance instance from a number of miles.
-   * @param float $mi The number of miles.
-   * @return Distance
+   * Creates a new distance instance from a number of miles
+   * @param float $mi
+   * @return static
    */
   public static function mi($mi) {
     return new Distance($mi * static::m_in_mi);
   }
 
   /**
-   * Creates a new distance instance from a number of astronomical units.
-   * @param float $au  The number of astronomical units.
+   * Creates a distance instance from a number of astronomical units. Optionally
+   * the definition of the astronomical unit can be overridden.
+   *
+   * @param float $au  The number of astronomical units
    * @param flost $def Optional definition of an astronomical unit
-   * @return Distance
+   *
+   * @return static
    */
   public static function au($au, Distance $def = null) {
     $dist = new Distance(0);
@@ -114,9 +148,9 @@ class Distance {
   }
 
   /**
-   * Creates a new distance instance from a number of parsecs.
-   * @param float $pc The number of parsecs.
-   * @return Distance
+   * Creates a new distance instance from a number of parsecs
+   * @param float $pc
+   * @return static
    */
   public static function pc($pc, Distance $au = null) {
     $dist = new Distance(0);
@@ -135,10 +169,12 @@ class Distance {
   }
 
   /**
-   * Creates a new distance instance from a number of light-years.
+   * Creates a new distance instance from a number of light-years. Optionally
+   * the velocity of the speed of light in a vacuum and the number of days in a
+   * year can be overridden.
    *
    * @param float    $ly   Number of light years to store
-   * @param Velocity $c    Speed of light in m/s
+   * @param Velocity $c    Speed of light in vacuum in m/s
    * @param float    $year Number of days per year, default is julian year
    *
    * @return static
@@ -149,7 +185,7 @@ class Distance {
     if ($c)
       $dist->def['c'] = $c->ms;
     else
-      $dist->def['c'] = static::c_ms;
+      $dist->def['c'] = Velocity::c_ms;
 
     // Find the number of meters in one light-year
     $secInYear         = Time::SEC_IN_DAY * $year;
@@ -163,6 +199,10 @@ class Distance {
   // Properties
   //----------------------------------------------------------------------------
 
+  /**
+   * Holds overriden unit definitions for this instance
+   * @var array
+   */
   private $def = [];
 
   /**
@@ -206,16 +246,17 @@ class Distance {
         break;
 
       default:
-        throw new \Exception("{$name} is not a valid property.");
+        throw new \Exception("{$name} is not a valid or writable property.");
     }
   }
 
   //----------------------------------------------------------------------------
   // Functions
   //----------------------------------------------------------------------------
+  // // // Overrides
 
   /**
-   * Represents this instance as a string.
+   * Represents this instance as a string
    * @return string
    */
   public function __toString() {

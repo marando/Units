@@ -86,7 +86,7 @@ class Angle {
    * @return static
    */
   public static function fromTime($time, $interval = Time::SEC_IN_DAY) {
-    return static::fromDeg($time->seconds / $interval * 360)->norm();
+    return static::fromDeg($time->sec / $interval * 360)->norm();
   }
 
   /**
@@ -142,31 +142,6 @@ class Angle {
   //----------------------------------------------------------------------------
   // Functions
   //----------------------------------------------------------------------------
-
-  /**
-   * Represents this instance as a string
-   * @return string
-   */
-  public function __toString() {
-    // Figure out numeric sign of the instance
-    $sign = $this->deg < 0 && $this->d == 0 ? '-' : '';
-
-    // Obtain D M S
-    $d = $this->d;
-    $m = abs($this->m);
-    $s = abs($this->s);
-
-    // Split the seconds into integer and decimal components
-    $sint = intval($s);
-    $sdec = str_replace('0.', '', round(($s - $sint), $this->decimalPlaces));
-
-    // Format the string depending on if the seconds has a decimal, value
-    if ($this->decimalPlaces > 0)
-      return "{$sign}{$d}°{$m}'{$sint}\".{$sdec}";
-    else {
-      return "{$sign}{$d}°{$m}'{$sint}\"";
-    }
-  }
 
   /**
    * Normalizes the degrees in this instance to a specified interval
@@ -279,6 +254,33 @@ class Angle {
    */
   protected function calcSeconds() {
     return ($this->deg - $this->d - $this->m / 60) * 3600;
+  }
+
+  // // // Overrides
+
+  /**
+   * Represents this instance as a string
+   * @return string
+   */
+  public function __toString() {
+    // Figure out numeric sign of the instance
+    $sign = $this->deg < 0 && $this->d == 0 ? '-' : '';
+
+    // Obtain D M S
+    $d = $this->d;
+    $m = abs($this->m);
+    $s = abs($this->s);
+
+    // Split the seconds into integer and decimal components
+    $sint = intval($s);
+    $sdec = str_replace('0.', '', round(($s - $sint), $this->decimalPlaces));
+
+    // Format the string depending on if the seconds has a decimal, value
+    if ($this->decimalPlaces > 0)
+      return "{$sign}{$d}°{$m}'{$sint}\".{$sdec}";
+    else {
+      return "{$sign}{$d}°{$m}'{$sint}\"";
+    }
   }
 
 }
