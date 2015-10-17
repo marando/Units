@@ -3,7 +3,7 @@ Units
 Units is a PHP package consisting of classes representing units of measure.
 
 The following units are provided:
-* Angle
+* [Angle](https://github.com/marando/Units/blob/master/README.md#angle)
 * Distance
 * Time
 * Velocity
