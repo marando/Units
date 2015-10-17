@@ -219,7 +219,7 @@ echo Velocity::mph(60)->setUnit('m/s');  // set units to m/s       Output: 26.82
 Valid values for the `setUnit()` are as follows: `km/d`, `km/h`, `km/s`, `mph`, `m/s`, and `pc/y`
 
 #### Distance and Time Components of a Velocity
-You can get the distance and time components of a `Velocity` as follows:
+You can get the distance and time components of a `Velocity` instance as follows:
 ```php
 echo Velocity::kmh(10)->getDistance();  // get distance component  Output: 10.000 km
 echo Velocity::kmh(10)->getTime();      // get time component      Output: 1 hour
