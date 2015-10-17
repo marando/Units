@@ -189,7 +189,7 @@ echo $velocity->mph;             // in mph  Output: 78.043400775639
 echo $velocity->setUnit('mph');  // in mph  Output: 78.043 mph
 ```
 
-As per the second method, the following pre-defined units constructors exist:
+As per the second method, the following pre-defined unit constructors exist:
 
 Method            | Unit | Description
 ----------------- | ---- | ----------------------
