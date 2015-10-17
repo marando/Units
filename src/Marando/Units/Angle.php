@@ -86,7 +86,7 @@ class Angle {
    * @return static
    */
   public static function fromTime($time, $interval = Time::SEC_IN_DAY) {
-    return static::fromDeg($time->seconds / $interval * 360)->norm();
+    return static::fromDeg($time->sec / $interval * 360)->norm();
   }
 
   /**

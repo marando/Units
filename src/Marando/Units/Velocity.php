@@ -2,114 +2,157 @@
 
 namespace Marando\Units;
 
+use \Marando\Units\Time;
+use \Marando\Units\Distance;
+
 /**
  * Represents a measure of velocity
  *
- * @property float $ms  The velocity in meters per second (m/s)
- * @property float $kms The velocity in kilometers per second (km/s)
- * @property float $kmh The velocity in kilometers per hour (km/h)
- * @property float $mph The velocity in miles per hour (mph)
- * @property float $pcy The velocity in parsecs per year (pc/y)
- * @property float $aud The velocity in AU per day (AU/y)
- *
+ * @property float $ms  Velocity in meters per second (m/s)
+ * @property float $kms Velocity in kilometers per second (km/s)
+ * @property float $kmh Velocity in kilometers per hour (km/h)
+ * @property float $kmd Velocity in kilometers per day (km/d)
+ * @property float $mph Velocity in miles per hour (mph)
+ * @property float $pcy Velocity in parsecs per year (pc/y)
+ * @property float $aud Velocity in AU per day (AU/y)
  */
 class Velocity {
 
-  use \Marando\Units\Traits\RoundingTrait,
-      \Marando\Units\Traits\SetUnitTrait;
+  use Traits\SetUnitTrait,
+      Traits\RoundingTrait;
 
+  //----------------------------------------------------------------------------
+  // Constants
+  //----------------------------------------------------------------------------
+
+  /**
+   * Represents the speed of light in a vacuum in m/s
+   */
   const c_ms = 299792458;
+
+  /**
+   * Represents the value provided by Jean Meeus, being the number of km/s in
+   * one pc/y (parsecs per year)
+   */
+  const kms_in_pcy = 977792;
 
   //----------------------------------------------------------------------------
   // Constructors
   //----------------------------------------------------------------------------
 
   /**
-   * Creates a new instance from a velocity in meters per second (m/s)
-   * @param type $ms The number of meters
+   * Creates a new velocity instance form distance and time components
+   * @param Distance $distance
+   * @param Time     $time
    */
-  public function __construct($ms) {
-    $this->ms = $ms;
+  public function __construct(Distance $distance, Time $time) {
+    $this->distance = $distance;
+    $this->time     = $time;
   }
 
+  // // // Static
+
   /**
-   * Creates a new instance from a velocity in meters per second (m/s)
-   * @param float $ms The number of meters
+   * Creates a new velocity instance from meters per second (m/s)
+   * @param float $ms
    * @return static
    */
   public static function ms($ms) {
-    return new static($ms);
+    return new static(Distance::m($ms), Time::fromSeconds(1));
   }
 
   /**
-   * Creates a new instance from a velocity in kilometers per second (km/s)
-   * @param float $kms The number of kilometers
+   * Creates a new velocity instance from kilometers per second (km/s)
+   * @param float $kms
    * @return static
    */
   public static function kms($kms) {
-    return new static($kms * 1e3);
+    return new static(Distance::km($kms), Time::fromSeconds(1));
   }
 
   /**
-   * Creates a new instance from a velocity in kilometers per hour (km/h)
-   * @param float $kmh The number of kilometers
+   * Creates a new velocity instance from kilometers per hour (km/h)
+   * @param float $kmh
    * @return static
    */
   public static function kmh($kmh) {
-    return new static($kmh * 1e3 / 60 / 60);
+    return new static(Distance::km($kmh), Time::fromHours(1));
   }
 
   /**
-   * Creates a new instance from a velocity in miles per hour (mph)
-   * @param type $mph The number of miles per hour
-   * @return \static
+   * Creates a new velocity instance from kilometers per day (km/d)
+   * @param float $kmd
+   * @return static
+   */
+  public static function kmd($kmd) {
+    return new static(Distance::km($kmd), Time::fromDays(1));
+  }
+
+  /**
+   * Creates a new velocity instance from miles per hour (mph)
+   * @param float $mph
+   * @return static
    */
   public static function mph($mph) {
-    return new static($mph * 1e3 / 60 / 60 / 0.621371192);
+    return new static(Distance::mi($mph), Time::fromHours(1));
   }
 
   /**
-   * Creates a new instance from a velocity in astronomical units per day (au/d)
-   * @param type $aud The number of astronomical units per day
-   * @return \static
+   * Creates a new velocity instance from astronomical units per day (AU/d)
+   * @param float $aud
+   * @return static
    */
   public static function aud($aud) {
-    return new static($aud * 149597870700 / 86400);
+    return new static(Distance::au($aud), Time::fromDays(1));
+  }
+
+  /**
+   * Creates a new velocity instance from parsecs per year (pc/y)
+   * @param float $ms
+   * @return static
+   */
+  public static function pcy($pcy, $year = Time::JulianYear) {
+    return new static(Distance::pc($pcy), Time::fromDays($year));
   }
 
   //----------------------------------------------------------------------------
   // Properties
   //----------------------------------------------------------------------------
 
-  protected $properties = [];
+  /**
+   * Holds the distance component of this instance
+   * @var Distance
+   */
+  protected $distance;
+
+  /**
+   * Holds the time component of this instance
+   * @var Time
+   */
+  protected $time;
 
   public function __get($name) {
     switch ($name) {
       case 'ms':
-        return $this->properties['ms'];
+        return $this->distance->m / $this->time->sec;
 
       case 'kms':
-        return $this->ms * 1e-3;
+        return $this->distance->km / $this->time->sec;
 
       case 'kmh':
-        return $this->ms * 1e-3 * 60 * 60;
+        return $this->distance->km / $this->time->hours;
+
+      case 'kmd':
+        return $this->distance->km / $this->time->days;
 
       case 'mph':
-        return $this->ms * 1e-3 * 60 * 60 * 0.621371192;
+        return $this->distance->mi / $this->time->hours;
 
       case 'pcy':
-        return $this->kms / 977792;
+        return $this->kms / static::kms_in_pcy;
 
       case 'aud':
-        return $this->ms / 149597870700 * 86400;
-    }
-  }
-
-  public function __set($name, $value) {
-    switch ($name) {
-      case 'ms':
-        $this->properties[$name] = $value;
-        break;
+        return $this->distance->au / $this->time->days;
 
       default:
         throw new \Exception("{$name} is not a valid property.");
@@ -121,7 +164,43 @@ class Velocity {
   //----------------------------------------------------------------------------
 
   /**
-   * Represents the instance as a string.
+   * Gets the distance component of this instance
+   * @return Distance $distance
+   */
+  public function getDistance() {
+    return $this->distance;
+  }
+
+  /**
+   * Gets the time component of this instance
+   * @return Time $time
+   */
+  public function getTime() {
+    return $this->time;
+  }
+
+  // // // Protected
+
+  /**
+   * Sets the distance component of this instance
+   * @param Distance $distance
+   */
+  protected function setDistance(Distance $distance) {
+    $this->properties['distance'] = $distance;
+  }
+
+  /**
+   * Sets the time component of this instance
+   * @param Time $time
+   */
+  protected function setTime(Time $time) {
+    $this->properties['time'] = $time;
+  }
+
+  // // // Overrides
+
+  /**
+   * Represents this instance as a string
    * @return string
    */
   public function __toString() {
@@ -130,13 +209,18 @@ class Velocity {
       case 'km/s':
         return round($this->kms, $this->decimalPlaces) . ' km/s';
 
-      case 'mph':
-        return round($this->mph, $this->decimalPlaces) . ' mph';
-
       case 'kmh':
       case 'kph':
       case 'km/h':
         return round($this->kmh, $this->decimalPlaces) . ' km/h';
+
+      case 'mi/h':
+      case 'mph':
+        return round($this->mph, $this->decimalPlaces) . ' mph';
+
+      case 'pcy':
+      case 'pc/y':
+        return round($this->pcy, $this->decimalPlaces) . ' pc/y';
 
       case 'aud':
       case 'au/d':
@@ -150,5 +234,3 @@ class Velocity {
   }
 
 }
-
-
