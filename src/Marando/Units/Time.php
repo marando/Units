@@ -36,7 +36,7 @@ class Time {
   /**
    * The number of seconds in one day
    */
-  const SEC_IN_DAY = 86400;
+  const SEC_IN_DAY    = 86400;
   const JulianYear    = 365.25;
   const JulianCentury = 36525;
 
@@ -132,26 +132,6 @@ class Time {
   //----------------------------------------------------------------------------
 
   /**
-   * Represents this instance as a string
-   * @return string
-   */
-  public function __toString() {
-    $decimals = 4;
-    $micro    = substr(round($this->micro, $decimals), 1, $decimals);
-
-    $h = abs($this->h);
-    $m = abs($this->m);
-    $s = abs($this->s);
-
-    $sign = $this->sec < 0 ? '-' : '';
-
-    if ($micro)
-      return "{$sign}{$h}ʰ{$m}ᵐ{$s}ˢ{$micro}";
-    else
-      return "{$sign}{$h}ʰ{$m}ᵐ{$s}ˢ";
-  }
-
-  /**
    * Subtracts from this instance another Time instance
    *
    * @param Time $time
@@ -180,6 +160,28 @@ class Time {
    */
   public function toAngle($interval = Time::SEC_IN_DAY) {
     return Angle::fromTime($this, $interval);
+  }
+
+  // // // Overrides
+
+  /**
+   * Represents this instance as a string
+   * @return string
+   */
+  public function __toString() {
+    $decimals = 4;
+    $micro    = substr(round($this->micro, $decimals), 1, $decimals);
+
+    $h = abs($this->h);
+    $m = abs($this->m);
+    $s = abs($this->s);
+
+    $sign = $this->sec < 0 ? '-' : '';
+
+    if ($micro)
+      return "{$sign}{$h}ʰ{$m}ᵐ{$s}ˢ{$micro}";
+    else
+      return "{$sign}{$h}ʰ{$m}ᵐ{$s}ˢ";
   }
 
 }
