@@ -214,7 +214,7 @@ echo Velocity::mph(2/3)->round(10);  // round to 10 places     Output: 0.6666666
 Once you have created a `Velocity` instance, conversion between different units is simple:
 ```php
 echo Velocity::mph(60)->ms;              // get the raw m/s value  Output: 26.8224
-echo Velocity::mph(60)->setUnit('m/s');  // set units to m/s      Output: 26.822 m/s
+echo Velocity::mph(60)->setUnit('m/s');  // set units to m/s       Output: 26.822 m/s
 ```
 Valid values for the `setUnit()` are as follows: `km/d`, `km/h`, `km/s`, `mph`, `m/s`, and `pc/y`
 
