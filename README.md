@@ -8,6 +8,8 @@ The following units are provided:
 * Time
 * Velocity
 
+
+
 Angle
 -----
 
@@ -61,5 +63,16 @@ echo Angle::fromRad(3)->round(0);  // round to nearest second  Output: 171°53'1
 echo Angle::fromRad(3)->round(3);  // round to 3 places        Output: 171°53'14".419
 echo Angle::fromRad(3)->round(3);  // round to 10 places       Output: 171°53'14".4187412891
 ```
+
+
+Distance
+--------
+#### Creating Distances
+```php
+echo Distance::mm(1);  // create distance from millimeters         Output: 1.000 mm
+echo Distance::cm(1);  // create distance from centimeters         Output: 1.000 cm
+echo Distance::au(1);  // create distance from astronomical units  Output: 1.000 AU
+```
+
 
 
