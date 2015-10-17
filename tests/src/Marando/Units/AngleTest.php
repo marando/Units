@@ -13,21 +13,21 @@ class AngleTest extends \PHPUnit_Framework_TestCase {
    * @covers Marando\Units\Angle::fromDeg
    */
   public function testFromDeg() {
-    $this->assertEquals(180, Angle::fromDeg(180)->deg);
+    $this->assertEquals(180, Angle::deg(180)->deg);
   }
 
   /**
    * @covers Marando\Units\Angle::fromRad
    */
   public function testFromRad() {
-    $this->assertEquals(2, Angle::fromRad(2)->rad);
+    $this->assertEquals(2, Angle::rad(2)->rad);
   }
 
   /**
    * @covers Marando\Units\Angle::fromDMS
    */
   public function testFromDMS() {
-    $this->assertEquals(180.0685277778, Angle::fromDMS(180, 4, 6.7)->deg);
+    $this->assertEquals(180.0685277778, Angle::dms(180, 4, 6.7)->deg);
   }
 
   /**
@@ -40,7 +40,7 @@ class AngleTest extends \PHPUnit_Framework_TestCase {
     ];
 
     foreach ($tests as $t) {
-      $time = Time::fromSeconds($t[0]);
+      $time = Time::sec($t[0]);
       $this->assertEquals($t[1], Angle::fromTime($time, $t[2])->deg);
     }
   }
@@ -63,7 +63,7 @@ class AngleTest extends \PHPUnit_Framework_TestCase {
     ];
 
     foreach ($tests as $t)
-      $this->assertEquals($t[1], Angle::fromDeg($t[0])->norm($t[2], $t[3])->deg);
+      $this->assertEquals($t[1], Angle::deg($t[0])->norm($t[2], $t[3])->deg);
   }
 
   /**
@@ -77,8 +77,7 @@ class AngleTest extends \PHPUnit_Framework_TestCase {
     ];
 
     foreach ($tests as $t)
-      $this->assertEquals($t[2],
-              Angle::fromDeg($t[0])->add(Angle::fromDeg($t[1]))->deg);
+      $this->assertEquals($t[2], Angle::deg($t[0])->add(Angle::deg($t[1]))->deg);
   }
 
   /**
@@ -93,7 +92,7 @@ class AngleTest extends \PHPUnit_Framework_TestCase {
 
     foreach ($tests as $t)
       $this->assertEquals($t[2],
-              Angle::fromDeg($t[0])->multiply(Angle::fromDeg($t[1]))->deg);
+              Angle::deg($t[0])->multiply(Angle::deg($t[1]))->deg);
   }
 
   /**
@@ -108,14 +107,14 @@ class AngleTest extends \PHPUnit_Framework_TestCase {
 
     foreach ($tests as $t)
       $this->assertEquals($t[2],
-              Angle::fromDeg($t[0])->subtract(Angle::fromDeg($t[1]))->deg);
+              Angle::deg($t[0])->subtract(Angle::deg($t[1]))->deg);
   }
 
   /**
    * @covers Marando\Units\Angle::negate
    */
   public function testNegate() {
-    $this->assertEquals(-15, Angle::fromDeg(15)->negate()->deg);
+    $this->assertEquals(-15, Angle::deg(15)->negate()->deg);
   }
 
   /**
