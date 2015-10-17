@@ -266,31 +266,32 @@ class Distance {
     $value = $this->m;
     $units = 'm';
 
-    if (($this->unit == null && $this->pc > 1) || $this->unit == 'pc') {
+    $unit = strtolower($this->unit);
+    if (($unit == null && $this->pc > 1) || $unit == 'pc') {
       $value = $this->pc;
       $units = 'pc';
     }
-    else if (($this->unit == null && $this->au > 1 ) || $this->unit == 'au') {
+    else if (($unit == null && $this->au > 1 ) || $unit == 'au') {
       $value = $this->au;
       $units = 'AU';
     }
-    else if (($this->unit == null && $this->km > 1 ) || $this->unit == 'km') {
+    else if (($unit == null && $this->km > 1 ) || $unit == 'km') {
       $value = $this->km;
       $units = 'km';
     }
-    else if (($this->unit == null && $this->mi > 1 ) || $this->unit == 'mi') {
+    else if (($unit == null && $this->mi > 1 ) || $unit == 'mi') {
       $value = $this->mi;
       $units = 'mi';
     }
-    else if (($this->unit == null && $this->m > 1 ) || $this->unit == 'm') {
+    else if (($unit == null && $this->m > 1 ) || $unit == 'm') {
       $value = $this->m;
       $units = 'm';
     }
-    else if (($this->unit == null && $this->cm > 1) || $this->unit == 'cm') {
+    else if (($unit == null && $this->cm > 1) || $unit == 'cm') {
       $value = $this->cm;
       $units = 'cm';
     }
-    else if (($this->unit == null && $this->mm > 1) || $this->unit == 'mm') {
+    else if (($unit == null && $this->mm > 1) || $unit == 'mm') {
       $value = $this->mm;
       $units = 'mm';
     }
