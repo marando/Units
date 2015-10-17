@@ -100,6 +100,23 @@ echo Distance::mi(1)->setUnit('km');   // set units to kilometers      Output: 1
 ```
 Valid values for the `setUnit()` are as follows: `mm`, `cm`, `m`, `km`, `mi`, `au`, `pc`, and `ly`
 
+#### Overriding Unit Definitions
+Sometimes you may wish to provide the parameters for the definition of a distance unit (usually in the case of historic applications). For example, you may wish to create a distance of 5 astronomica units, but using the old definition of `149597870.691` kilometers/AU instead of the current definition. This is possible as follows:
+```php
+// Create distance with default and custom AU definitions
+$default = Distance::au(1.5); 
+$custom  = Distance::au(1.5, Distance::km(149597870.691)); 
+
+// AU is the same since that's what we supplied
+echo $default;      // Output: 1.500 AU 
+echo $custom;       // Output: 1.500 AU 
+
+// Conveersions are different depending on the AU definition
+echo $default->km;  // Output: 224396806.05
+echo $custom->km;   // Output: 224396806.0365
+```
+Overriding definition parameters is currenly only possible for astronomical units, light-years and parsecs.
+
 
 Time
 ----
