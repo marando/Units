@@ -58,7 +58,7 @@ class Velocity {
    * @return static
    */
   public static function ms($ms) {
-    return new static(Distance::m($ms), Time::sec(1));
+    return (new static(Distance::m($ms), Time::sec(1)))->setUnit('ms');
   }
 
   /**
@@ -67,7 +67,7 @@ class Velocity {
    * @return static
    */
   public static function kms($kms) {
-    return new static(Distance::km($kms), Time::sec(1));
+    return (new static(Distance::km($kms), Time::sec(1)))->setUnit('km/s');
   }
 
   /**
@@ -76,7 +76,7 @@ class Velocity {
    * @return static
    */
   public static function kmh($kmh) {
-    return new static(Distance::km($kmh), Time::hours(1));
+    return (new static(Distance::km($kmh), Time::hours(1)))->setUnit('km/h');
   }
 
   /**
@@ -85,7 +85,7 @@ class Velocity {
    * @return static
    */
   public static function kmd($kmd) {
-    return new static(Distance::km($kmd), Time::days(1));
+    return (new static(Distance::km($kmd), Time::days(1)))->setUnit('km/d');
   }
 
   /**
@@ -94,7 +94,7 @@ class Velocity {
    * @return static
    */
   public static function mph($mph) {
-    return new static(Distance::mi($mph), Time::hours(1));
+    return (new static(Distance::mi($mph), Time::hours(1)))->setUnit('mph');
   }
 
   /**
@@ -103,7 +103,7 @@ class Velocity {
    * @return static
    */
   public static function aud($aud) {
-    return new static(Distance::au($aud), Time::days(1));
+    return (new static(Distance::au($aud), Time::days(1)))->setUnit('au/d');
   }
 
   /**
@@ -112,7 +112,7 @@ class Velocity {
    * @return static
    */
   public static function pcy($pcy, $year = Time::JulianYear) {
-    return new static(Distance::pc($pcy), Time::days($year));
+    return (new static(Distance::pc($pcy), Time::days($year)))->setUnit('pc/y');
   }
 
   //----------------------------------------------------------------------------
