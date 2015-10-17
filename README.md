@@ -139,7 +139,7 @@ echo Time::sec(90)->subtract(Time::min(30));  // subtraction  Output: -0ʰ28ᵐ3
 #### Getting the H/M/S Components
 The hour, minute and second components of a `Time` instance can be obtained as shown:
 ```php
-$time = Time(83028);
+$time = Time::sec(83028);
 
 echo $time->h; // degree component  Output: 21
 echo $time->m; // minute component  Output: 8
