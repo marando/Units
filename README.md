@@ -9,6 +9,14 @@ The following units are provided:
 * [Velocity](https://github.com/marando/Units/blob/master/README.md#velocity)
 
 
+Installation 
+------------
+#### With Composer
+
+```
+$ composer require marando/units
+```
+
 
 Angle
 -----
