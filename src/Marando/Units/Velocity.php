@@ -167,9 +167,43 @@ class Velocity {
     }
   }
 
+  public function __set($name, $value) {
+    switch ($name) {
+      case 'dist':
+        $this->_dist = $value;
+
+      case 'time':
+        $this->_time = $value;
+
+      default:
+        throw new \Exception("{$name} is not a valid property.");
+    }
+  }
+
   //----------------------------------------------------------------------------
   // Functions
   //----------------------------------------------------------------------------
+
+  public function time(Distance $dist) {
+    $time      = $this->time->copy();
+    $time->sec = ($dist->m / $this->dist->m) * $this->time->sec;
+
+    return $time;
+  }
+
+  /**
+   *
+   * @param Time $time
+   * @return Distance
+   */
+  public function dist(Time $time) {
+    // Find distance covered in provided time
+    $dist    = $this->dist->copy();
+    $dist->m = $this->dist->m * $time->sec / $this->time->sec;
+
+    return $dist;
+  }
+
   // // // Protected
 
   /**

@@ -10,7 +10,7 @@ trait SetUnitTrait {
   /**
    * @var string Default unit of this instance.
    */
-  protected $unit = null;
+  public $unit = null;
 
   /**
    * Sets the units of this instance.
@@ -21,5 +21,6 @@ trait SetUnitTrait {
     $this->unit = $unit;
     return $this;
   }
+
 
 }
