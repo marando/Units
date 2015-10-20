@@ -103,6 +103,15 @@ class Time {
     return new static($h * static::SEC_IN_HOUR + $m * static::SEC_IN_MIN + $s);
   }
 
+  public function copy() {
+    $time = new Time(0);
+
+    $time->properties = $this->properties;
+    $time->unit       = $this->unit;
+
+    return $time;
+  }
+
   //----------------------------------------------------------------------------
   // Properties
   //----------------------------------------------------------------------------
