@@ -117,7 +117,7 @@ class VelocityTest extends \PHPUnit_Framework_TestCase {
    */
   public function testDistance() {
     $v = Velocity::ms(100);
-    $this->assertEquals(100, $v->getDistance()->m);
+    $this->assertEquals(100, $v->dist->m);
   }
 
   /**
@@ -125,7 +125,20 @@ class VelocityTest extends \PHPUnit_Framework_TestCase {
    */
   public function testTime() {
     $v = Velocity::mph(100);
-    $this->assertEquals(1, $v->getTime()->hours);
+    $this->assertEquals(1, $v->time->hours);
+  }
+
+  public function testTimeCalc() {
+    $v    = Velocity::mph(100);
+    $time = $v->time(Distance::mi(50));
+
+    $this->assertEquals(30, $time->min);
+  }
+
+  public function testDistCalc() {
+    $v    = Velocity::mph(60);
+    $dist = $v->dist(Time::min(30));
+    $this->assertEquals(30, $dist->mi);
   }
 
 }
