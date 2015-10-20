@@ -198,6 +198,10 @@ class Distance {
     return $dist;
   }
 
+  /**
+   * Copies this instance
+   * @return static
+   */
   public function copy() {
     $dist = new Distance(0);
 

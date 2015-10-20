@@ -103,6 +103,10 @@ class Time {
     return new static($h * static::SEC_IN_HOUR + $m * static::SEC_IN_MIN + $s);
   }
 
+  /**
+   * Copies this instance
+   * @return static
+   */
   public function copy() {
     $time = new Time(0);
 
