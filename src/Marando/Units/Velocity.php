@@ -15,6 +15,8 @@ use \Marando\Units\Distance;
  * @property float $mph Velocity in miles per hour (mph)
  * @property float $pcy Velocity in parsecs per year (pc/y)
  * @property float $aud Velocity in AU per day (AU/y)
+ * @property Distance $dist
+ * @property Time     $time
  */
 class Velocity {
 
@@ -46,8 +48,8 @@ class Velocity {
    * @param Time     $time
    */
   public function __construct(Distance $distance, Time $time) {
-    $this->distance = $distance;
-    $this->time     = $time;
+    $this->_dist = $distance;
+    $this->_time = $time;
   }
 
   // // // Static
@@ -123,36 +125,42 @@ class Velocity {
    * Holds the distance component of this instance
    * @var Distance
    */
-  protected $distance;
+  protected $_dist;
 
   /**
    * Holds the time component of this instance
    * @var Time
    */
-  protected $time;
+  protected $_time;
 
   public function __get($name) {
     switch ($name) {
       case 'ms':
-        return $this->distance->m / $this->time->sec;
+        return $this->_dist->m / $this->_time->sec;
 
       case 'kms':
-        return $this->distance->km / $this->time->sec;
+        return $this->_dist->km / $this->_time->sec;
 
       case 'kmh':
-        return $this->distance->km / $this->time->hours;
+        return $this->_dist->km / $this->_time->hours;
 
       case 'kmd':
-        return $this->distance->km / $this->time->days;
+        return $this->_dist->km / $this->_time->days;
 
       case 'mph':
-        return $this->distance->mi / $this->time->hours;
+        return $this->_dist->mi / $this->_time->hours;
 
       case 'pcy':
         return $this->kms / static::kms_in_pcy;
 
       case 'aud':
-        return $this->distance->au / $this->time->days;
+        return $this->_dist->au / $this->_time->days;
+
+      case 'dist':
+        return $this->_dist;
+
+      case 'time':
+        return $this->_time;
 
       default:
         throw new \Exception("{$name} is not a valid property.");
@@ -162,23 +170,6 @@ class Velocity {
   //----------------------------------------------------------------------------
   // Functions
   //----------------------------------------------------------------------------
-
-  /**
-   * Gets the distance component of this instance
-   * @return Distance $distance
-   */
-  public function getDistance() {
-    return $this->distance;
-  }
-
-  /**
-   * Gets the time component of this instance
-   * @return Time $time
-   */
-  public function getTime() {
-    return $this->time;
-  }
-
   // // // Protected
 
   /**
