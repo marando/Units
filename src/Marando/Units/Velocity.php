@@ -184,6 +184,13 @@ class Velocity {
   // Functions
   //----------------------------------------------------------------------------
 
+  /**
+   * Calculates the time required to travel the provided distance at the
+   * velocity of this instance
+   *
+   * @param Distance $dist
+   * @return Time
+   */
   public function time(Distance $dist) {
     $time      = $this->time->copy();
     $time->sec = ($dist->m / $this->dist->m) * $this->time->sec;
@@ -192,6 +199,8 @@ class Velocity {
   }
 
   /**
+   * Calculates the distance traveled in provided time duration at the velocity
+   * of this instance
    *
    * @param Time $time
    * @return Distance

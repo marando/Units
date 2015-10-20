@@ -113,7 +113,7 @@ class VelocityTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @covers Marando\Units\Velocity::getDistance
+   * @covers Marando\Units\Velocity->dist
    */
   public function testDistance() {
     $v = Velocity::ms(100);
@@ -121,13 +121,16 @@ class VelocityTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @covers Marando\Units\Velocity::getTime
+   * @covers Marando\Units\Velocity->time
    */
   public function testTime() {
     $v = Velocity::mph(100);
     $this->assertEquals(1, $v->time->hours);
   }
 
+  /**
+   * @covers Marando\Units\Velocity::time
+   */
   public function testTimeCalc() {
     $v    = Velocity::mph(100);
     $time = $v->time(Distance::mi(50));
@@ -135,9 +138,13 @@ class VelocityTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals(30, $time->min);
   }
 
+  /**
+   * @covers Marando\Units\Velocity::dist
+   */
   public function testDistCalc() {
     $v    = Velocity::mph(60);
     $dist = $v->dist(Time::min(30));
+    
     $this->assertEquals(30, $dist->mi);
   }
 
