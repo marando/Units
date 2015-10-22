@@ -190,29 +190,38 @@ class Angle {
    * Adds an angle to this instance
    *
    * @param Angle $angle
-   * @return Angle The
+   * @return static
    */
   public function add(Angle $angle) {
-    return Angle::deg($this->deg + $angle->deg);
+    $this->deg = $this->deg + $angle->deg;
+    $this->rad = $this->rad + $angle->rad;
+
+    return $this;
   }
 
   /**
    * Multiplies an angle to this instance
    *
    * @param Angle $angle
-   * @return Angle
+   * @return static
    */
   public function multiply(Angle $angle) {
-    return Angle::deg($this->deg * $angle->deg);
+    $this->deg = $this->deg * $angle->deg;
+    $this->rad = $this->rad * $angle->rad;
+
+    return $this;
   }
 
   /**
    * Subtracts an angle from this instance
    * @param Angle $angle
-   * @return Angle
+   * @return static
    */
   public function subtract(Angle $angle) {
-    return Angle::deg($this->deg - $angle->deg);
+    $this->deg = $this->deg - $angle->deg;
+    $this->rad = $this->rad - $angle->rad;
+
+    return $this;
   }
 
   /**
@@ -220,7 +229,18 @@ class Angle {
    * @return Angle
    */
   public function negate() {
-    return $this->multiply(Angle::deg(-1));
+    $this->deg = $this->deg * -1;
+    $this->rad = $this->rad * -1;
+
+    return $this;
+  }
+
+  /**
+   * Copies this instance
+   * @return static
+   */
+  public function copy() {
+    return clone $this;
   }
 
   /**

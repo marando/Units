@@ -56,7 +56,7 @@ echo Angle::deg->norm(-360, 360);  // normalize to [-2π, +2π]  Output: -360°0
 ```
 
 #### Mathematical Operations for Angles
-The `Angle` object supports the mathematical operations addition, subtraction and multiplication as well as negation. Please note that the `Angle` instance will not be altered, but instead a new `Angle` instance will be returned with the new angular value.
+The `Angle` object supports the mathematical operations addition, subtraction and multiplication as well as negation.
 ```php
 echo Angle::deg(90)->add(Angle::fromDeg(90));       // addition        Output: 180°0'0".0
 echo Angle::deg(90)->subtract(Angle::fromDeg(90));  // subtraction     Output: 180°0'0".0
@@ -155,7 +155,7 @@ echo Time::days(0.54921)->setUnit('min');  // set units to minutes      Output: 
 Valid values for the `setUnit()` are as follows: `sec`, `min`, `hours`, `days`, `hms`
 
 #### Mathematical Operations for Time Instances
-The `Time` object supports the mathematical operations addition and subtraction. Please note that the instance will not be altered, but instead a new `Time` instance will be returned with the new value.
+The `Time` object supports the mathematical operations addition and subtraction. 
 ```php
 echo Time::sec(90)->add(Time::min(30));       // addition     Output: 0ʰ31ᵐ30ˢ
 echo Time::sec(90)->subtract(Time::min(30));  // subtraction  Output: -0ʰ28ᵐ30ˢ

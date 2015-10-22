@@ -108,12 +108,7 @@ class Time {
    * @return static
    */
   public function copy() {
-    $time = new Time(0);
-
-    $time->properties = $this->properties;
-    $time->unit       = $this->unit;
-
-    return $time;
+    return clone $this;
   }
 
   //----------------------------------------------------------------------------
@@ -160,7 +155,8 @@ class Time {
    * @return static
    */
   public function subtract(Time $time) {
-    return new Time($this->sec - $time->sec);
+    $this->sec = $this->sec - $time->sec;
+    return $this;
   }
 
   /**
@@ -170,7 +166,8 @@ class Time {
    * @return static
    */
   public function add(Time $time) {
-    return new Time($this->sec + $time->sec);
+    $this->sec = $this->sec + $time->sec;
+    return $this;
   }
 
   /**

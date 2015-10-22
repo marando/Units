@@ -203,13 +203,7 @@ class Distance {
    * @return static
    */
   public function copy() {
-    $dist = new Distance(0);
-
-    $dist->properties = $this->properties;
-    $dist->def        = $this->def;
-    $dist->unit       = $this->unit;
-
-    return $dist;
+    return clone $this;
   }
 
   //----------------------------------------------------------------------------
