@@ -155,7 +155,8 @@ class Time {
    * @return static
    */
   public function subtract(Time $time) {
-    return new Time($this->sec - $time->sec);
+    $this->sec = $this->sec - $time->sec;
+    return $this;
   }
 
   /**
@@ -165,7 +166,8 @@ class Time {
    * @return static
    */
   public function add(Time $time) {
-    return new Time($this->sec + $time->sec);
+    $this->sec = $this->sec + $time->sec;
+    return $this;
   }
 
   /**
