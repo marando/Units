@@ -5,8 +5,8 @@ Units is a PHP package consisting of classes representing units of measure.
 The following units are provided:
 * [Angle](https://github.com/marando/Units/blob/master/README.md#angle)
 * [Distance](https://github.com/marando/Units/blob/master/README.md#distance)
-* [Pressure]
-* [Temperature]
+* [Pressure](https://github.com/marando/Units/blob/dev/README.md#pressure)
+* [Temperature](https://github.com/marando/Units/blob/dev/README.md#temperature)
 * [Time](https://github.com/marando/Units/blob/master/README.md#time)
 * [Velocity](https://github.com/marando/Units/blob/master/README.md#velocity)
 
