@@ -28,6 +28,10 @@ namespace Marando\Units;
  * @property float $inHg Inches of Mercury
  */
 class Pressure {
+
+  use Traits\RoundingTrait,
+      Traits\SetUnitTrait;
+
   //----------------------------------------------------------------------------
   // Constants
   //----------------------------------------------------------------------------
@@ -63,7 +67,7 @@ class Pressure {
    * @return static
    */
   public static function Pa($Pa) {
-    return new static($Pa);
+    return (new static($Pa))->setUnit('Pa');
   }
 
   /**
@@ -72,7 +76,7 @@ class Pressure {
    * @return static
    */
   public static function mbar($mbar) {
-    return new static($Pa = $mbar / static::mbar_in_Pa);
+    return (new static($Pa = $mbar / static::mbar_in_Pa))->setUnit('mbar');
   }
 
   /**
@@ -81,7 +85,7 @@ class Pressure {
    * @return static
    */
   public static function inHg($inHg) {
-    return new static($Pa = $inHg * static::Pa_in_inHg);
+    return (new static($Pa = $inHg * static::Pa_in_inHg))->setUnit('inHg');
   }
 
   //----------------------------------------------------------------------------
@@ -121,6 +125,29 @@ class Pressure {
    */
   public function copy() {
     return clone $this;
+  }
+
+  // // // Overrides
+
+  public function __toString() {
+    switch (strtolower($this->unit)) {
+      case 'pa':
+      case 'pascal':
+      case 'pascals':
+        return "{$this->Pa} Pa";
+
+      case 'in':
+      case 'inhg':
+      case 'in hg':
+      case 'hg':
+        return "{$this->inHg} inHg";
+
+      default:
+      case 'mbar':
+      case 'millibar':
+      case 'millibars':
+        return "{$this->mbar} mbar";
+    }
   }
 
   // // // Protected
