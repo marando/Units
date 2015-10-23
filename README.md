@@ -5,6 +5,8 @@ Units is a PHP package consisting of classes representing units of measure.
 The following units are provided:
 * [Angle](https://github.com/marando/Units/blob/master/README.md#angle)
 * [Distance](https://github.com/marando/Units/blob/master/README.md#distance)
+* [Pressure](https://github.com/marando/Units/blob/dev/README.md#pressure)
+* [Temperature](https://github.com/marando/Units/blob/dev/README.md#temperature)
 * [Time](https://github.com/marando/Units/blob/master/README.md#time)
 * [Velocity](https://github.com/marando/Units/blob/master/README.md#velocity)
 
@@ -124,6 +126,68 @@ echo $default->km;  // Output: 224396806.05
 echo $custom->km;   // Output: 224396806.0365
 ```
 Overriding definition parameters is currenly only possible for astronomical units, light-years and parsecs.
+
+Pressure
+--------
+
+#### Creating Pressure Instances
+Pressure instances can be created like this:
+```php
+Pressure::Pa(100);    // Create pressure from Pascals
+Pressure::inHg(100);  // Create pressure from inches of mercury
+Pressure::mbar(100);  // Create pressure from millibars
+```
+#### Conversion between Units
+
+```php
+echo Pressure::Pa(100)->inHg;
+echo Pressure::Pa(100)->setUnit('inHg');
+
+echo Pressure::mbar(1000)->Pa;
+echo Pressure::mbar(1000)->setUnit('Pa');
+```
+```
+Output:
+0.029533372711164
+0.029533372711164 inHg
+100000
+100000 Pa
+```
+Valid values for the `setUnit()` are as follows: `Pa`, `inHg`, and `mbar`
+
+
+Temperature
+-----------
+#### Creating Temperature Instances
+Temperature instances can be created like this:
+```php
+Temperature::C(100);  // Create temperature from Celcius
+Temperature::F(-32);  // Create temperature from Fahrenheit
+Temperature::K(0);    // Create temperature from Kelvins
+```
+#### Conversion between Units
+
+```php
+echo Temperature::C(100)->F;
+echo Temperature::C(100)->setUnit('F');
+
+echo Temperature::F(32)->C;
+echo Temperature::F(32)->setUnit('C');
+
+echo Temperature::K(0)->C;
+echo Temperature::K(0)->setUnit('C');
+```
+```
+Output:
+212
+212°F
+0
+0°C
+-273.15
+-273.15°C
+```
+Valid values for the `setUnit()` are as follows: `C`, `F`, and `K`
+
 
 
 Time
