@@ -126,7 +126,7 @@ Pressure
 Pressure instances can be created like this:
 ```php
 Pressure::Pa(100);    // Create pressure from Pascals
-Pressure::inHg(100);  // Create pressure from inHg
+Pressure::inHg(100);  // Create pressure from inches of mercury
 Pressure::mbar(100);  // Create pressure from millibars
 ```
 #### Conversion between Units
