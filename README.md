@@ -11,6 +11,14 @@ The following units are provided:
 * [Velocity](https://github.com/marando/Units/blob/master/README.md#velocity)
 
 
+Installation 
+------------
+#### With Composer
+
+```
+$ composer require marando/units
+```
+
 
 Angle
 -----
@@ -285,10 +293,24 @@ Valid values for the `setUnit()` are as follows: `km/d`, `km/h`, `km/s`, `mph`, 
 #### Distance and Time Components of a Velocity
 You can get the distance and time components of a `Velocity` instance as follows:
 ```php
-echo Velocity::kmh(10)->getDistance();  // get distance component  Output: 10.000 km
-echo Velocity::kmh(10)->getTime();      // get time component      Output: 1 hour
+echo Velocity::kmh(10)->dist;  // get distance component  Output: 10.000 km
+echo Velocity::kmh(10)->time;  // get time component      Output: 1 hour
 ```
 
+#### Solving the Velocity Equations
+
+The `Velocity` object has two methods `distance()` and `time()` which can find a distance or time component provided the other. This is best described by example:
+
+```php
+$v = Velocity::mph(60);
+
+// Find distance traveled in 30 min at velocity $v
+echo $v->dist(Time::min(30))      // Output: 30.000 mi
+
+// Find time required to travel 120 miles at velocity $v
+echo $v->time(Distance::mi(120))  // Output: 2 hours
+
+```
 
 
 
