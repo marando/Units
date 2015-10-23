@@ -20,6 +20,77 @@
 
 namespace Marando\Units;
 
+/**
+ * Represents a measure of pressure
+ *
+ * @property float $Pa   Pascals
+ * @property float $mbar Millibars
+ * @property float $inHg Inches of Mercury
+ */
 class Pressure {
+
+  //----------------------------------------------------------------------------
+  // Constants
+  //----------------------------------------------------------------------------
+
+  const Pa_in_inHg = 3386;
+  const mbar_in_Pa = 1e-2;
+
+  //----------------------------------------------------------------------------
+  // Constructors
+  //----------------------------------------------------------------------------
+
+  public function __construct($Pa) {
+    $this->Pa = $Pa;
+  }
+
+  // // // Static
+
+  public static function Pa($Pa) {
+    return new static($Pa);
+  }
+
+  public static function mbar($mbar) {
+    return new static($Pa = $mbar / static::mbar_in_Pa);
+  }
+
+  public static function inHg($inHg) {
+    return new static($Pa = $inHg * static::Pa_in_inHg);
+  }
+
+  //----------------------------------------------------------------------------
+  // Properties
+  //----------------------------------------------------------------------------
+
+  protected $Pa;
+
+  public function __get($name) {
+    switch ($name) {
+      // Pass through to property
+      case 'Pa':
+        return $this->{$name};
+
+      case 'inHg':
+        return $this->get_inHg();
+
+      case 'mbar':
+        return $this->get_mbar();
+
+      default:
+        throw new Exception("{$name} is not a valid property");
+    }
+  }
+
+  //----------------------------------------------------------------------------
+  // Functions
+  //----------------------------------------------------------------------------
+
+  protected function get_inHg() {
+    return $this->Pa / static::Pa_in_inHg;
+  }
+
+  protected function get_mbar() {
+    return $this->Pa * static::mbar_in_Pa;
+  }
 
 }
