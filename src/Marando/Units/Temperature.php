@@ -1,9 +1,21 @@
 <?php
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2015 Ashley Marando
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
 namespace Marando\Units;
@@ -14,6 +26,8 @@ namespace Marando\Units;
  * @property float $K Kelvin
  * @property float $C Celcius
  * @property float $F Fahrenheit
+ *
+ * @author Ashley Marando <a.marando@me.com>
  */
 class Temperature {
 
@@ -24,6 +38,10 @@ class Temperature {
   // Constructors
   //----------------------------------------------------------------------------
 
+  /**
+   * Creates a new temperature from Kelvins
+   * @param float $kelvin
+   */
   public function __construct($kelvin = 0) {
     $this->K = $kelvin;
   }
@@ -31,8 +49,8 @@ class Temperature {
   // // // Static
 
   /**
-   *
-   * @param type $celcius
+   * Creates a new temperature from degrees Celcius
+   * @param  float  $celcius
    * @return static
    */
   public static function C($celcius) {
@@ -40,8 +58,8 @@ class Temperature {
   }
 
   /**
-   *
-   * @param type $fahrenheit
+   * Creates a new temperature from degrees Fahrenheit
+   * @param  float  $fahrenheit
    * @return static
    */
   public static function F($fahrenheit) {
@@ -49,8 +67,8 @@ class Temperature {
   }
 
   /**
-   *
-   * @param type $kelvin
+   * Creates a new temperature from Kelvins
+   * @param  float  $kelvin
    * @return static
    */
   public static function K($kelvin) {
@@ -61,6 +79,10 @@ class Temperature {
   // Properties
   //----------------------------------------------------------------------------
 
+  /**
+   * Kelvins of this instance
+   * @var float
+   */
   protected $K;
 
   public function __get($name) {
@@ -84,12 +106,20 @@ class Temperature {
   // Functions
   //----------------------------------------------------------------------------
 
+  /**
+   * Copies this instance
+   * @return static
+   */
   public function copy() {
     return clone $this;
   }
 
   // // // Overrides
 
+  /**
+   * Represents this instance as a string
+   * @return string
+   */
   public function __toString() {
     switch (strtolower($this->unit)) {
       case 'k':
@@ -113,10 +143,18 @@ class Temperature {
 
   // // // Protected
 
+  /**
+   * Converts the kelvins of this instance to Celcius
+   * @return float
+   */
   protected function getCelcius() {
     return $C = $this->K - 273.15;
   }
 
+  /**
+   * Converts the kelvins of this instance to Fahrenheit
+   * @return float
+   */
   protected function getFahrenheit() {
     return $F = $this->K * (9 / 5) - 459.67;
   }

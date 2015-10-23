@@ -18,26 +18,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-namespace Marando\Units\Traits;
+namespace Marando\Units;
 
-/**
- * Adds the ability to set a rounding cutoff for a class
- */
-trait RoundingTrait {
-
-  /**
-   * @var Float the number of decimal places to display string values at.
-   */
-  protected $decimalPlaces = 3;
-
-  /**
-   * Sets the precision of string values in this instance.
-   * @param type $decimals The number of decimal places.
-   * @return static
-   */
-  public function round($decimals = 3) {
-    $this->decimalPlaces = $decimals;
-    return $this;
-  }
+class Pressure {
 
 }
