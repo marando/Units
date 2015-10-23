@@ -163,8 +163,8 @@ Temperature::K(0);    // Create temperature from Kelvins
 echo Temperature::C(100)->F;
 echo Temperature::C(100)->setUnit('F');
 
-echo Temperature::F(-32)->C;
-echo Temperature::F(-32)->setUnit('C');
+echo Temperature::F(32)->C;
+echo Temperature::F(32)->setUnit('C');
 
 echo Temperature::K(0)->C;
 echo Temperature::K(0)->setUnit('C');
@@ -173,8 +173,8 @@ echo Temperature::K(0)->setUnit('C');
 Output:
 212
 212°F
--35.555555555556
--35.556°C
+0
+0°C
 -273.15
 -273.15°C
 ```
