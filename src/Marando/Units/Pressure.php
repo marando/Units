@@ -28,32 +28,58 @@ namespace Marando\Units;
  * @property float $inHg Inches of Mercury
  */
 class Pressure {
-
   //----------------------------------------------------------------------------
   // Constants
   //----------------------------------------------------------------------------
 
+  /**
+   * The number of Pascals in one inch of mercury
+   */
   const Pa_in_inHg = 3386;
+
+  /**
+   * The number of millibars in one Pascal
+   */
   const mbar_in_Pa = 1e-2;
 
   //----------------------------------------------------------------------------
   // Constructors
   //----------------------------------------------------------------------------
 
+  /**
+   * Creates a new pressure from Pascals
+   * @param float $Pa
+   */
   public function __construct($Pa) {
     $this->Pa = $Pa;
   }
 
   // // // Static
 
+  /**
+   * Creates a new pressure from Pascals
+   *
+   * @param  float  $Pa
+   * @return static
+   */
   public static function Pa($Pa) {
     return new static($Pa);
   }
 
+  /**
+   * Creates a new pressure from millibars
+   * @param  float  $mbar
+   * @return static
+   */
   public static function mbar($mbar) {
     return new static($Pa = $mbar / static::mbar_in_Pa);
   }
 
+  /**
+   * Creates a new pressure from inches of Mercury
+   * @param  float  $inHg
+   * @return static
+   */
   public static function inHg($inHg) {
     return new static($Pa = $inHg * static::Pa_in_inHg);
   }
@@ -62,6 +88,10 @@ class Pressure {
   // Properties
   //----------------------------------------------------------------------------
 
+  /**
+   * Number of Pascals in this instance
+   * @var float
+   */
   protected $Pa;
 
   public function __get($name) {
@@ -85,10 +115,28 @@ class Pressure {
   // Functions
   //----------------------------------------------------------------------------
 
+  /**
+   * Copies this instance
+   * @return static
+   */
+  public function copy() {
+    return clone $this;
+  }
+
+  // // // Protected
+
+  /**
+   * Gets the number of inches in mercury for this instance
+   * @return float
+   */
   protected function get_inHg() {
     return $this->Pa / static::Pa_in_inHg;
   }
 
+  /**
+   * Gets the number of millibars for this instance
+   * @return float
+   */
   protected function get_mbar() {
     return $this->Pa * static::mbar_in_Pa;
   }
