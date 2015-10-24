@@ -103,6 +103,23 @@ echo Distance::pc(1);  // create distance from parsecs             Output: 1.000
 echo Distance::ly(1);  // create distance from light-years         Output: 1.000 ly
 ```
 
+#### Astronomic Parallax
+Distances can be created from astronomical measures of parallax:
+```php
+// Create distance from parallax of 470 milliarcsec
+echo $d = Distance::parallax(Angle::mas(470))
+echo $d->ly;
+echo $d->pc;
+echo $d->au;
+```
+```
+Output: 
+2.128 pc
+6.9394973982286
+2.1276595744681
+438861.2898874
+```
+
 #### String Value of a Distance
 By default the string value of a `Distance` is expressed using three decimal places. You can use the round method to specify the number of decimal places to display:
 ```php
