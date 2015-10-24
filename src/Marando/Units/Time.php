@@ -76,7 +76,7 @@ class Time {
 
   /**
    * Creates a new Time instance from a number of seconds
-   * @param float $sec
+   * @param  float  $sec
    * @return static
    */
   public static function sec($sec) {
@@ -85,7 +85,7 @@ class Time {
 
   /**
    * Creates a new Time instance from a number of minutes
-   * @param float $min
+   * @param  float  $min
    * @return static
    */
   public static function min($min) {
@@ -94,7 +94,7 @@ class Time {
 
   /**
    * Creates a new Time instance from a number of hours
-   * @param float $hours
+   * @param  float  $hours
    * @return static
    */
   public static function hours($hours) {
@@ -103,7 +103,7 @@ class Time {
 
   /**
    * Creates a new Time instance from a number of days
-   * @param float $days
+   * @param  float  $days
    * @return static
    */
   public static function days($days) {
@@ -127,7 +127,7 @@ class Time {
   }
 
   /**
-   * Copies this instance
+   * Copies  this   instance
    * @return static
    */
   public function copy() {
@@ -174,7 +174,7 @@ class Time {
   /**
    * Subtracts from this instance another Time instance
    *
-   * @param Time $time
+   * @param  Time   $time
    * @return static
    */
   public function subtract(Time $time) {
@@ -185,7 +185,7 @@ class Time {
   /**
    * Adds to this instance another Time instance
    *
-   * @param Time $time
+   * @param  Time   $time
    * @return static
    */
   public function add(Time $time) {

@@ -74,7 +74,7 @@ class Velocity {
 
   /**
    * Creates a new velocity instance from meters per second (m/s)
-   * @param float $ms
+   * @param  float  $ms
    * @return static
    */
   public static function ms($ms) {
@@ -83,7 +83,7 @@ class Velocity {
 
   /**
    * Creates a new velocity instance from kilometers per second (km/s)
-   * @param float $kms
+   * @param  float  $kms
    * @return static
    */
   public static function kms($kms) {
@@ -92,7 +92,7 @@ class Velocity {
 
   /**
    * Creates a new velocity instance from kilometers per hour (km/h)
-   * @param float $kmh
+   * @param  float  $kmh
    * @return static
    */
   public static function kmh($kmh) {
@@ -101,7 +101,7 @@ class Velocity {
 
   /**
    * Creates a new velocity instance from kilometers per day (km/d)
-   * @param float $kmd
+   * @param  float  $kmd
    * @return static
    */
   public static function kmd($kmd) {
@@ -110,7 +110,7 @@ class Velocity {
 
   /**
    * Creates a new velocity instance from miles per hour (mph)
-   * @param float $mph
+   * @param  float  $mph
    * @return static
    */
   public static function mph($mph) {
@@ -119,7 +119,7 @@ class Velocity {
 
   /**
    * Creates a new velocity instance from astronomical units per day (AU/d)
-   * @param float $aud
+   * @param  float  $aud
    * @return static
    */
   public static function aud($aud) {
@@ -128,7 +128,7 @@ class Velocity {
 
   /**
    * Creates a new velocity instance from parsecs per year (pc/y)
-   * @param float $ms
+   * @param  float  $ms
    * @return static
    */
   public static function pcy($pcy, $year = Time::JulianYear) {
@@ -206,7 +206,7 @@ class Velocity {
    * Calculates the time required to travel the provided distance at the
    * velocity of this instance
    *
-   * @param Distance $dist
+   * @param  Distance $dist
    * @return Time
    */
   public function time(Distance $dist) {
@@ -220,7 +220,7 @@ class Velocity {
    * Calculates the distance traveled in provided time duration at the velocity
    * of this instance
    *
-   * @param Time $time
+   * @param  Time     $time
    * @return Distance
    */
   public function dist(Time $time) {
