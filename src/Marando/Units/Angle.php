@@ -20,7 +20,8 @@
 
 namespace Marando\Units;
 
-use Marando\Units\Time;
+use \Exception;
+use \Marando\Units\Time;
 
 /**
  * Represents a geometric angle measurement

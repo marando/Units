@@ -112,13 +112,18 @@ class Time {
 
   /**
    * Creates a new Time instance from hour minute and second components
-   * @param int   $h
-   * @param int   $m
-   * @param float $s
+   * @param  int    $h Hours
+   * @param  int    $m Minutes
+   * @param  float  $s Seconds
    * @return static
    */
   public static function hms($h, $m, $s) {
-    return new static($h * static::SEC_IN_HOUR + $m * static::SEC_IN_MIN + $s);
+    if ($h < 0 || $m < 0 || $s < 0)
+    // Negative time
+      return new static($h * static::SEC_IN_HOUR - abs($m) * static::SEC_IN_MIN - abs($s));
+    else
+    // Positive time
+      return new static($h * static::SEC_IN_HOUR + abs($m) * static::SEC_IN_MIN + abs($s));
   }
 
   /**
