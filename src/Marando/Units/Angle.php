@@ -101,7 +101,7 @@ class Angle {
    * @return static
    */
   public static function mas($mas) {
-    return static::deg($mas * 3600 * 1e3);
+    return static::deg($mas / 3.6e6);
   }
 
   /**
@@ -313,7 +313,7 @@ class Angle {
    * @return float
    */
   protected function calcMAS() {
-    return $this->deg / 3600 / 1e3;
+    return $this->deg * 3.6e6;
   }
 
   // // // Overrides
