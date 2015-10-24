@@ -127,4 +127,24 @@ class AngleTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals(atan2(40, 14), Angle::atan2(40, 14)->rad);
   }
 
+  /**
+   * @covers Marando\Units\Angle::calcMAS
+   */
+  public function testMAS() {
+    $tests = [
+        // degree, mas
+        [0.00014064555555555556, 506.324],
+        [0.00002432, 87.552],
+        [0.00007564, 272.30400000000003],
+    ];
+
+    foreach ($tests as $t) {
+      $mas = $t[0];
+      $deg = $t[1];
+
+      $this->assertEquals($mas, Angle::deg($deg)->mas, "deg -> mas {$deg}");
+      $this->assertEquals($deg, Angle::mas($mas)->deg, "mas -> deg {$mas}");
+    }
+  }
+
 }

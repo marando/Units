@@ -30,6 +30,7 @@ use Marando\Units\Time;
  * @property int   $d   Integer degree segment of the angle
  * @property int   $m   Integer minute segment of the angle
  * @property float $s   Second segment of the angle with decimals
+ * @property float $mas Angle expressed in milliarcseconds
  *
  * @author Ashley Marando <a.marando@me.com>
  */
@@ -94,6 +95,16 @@ class Angle {
   }
 
   /**
+   * Creates a new angle from milliarcseconds
+   *
+   * @param  float  $mas
+   * @return static
+   */
+  public static function mas($mas) {
+    return static::deg($mas * 3600 * 1e3);
+  }
+
+  /**
    * Creates a new angle from a time duration within a specified interval, the
    * default being the number of seconds in one day. This is usefun in
    * astronomy applications.
@@ -139,6 +150,9 @@ class Angle {
 
       case 's':
         return $this->calcSeconds();
+
+      case 'mas':
+        return $this->calcMAS();
 
       default:
         throw new Exception("{$name} is not a valid property.");
@@ -292,6 +306,14 @@ class Angle {
    */
   protected function calcSeconds() {
     return ($this->deg - $this->d - $this->m / 60) * 3600;
+  }
+
+  /**
+   * Calculates the angle as expressed in milliarcseconds
+   * @return float
+   */
+  protected function calcMAS() {
+    return $this->deg / 3600 / 1e3;
   }
 
   // // // Overrides
