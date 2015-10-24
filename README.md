@@ -37,6 +37,15 @@ echo Angle::dms(180, 10, 4);  // create angle from ° ' "
 echo Angle::dms(0, 0, 4);     // create angle from just seconds
 ```
 
+#### Creating Angles from Arcminutes, Arcseconds and Milliarcseconds
+You can also create an `Angle` from a number of arcmin, arcsec and mas:
+```php
+echo Angle::arcmin(15);  // Create from arcmin  Result: 0°15'0".0
+echo Angle::arcsec(50);  // Create from arcsec  Result: 0°0'50".0
+echo Angle::mas(310);    // Create from mas     Result: 0°0'0".31
+```
+
+
 #### Getting the Properties of an Angle
 The following properties can be obtained from `Angle` instances:
 ```php
