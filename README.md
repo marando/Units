@@ -37,6 +37,15 @@ echo Angle::dms(180, 10, 4);  // create angle from ° ' "
 echo Angle::dms(0, 0, 4);     // create angle from just seconds
 ```
 
+#### Creating Angles from Arcminutes, Arcseconds and Milliarcseconds
+You can also create an `Angle` from a number of arcmin, arcsec and mas:
+```php
+echo Angle::arcmin(15);  // Create from arcmin  Result: 0°15'0".0
+echo Angle::arcsec(50);  // Create from arcsec  Result: 0°0'50".0
+echo Angle::mas(310);    // Create from mas     Result: 0°0'0".31
+```
+
+
 #### Getting the Properties of an Angle
 The following properties can be obtained from `Angle` instances:
 ```php
@@ -92,6 +101,23 @@ echo Distance::mi(1);  // create distance from miles               Output: 1.000
 echo Distance::au(1);  // create distance from astronomical units  Output: 1.000 AU
 echo Distance::pc(1);  // create distance from parsecs             Output: 1.000 pc
 echo Distance::ly(1);  // create distance from light-years         Output: 1.000 ly
+```
+
+#### Astronomic Parallax
+Distances can be created from astronomical measures of parallax:
+```php
+// Create distance from parallax of 470 milliarcsec
+echo $d = Distance::parallax(Angle::mas(470))
+echo $d->ly;
+echo $d->pc;
+echo $d->au;
+```
+```
+Output: 
+2.128 pc
+6.9394973982286
+2.1276595744681
+438861.2898874
 ```
 
 #### String Value of a Distance

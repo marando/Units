@@ -31,9 +31,9 @@ class AngleTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @covers Marando\Units\Angle::fromTime
+   * @covers Marando\Units\Angle::time
    */
-  public function testFromTime() {
+  public function testTime() {
     $tests = [
         [21600, 90, time::SEC_IN_DAY],
         [2700, 270, time::SEC_IN_HOUR],
@@ -41,6 +41,9 @@ class AngleTest extends \PHPUnit_Framework_TestCase {
 
     foreach ($tests as $t) {
       $time = Time::sec($t[0]);
+      $this->assertEquals($t[1], Angle::time($time, $t[2])->deg);
+
+      // Test backwards compatibility
       $this->assertEquals($t[1], Angle::fromTime($time, $t[2])->deg);
     }
   }
@@ -122,6 +125,64 @@ class AngleTest extends \PHPUnit_Framework_TestCase {
    */
   public function testAtan2() {
     $this->assertEquals(atan2(40, 14), Angle::atan2(40, 14)->rad);
+  }
+
+  /**
+   * @covers Marando\Units\Angle::calcMAS
+   */
+  public function testMAS() {
+    $tests = [
+        // deg, mas
+        [0.00014064555555555556, 506.324],
+        [0.00002432, 87.552],
+        [0.00007564, 272.30400000000003],
+    ];
+
+    foreach ($tests as $t) {
+      $mas = $t[1];
+      $deg = $t[0];
+
+      $this->assertEquals($mas, Angle::deg($deg)->mas, "deg -> mas {$deg}");
+      $this->assertEquals($deg, Angle::mas($mas)->deg, "mas -> deg {$mas}");
+    }
+  }
+
+  /**
+   * @covers Marando\Units\Angle::arcsec
+   */
+  public function testArcsec() {
+    $tests = [
+        // deg, arcsec
+        [50, 180000],
+        [0.12, 432]
+    ];
+
+    foreach ($tests as $t) {
+      $asec = $t[1];
+      $deg  = $t[0];
+
+      $this->assertEquals($asec, Angle::deg($deg)->arcsec, "deg -> asec {$deg}");
+      $this->assertEquals($deg, Angle::arcsec($asec)->deg, "asec -> deg {$asec}");
+    }
+  }
+
+  /**
+   * @covers Marando\Units\Angle::arcmin
+   */
+  public function testArcmin() {
+    $tests = [
+        // deg, arcmin
+        [50, 3000],
+        [7.2, 432]
+    ];
+
+    foreach ($tests as $t) {
+      $amin = $t[1];
+      $deg  = $t[0];
+
+      $this->assertEquals($amin, Angle::deg($deg)->arcmin, "deg -> amin {$deg}");
+      $this->assertEquals($deg, Angle::arcmin($amin)->deg, "amin -> deg {$amin}");
+    }
   }
 
 }

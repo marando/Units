@@ -138,6 +138,18 @@ class DistanceTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals(7.2722052154443E-6, $dist->pc, 'pc');
   }
 
+  /**
+   * @covers Marando\Units\Distance::parallax
+   */
+  public function testParallax() {
+    $π = Angle::mas(768.7);
+    $d = Distance::parallax($π);
+
+    $this->assertEquals(1.3009, $d->pc, 'pc', 1e-4);
+    $this->assertEquals(4.243, $d->ly, 'ly', 1e-3);
+    $this->assertEquals(0.7687, $d->toParallax()->deg * 3600, 'π', 1e-4);
+  }
+
   //----------------------------------------------------------------------------
   // Functional Tests
   //----------------------------------------------------------------------------
