@@ -25,12 +25,14 @@ use Marando\Units\Time;
 /**
  * Represents a geometric angle measurement
  *
- * @property float $deg Angle expressed in degrees
- * @property float $rad Angle expressed in radians
- * @property int   $d   Integer degree segment of the angle
- * @property int   $m   Integer minute segment of the angle
- * @property float $s   Second segment of the angle with decimals
- * @property float $mas Angle expressed in milliarcseconds
+ * @property float $deg    Angle expressed in degrees
+ * @property float $rad    Angle expressed in radians
+ * @property int   $d      Integer degree segment of the angle
+ * @property int   $m      Integer minute segment of the angle
+ * @property float $s      Second segment of the angle with decimals
+ * @property float $arcmin Angle expressed in arcminutes
+ * @property float $arcsec Angle expressed in arcseconds
+ * @property float $mas    Angle expressed in milliarcseconds
  *
  * @author Ashley Marando <a.marando@me.com>
  */
@@ -105,6 +107,26 @@ class Angle {
   }
 
   /**
+   * Creates a new angle from arcminutes
+   *
+   * @param  float  $arcmin
+   * @return static
+   */
+  public static function arcmin($arcmin) {
+    return static::deg($arcmin / 60);
+  }
+
+  /**
+   * Creates a new angle from arcseconds
+   *
+   * @param  float  $arcsec
+   * @return static
+   */
+  public static function arcsec($arcsec) {
+    return static::deg($arcsec / 3600);
+  }
+
+  /**
    * Creates a new angle from a time duration within a specified interval, the
    * default being the number of seconds in one day. This is usefun in
    * astronomy applications.
@@ -153,6 +175,12 @@ class Angle {
 
       case 'mas':
         return $this->calcMAS();
+
+      case 'arcsec':
+        return $this->deg * 3600;
+
+      case 'arcmin':
+        return $this->deg * 60;
 
       default:
         throw new Exception("{$name} is not a valid property.");

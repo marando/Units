@@ -147,4 +147,42 @@ class AngleTest extends \PHPUnit_Framework_TestCase {
     }
   }
 
+  /**
+   * @covers Marando\Units\Angle::arcsec
+   */
+  public function testArcsec() {
+    $tests = [
+        // deg, arcsec
+        [50, 180000],
+        [0.12, 432]
+    ];
+
+    foreach ($tests as $t) {
+      $asec = $t[1];
+      $deg  = $t[0];
+
+      $this->assertEquals($asec, Angle::deg($deg)->arcsec, "deg -> asec {$deg}");
+      $this->assertEquals($deg, Angle::arcsec($asec)->deg, "asec -> deg {$asec}");
+    }
+  }
+
+  /**
+   * @covers Marando\Units\Angle::arcmin
+   */
+  public function testArcmin() {
+    $tests = [
+        // deg, arcmin
+        [50, 3000],
+        [7.2, 432]
+    ];
+
+    foreach ($tests as $t) {
+      $amin = $t[1];
+      $deg  = $t[0];
+
+      $this->assertEquals($amin, Angle::deg($deg)->arcmin, "deg -> amin {$deg}");
+      $this->assertEquals($deg, Angle::arcmin($amin)->deg, "amin -> deg {$amin}");
+    }
+  }
+
 }
