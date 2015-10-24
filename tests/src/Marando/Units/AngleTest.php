@@ -27,7 +27,15 @@ class AngleTest extends \PHPUnit_Framework_TestCase {
    * @covers Marando\Units\Angle::fromDMS
    */
   public function testFromDMS() {
-    $this->assertEquals(180.0685277778, Angle::dms(180, 4, 6.7)->deg);
+    $tests = [
+        [180, 4, 6.7, 180.0685277778],
+        [-7, 47, 27, -7.7908333333],
+        [-15, 10, 45, -15.1791666667],
+        [15, 10, 45, 15.1791666667],
+    ];
+
+    foreach ($tests as $t)
+      $this->assertEquals($t[3], Angle::dms($t[0], $t[1], $t[2])->deg);
   }
 
   /**

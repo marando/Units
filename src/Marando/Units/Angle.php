@@ -20,7 +20,8 @@
 
 namespace Marando\Units;
 
-use Marando\Units\Time;
+use \Exception;
+use \Marando\Units\Time;
 
 /**
  * Represents a geometric angle measurement
@@ -62,7 +63,7 @@ class Angle {
 
   /**
    * Creates a new angle from a number of degrees
-   * @param float $deg
+   * @param  float  $deg
    * @return static
    */
   public static function deg($deg) {
@@ -71,7 +72,7 @@ class Angle {
 
   /**
    * Creates a new angle from a number of radians
-   * @param float $rad
+   * @param  float  $rad
    * @return static
    */
   public static function rad($rad) {
@@ -81,10 +82,9 @@ class Angle {
   /**
    * Creates a new angle from degree, minute and second components
    *
-   * @param int   $d Degree value
-   * @param int   $m Minute value
-   * @param float $s Second value
-   *
+   * @param  int    $d Degree value
+   * @param  int    $m Minute value
+   * @param  float  $s Second value
    * @return static
    */
   public static function dms($d, $m, $s) {
@@ -131,9 +131,8 @@ class Angle {
    * default being the number of seconds in one day. This is usefun in
    * astronomy applications.
    *
-   * @param Time  $time     Time duration
-   * @param float $interval Time interval
-   *
+   * @param  Time   $time     Time duration
+   * @param  float  $interval Time interval
    * @return static
    */
   public static function time($time, $interval = Time::SEC_IN_DAY) {
@@ -206,9 +205,8 @@ class Angle {
   /**
    * Normalizes the degrees in this instance to a specified interval
    *
-   * @param float $lBound Lower bound
-   * @param float $uBound Upper bound
-   *
+   * @param  float $lBound Lower bound
+   * @param  float $uBound Upper bound
    * @return Angle
    */
   public function norm($lBound = 0, $uBound = 360) {
@@ -249,7 +247,7 @@ class Angle {
   /**
    * Adds an angle to this instance
    *
-   * @param Angle $angle
+   * @param  Angle  $angle
    * @return static
    */
   public function add(Angle $angle) {
@@ -262,7 +260,7 @@ class Angle {
   /**
    * Multiplies an angle to this instance
    *
-   * @param Angle $angle
+   * @param  Angle  $angle
    * @return static
    */
   public function multiply(Angle $angle) {
@@ -274,7 +272,7 @@ class Angle {
 
   /**
    * Subtracts an angle from this instance
-   * @param Angle $angle
+   * @param  Angle  $angle
    * @return static
    */
   public function subtract(Angle $angle) {
@@ -307,8 +305,8 @@ class Angle {
    * Returns a new angle from the arc tangent of two other angle instances or
    * float values expressed in radians
    *
-   * @param float|Angle $y Dividend parameter
-   * @param float|Angle $x Divisor parameter
+   * @param  float|Angle $y Dividend parameter
+   * @param  float|Angle $x Divisor parameter
    * @return Angle
    */
   public static function atan2($y, $x) {

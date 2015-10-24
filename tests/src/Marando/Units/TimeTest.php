@@ -57,10 +57,23 @@ class TimeTest extends \PHPUnit_Framework_TestCase {
 
   /**
    * @covers Marando\Units\Time::toAngle
-   * @todo   Implement testToAngle().
    */
   public function testToAngle() {
     $this->assertEquals(180, time::days(0.5)->toAngle()->deg);
+  }
+
+  /**
+   * @covers Marando\Units\Time::hms
+   */
+  public function testHMS() {
+    $tests = [
+        [-7, 47, 27, -28047],
+        [15, 10, 45, 54645],
+        [-15, 10, 45, -54645]
+    ];
+
+    foreach ($tests as $t)
+      $this->assertEquals($t[3], Time::hms($t[0], $t[1], $t[2])->sec);
   }
 
 }

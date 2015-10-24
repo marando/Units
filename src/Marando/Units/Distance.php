@@ -101,7 +101,7 @@ class Distance {
 
   /**
    * Creates a new distance instance from a number of millimeters
-   * @param float $mm
+   * @param  float  $mm
    * @return static
    */
   public static function mm($mm) {
@@ -110,7 +110,7 @@ class Distance {
 
   /**
    * Creates a new distance instance from a number of centimeters
-   * @param float $cm
+   * @param  float  $cm
    * @return static
    */
   public static function cm($cm) {
@@ -119,7 +119,7 @@ class Distance {
 
   /**
    * Creates a new distance instance from a number of meters
-   * @param float $m
+   * @param  float  $m
    * @return static
    */
   public static function m($m) {
@@ -128,7 +128,7 @@ class Distance {
 
   /**
    * Creates a new distance instance from a number of kilometers
-   * @param float $km
+   * @param  float  $km
    * @return static
    */
   public static function km($km) {
@@ -137,7 +137,7 @@ class Distance {
 
   /**
    * Creates a new distance instance from a number of miles
-   * @param float $mi
+   * @param  float  $mi
    * @return static
    */
   public static function mi($mi) {
@@ -148,9 +148,8 @@ class Distance {
    * Creates a distance instance from a number of astronomical units. Optionally
    * the definition of the astronomical unit can be overridden.
    *
-   * @param float $au  The number of astronomical units
-   * @param flost $def Optional definition of an astronomical unit
-   *
+   * @param  float  $au  The number of astronomical units
+   * @param  flost  $def Optional definition of an astronomical unit
    * @return static
    */
   public static function au($au, Distance $def = null) {
@@ -168,7 +167,7 @@ class Distance {
 
   /**
    * Creates a new distance instance from a number of parsecs
-   * @param float $pc
+   * @param  float  $pc
    * @return static
    */
   public static function pc($pc, Distance $au = null) {
@@ -193,10 +192,9 @@ class Distance {
    * the velocity of the speed of light in a vacuum and the number of days in a
    * year can be overridden.
    *
-   * @param float    $ly   Number of light years to store
-   * @param Velocity $c    Speed of light in vacuum in m/s
-   * @param float    $year Number of days per year, default is julian year
-   *
+   * @param  float    $ly   Number of light years to store
+   * @param  Velocity $c    Speed of light in vacuum in m/s
+   * @param  float    $year Number of days per year, default is julian year
    * @return static
    */
   public static function ly($ly, Velocity $c = null, $year = 365.25) {

@@ -76,7 +76,7 @@ class Time {
 
   /**
    * Creates a new Time instance from a number of seconds
-   * @param float $sec
+   * @param  float  $sec
    * @return static
    */
   public static function sec($sec) {
@@ -85,7 +85,7 @@ class Time {
 
   /**
    * Creates a new Time instance from a number of minutes
-   * @param float $min
+   * @param  float  $min
    * @return static
    */
   public static function min($min) {
@@ -94,7 +94,7 @@ class Time {
 
   /**
    * Creates a new Time instance from a number of hours
-   * @param float $hours
+   * @param  float  $hours
    * @return static
    */
   public static function hours($hours) {
@@ -103,7 +103,7 @@ class Time {
 
   /**
    * Creates a new Time instance from a number of days
-   * @param float $days
+   * @param  float  $days
    * @return static
    */
   public static function days($days) {
@@ -112,17 +112,22 @@ class Time {
 
   /**
    * Creates a new Time instance from hour minute and second components
-   * @param int   $h
-   * @param int   $m
-   * @param float $s
+   * @param  int    $h Hours
+   * @param  int    $m Minutes
+   * @param  float  $s Seconds
    * @return static
    */
   public static function hms($h, $m, $s) {
-    return new static($h * static::SEC_IN_HOUR + $m * static::SEC_IN_MIN + $s);
+    if ($h < 0 || $m < 0 || $s < 0)
+    // Negative time
+      return new static($h * static::SEC_IN_HOUR - abs($m) * static::SEC_IN_MIN - abs($s));
+    else
+    // Positive time
+      return new static($h * static::SEC_IN_HOUR + abs($m) * static::SEC_IN_MIN + abs($s));
   }
 
   /**
-   * Copies this instance
+   * Copies  this   instance
    * @return static
    */
   public function copy() {
@@ -169,7 +174,7 @@ class Time {
   /**
    * Subtracts from this instance another Time instance
    *
-   * @param Time $time
+   * @param  Time   $time
    * @return static
    */
   public function subtract(Time $time) {
@@ -180,7 +185,7 @@ class Time {
   /**
    * Adds to this instance another Time instance
    *
-   * @param Time $time
+   * @param  Time   $time
    * @return static
    */
   public function add(Time $time) {
