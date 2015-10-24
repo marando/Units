@@ -196,7 +196,7 @@ class Time {
    * @return Angle
    */
   public function toAngle($interval = Time::SEC_IN_DAY) {
-    return Angle::fromTime($this, $interval);
+    return Angle::time($this, $interval);
   }
 
   // // // Overrides

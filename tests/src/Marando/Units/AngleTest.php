@@ -31,9 +31,9 @@ class AngleTest extends \PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @covers Marando\Units\Angle::fromTime
+   * @covers Marando\Units\Angle::time
    */
-  public function testFromTime() {
+  public function testTime() {
     $tests = [
         [21600, 90, time::SEC_IN_DAY],
         [2700, 270, time::SEC_IN_HOUR],
@@ -41,6 +41,9 @@ class AngleTest extends \PHPUnit_Framework_TestCase {
 
     foreach ($tests as $t) {
       $time = Time::sec($t[0]);
+      $this->assertEquals($t[1], Angle::time($time, $t[2])->deg);
+
+      // Test backwards compatibility
       $this->assertEquals($t[1], Angle::fromTime($time, $t[2])->deg);
     }
   }

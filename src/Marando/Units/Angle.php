@@ -103,7 +103,7 @@ class Angle {
    *
    * @return static
    */
-  public static function fromTime($time, $interval = Time::SEC_IN_DAY) {
+  public static function time($time, $interval = Time::SEC_IN_DAY) {
     return static::deg($time->sec / $interval * 360)->norm();
   }
 
@@ -318,6 +318,16 @@ class Angle {
       return "{$sign}{$d}°{$m}'{$sint}\".{$sdec}";
     else {
       return "{$sign}{$d}°{$m}'{$sint}\"";
+    }
+  }
+
+  /**
+   * For backwards compatibility
+   */
+  public static function __callStatic($name, $arguments) {
+    switch ($name) {
+      case 'fromTime':
+        return call_user_func_array([static::class, 'time'], $arguments);
     }
   }
 
