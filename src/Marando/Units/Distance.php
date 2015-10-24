@@ -217,11 +217,20 @@ class Distance {
   }
 
   /**
-   * Copies this instance
+   * Creates a new distance instance from an angular measure of astronomical
+   * parallax
+   *
+   * @param  Angle  $parallax
    * @return static
    */
-  public function copy() {
-    return clone $this;
+  public static function parallax(Angle $parallax) {
+    $dist = new Distance(0);
+    $dist->setUnit('parallax');
+
+    // 1 parsec = reciprocal of parallax in arcsec
+    $pc = 1 / $parallax->deg / 3600;
+
+    return static::pc($pc);
   }
 
   //----------------------------------------------------------------------------
@@ -282,6 +291,23 @@ class Distance {
   //----------------------------------------------------------------------------
   // Functions
   //----------------------------------------------------------------------------
+
+  /**
+   * Copies this instance
+   * @return static
+   */
+  public function copy() {
+    return clone $this;
+  }
+
+  /**
+   * Converts this instance to an angular measure of astronomical parallax
+   * @return Angle
+   */
+  public function toParallax() {
+    return Angle::mas(1 / $this->pc * 1e3);
+  }
+
   // // // Overrides
 
   /**
