@@ -150,6 +150,26 @@ class DistanceTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals(0.7687, $d->toParallax()->deg * 3600, 'π', 1e-4);
   }
 
+  /**
+   * @covers Marando\Units\Distance::add
+   */
+  public function testAdd() {
+    $a = Distance::km(103);
+    $b = Distance::km(7);
+
+    $this->assertEquals(110, $a->add($b)->km);
+  }
+
+  /**
+   * @covers Marando\Units\Distance::subtract
+   */
+  public function testSubtract() {
+    $a = Distance::km(103);
+    $b = Distance::km(7);
+
+    $this->assertEquals(96, $a->subtract($b)->km);
+  }
+
   //----------------------------------------------------------------------------
   // Functional Tests
   //----------------------------------------------------------------------------

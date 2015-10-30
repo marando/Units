@@ -37,7 +37,8 @@ namespace Marando\Units;
 class Distance {
 
   use \Marando\Units\Traits\RoundingTrait,
-      \Marando\Units\Traits\SetUnitTrait;
+      \Marando\Units\Traits\SetUnitTrait,
+      \Marando\Units\Traits\CopyTrait;
 
   //----------------------------------------------------------------------------
   // Constants
@@ -291,19 +292,31 @@ class Distance {
   //----------------------------------------------------------------------------
 
   /**
-   * Copies this instance
-   * @return static
-   */
-  public function copy() {
-    return clone $this;
-  }
-
-  /**
    * Converts this instance to an angular measure of astronomical parallax
    * @return Angle
    */
   public function toParallax() {
     return Angle::mas(1 / $this->pc * 1e3);
+  }
+
+  /**
+   * Adds another distance to this instance
+   * @param  Distance $b
+   * @return static
+   */
+  public function add(Distance $b) {
+    $this->m = $this->m + $b->m;
+    return $this;
+  }
+
+  /**
+   * Subtracts another distance from this instance
+   * @param  Distance $b
+   * @return static
+   */
+  public function subtract(Distance $b) {
+    $this->m = $this->m - $b->m;
+    return $this;
   }
 
   // // // Overrides
