@@ -103,6 +103,15 @@ echo Distance::pc(1);  // create distance from parsecs             Output: 1.000
 echo Distance::ly(1);  // create distance from light-years         Output: 1.000 ly
 ```
 
+The `Distance` object supports the mathematical operations addition and subtraction.
+```php
+$a = Distance::km(103);
+$b = Distance::km(7);
+
+$a->add($b);       // Output: 110.000 km
+$a->subtract($b);  // Output: 96.000 km
+```
+
 #### Astronomic Parallax
 Distances can be created from astronomical measures of parallax:
 ```php
