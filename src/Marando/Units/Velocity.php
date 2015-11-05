@@ -39,7 +39,8 @@ use \Marando\Units\Distance;
 class Velocity {
 
   use Traits\SetUnitTrait,
-      Traits\RoundingTrait;
+      Traits\RoundingTrait,
+      \Marando\Units\Traits\CopyTrait;
 
   //----------------------------------------------------------------------------
   // Constants
@@ -229,6 +230,38 @@ class Velocity {
     $dist->m = $this->dist->m * $time->sec / $this->time->sec;
 
     return $dist;
+  }
+
+  /**
+   * Adds another velocity to this instance
+   * @param  Velocity $b
+   * @return static
+   */
+  public function add(Velocity $b) {
+    // Add the two instances in comparable units
+    $c = Velocity::ms($this->ms + $b->ms);
+
+    // Alter this instance
+    $this->_dist = $c->_dist;
+    $this->_time = $c->_time;
+
+    return $this;
+  }
+
+  /**
+   * Subtracts another velocity from this instance
+   * @param  Velocity $b
+   * @return static
+   */
+  public function subtract(Velocity $b) {
+    // Add the two instances in comparable units
+    $c = Velocity::ms($this->ms - $b->ms);
+
+    // Alter this instance
+    $this->_dist = $c->_dist;
+    $this->_time = $c->_time;
+
+    return $this;
   }
 
   // // // Protected
