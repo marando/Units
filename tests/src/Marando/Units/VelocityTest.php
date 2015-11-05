@@ -148,4 +148,24 @@ class VelocityTest extends \PHPUnit_Framework_TestCase {
     $this->assertEquals(30, $dist->mi);
   }
 
+  /**
+   * @covers Marando\Units\Velocity::add
+   */
+  public function testAdd() {
+    $a = Velocity::ms(1000);
+    $b = Velocity::kms(1);
+
+    $this->assertEquals(2, $a->add($b)->kms);
+  }
+
+  /**
+   * @covers Marando\Units\Velocity::subtract
+   */
+  public function testSubtract() {
+    $a = Velocity::ms(1000);
+    $b = Velocity::kms(1);
+
+    $this->assertEquals(0, $a->subtract($b)->kms);
+  }
+
 }

@@ -39,7 +39,8 @@ use \Marando\Units\Distance;
 class Velocity {
 
   use Traits\SetUnitTrait,
-      Traits\RoundingTrait;
+      Traits\RoundingTrait,
+      \Marando\Units\Traits\CopyTrait;
 
   //----------------------------------------------------------------------------
   // Constants
@@ -66,8 +67,8 @@ class Velocity {
    * @param Time     $time
    */
   public function __construct(Distance $distance, Time $time) {
-    $this->_dist = $distance;
-    $this->_time = $time;
+    $this->dist = $distance;
+    $this->time = $time;
   }
 
   // // // Static
@@ -143,42 +144,40 @@ class Velocity {
    * Holds the distance component of this instance
    * @var Distance
    */
-  protected $_dist;
+  protected $dist;
 
   /**
    * Holds the time component of this instance
    * @var Time
    */
-  protected $_time;
+  protected $time;
 
   public function __get($name) {
     switch ($name) {
       case 'ms':
-        return $this->_dist->m / $this->_time->sec;
+        return $this->dist->m / $this->time->sec;
 
       case 'kms':
-        return $this->_dist->km / $this->_time->sec;
+        return $this->dist->km / $this->time->sec;
 
       case 'kmh':
-        return $this->_dist->km / $this->_time->hours;
+        return $this->dist->km / $this->time->hours;
 
       case 'kmd':
-        return $this->_dist->km / $this->_time->days;
+        return $this->dist->km / $this->time->days;
 
       case 'mph':
-        return $this->_dist->mi / $this->_time->hours;
+        return $this->dist->mi / $this->time->hours;
 
       case 'pcy':
         return $this->kms / static::kms_in_pcy;
 
       case 'aud':
-        return $this->_dist->au / $this->_time->days;
+        return $this->dist->au / $this->time->days;
 
       case 'dist':
-        return $this->_dist;
-
       case 'time':
-        return $this->_time;
+        return $this->{$name};
 
       default:
         throw new \Exception("{$name} is not a valid property.");
@@ -188,10 +187,8 @@ class Velocity {
   public function __set($name, $value) {
     switch ($name) {
       case 'dist':
-        $this->_dist = $value;
-
       case 'time':
-        $this->_time = $value;
+        $this->{$name} = $value;
 
       default:
         throw new \Exception("{$name} is not a valid property.");
@@ -229,6 +226,38 @@ class Velocity {
     $dist->m = $this->dist->m * $time->sec / $this->time->sec;
 
     return $dist;
+  }
+
+  /**
+   * Adds another velocity to this instance
+   * @param  Velocity $b
+   * @return static
+   */
+  public function add(Velocity $b) {
+    // Add the two instances in comparable units
+    $c = Velocity::ms($this->ms + $b->ms);
+
+    // Alter this instance
+    $this->dist = $c->dist;
+    $this->time = $c->time;
+
+    return $this;
+  }
+
+  /**
+   * Subtracts another velocity from this instance
+   * @param  Velocity $b
+   * @return static
+   */
+  public function subtract(Velocity $b) {
+    // Add the two instances in comparable units
+    $c = Velocity::ms($this->ms - $b->ms);
+
+    // Alter this instance
+    $this->dist = $c->dist;
+    $this->time = $c->time;
+
+    return $this;
   }
 
   // // // Protected
