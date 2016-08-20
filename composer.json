@@ -6,7 +6,8 @@
     "php": ">=5.4"
   },
   "require-dev": {
-    "phpunit/phpunit": "^5.0"
+    "phpunit/phpunit": "^5.0",
+    "symfony/var-dumper": "*"
   },
   "authors": [
     {
