@@ -417,7 +417,7 @@ class Angle2
          * D  ->  decimal degrees, e.g. 103.435432
          */
         $str = str_replace('+', sprintf('%s', $this->sign), $str);
-        $str = str_replace('D', sprintf('%f', $this->deg), $str);
+        $str = str_replace('D', round(sprintf('%.9f', $this->deg), 9), $str);
 
         // Decimal valued arcseconds, arcminutes and milliarcseconds.
         $str = str_replace('asec.', $this->asec, $str);
