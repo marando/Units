@@ -35,7 +35,19 @@ class Angle2Test extends \PHPUnit_Framework_TestCase
     public function testDeg()
     {
         foreach ($this->tests as $test) {
-            $angle = Angle2::deg($test[0]);
+            echo PHP_EOL . $angle = Angle2::deg($test[0]);
+
+            $this->assertEquals(abs($test[1]), $angle->d, 'd');
+            $this->assertEquals(abs($test[2]), $angle->m, 'm');
+            $this->assertEquals(abs($test[3]), $angle->s, 's', 1e-5);
+        }
+    }
+
+    public function testSetDeg()
+    {
+        foreach ($this->tests as $test) {
+            $angle      = Angle2::deg(0);
+            $angle->deg = $test[0];
 
             $this->assertEquals(abs($test[1]), $angle->d, 'd');
             $this->assertEquals(abs($test[2]), $angle->m, 'm');
@@ -83,5 +95,157 @@ class Angle2Test extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testMAS()
+    {
+        /** @var Angle2[] $test */
+        foreach ($this->tests as $test) {
+            $angle = Angle2::mas($test[0] * 3.6e6);
+            $this->assertEquals($test[0], $angle->deg, 'deg', 1e-8);
+        }
+    }
+
+    public function test_amin()
+    {
+        /** @var Angle2[] $test */
+        foreach ($this->tests as $test) {
+            $angle = Angle2::amin($test[0] * 60);
+            $this->assertEquals($test[0], $angle->deg, 'deg', 1e-8);
+        }
+    }
+
+    public function test_asec()
+    {
+        /** @var Angle2[] $test */
+        foreach ($this->tests as $test) {
+            $angle = Angle2::asec($test[0] * 3600);
+            $this->assertEquals($test[0], $angle->deg, 'deg', 1e-8);
+        }
+    }
+
+    public function testNorm()
+    {
+        $tests = [
+          [540, 0, 360, 180],
+          [140, 0, 360, 140],
+          [370, 0, 360, 10],
+          [360, 0, 360, 0],
+          [0, 0, 360, 0],
+            //
+          [-540, 0, 360, 180],
+          [-140, 0, 360, 220],
+          [-370, 0, 360, 350],
+          [-360, 0, 360, 0],
+          [0, 0, 360, 0],
+            //
+          [-540, 0, 180, 0],
+          [-140, 0, 180, 40],
+          [-370, 0, 180, 170],
+          [-360, 0, 180, 0],
+          [0, 0, 180, 0],
+            //
+          [540, -360, 360, 180],
+          [140, -360, 360, 140],
+          [370, -360, 360, 10],
+          [360, -360, 360, 0],
+          [0, -360, 360, 0],
+            //
+          [-540, -360, 360, -180],
+          [-140, -360, 360, -140],
+          [-370, -360, 360, -10],
+          [-360, -360, 360, 0],
+          [0, -360, 360, 0],
+            //
+          [-540, -180, 180, -0],
+          [-140, -180, 180, -140],
+          [-370, -180, 180, -10],
+          [-360, -180, 180, 0],
+          [0, -180, 180, 0],
+        ];
+
+        foreach ($tests as $test) {
+            $low    = $test[1];
+            $high   = $test[2];
+            $angle  = Angle2::deg($test[0]);
+            $expDeg = $test[3];
+
+            $angle->norm($low, $high);
+            $this->assertEquals($expDeg, $angle->deg);
+        }
+    }
+
+    public function testAdd()
+    {
+        $tests = [
+          [Angle2::deg(180), Angle2::rad(pi()), 360],
+          [Angle2::deg(10), Angle2::rad(pi()), 190],
+          [Angle2::dms(1, 1, 1), Angle2::dms(1, 1, 1.1), 2.0391666667],
+        ];
+
+        /** @var Angle2[] $t */
+        foreach ($tests as $t) {
+            $a = $t[0];
+            $b = $t[1];
+            $this->assertEquals($t[2], $a->add($b)->deg, '', 1e-2);
+        }
+    }
+
+    public function testSub()
+    {
+        $tests = [
+          [Angle2::deg(180), Angle2::rad(pi()), 0],
+          [Angle2::deg(10), Angle2::rad(pi()), -170],
+          [Angle2::dms(2, 2, 2), Angle2::dms(1, 1, 1.1), 1.0169166667],
+        ];
+
+        /** @var Angle2[] $t */
+        foreach ($tests as $t) {
+            $a = $t[0];
+            $b = $t[1];
+            $this->assertEquals($t[2], $a->sub($b)->deg, '', 1e-2);
+        }
+    }
+
+    public function testMul()
+    {
+        $tests = [
+          [Angle2::deg(180), Angle2::deg(2), 360],
+          [Angle2::deg(-10), Angle2::deg(40), -400],
+          [Angle2::rad(2), Angle2::rad(0.01), 65.656127002],
+        ];
+
+        /** @var Angle2[] $t */
+        foreach ($tests as $t) {
+            $a = $t[0];
+            $b = $t[1];
+            $this->assertEquals($t[2], $a->mul($b)->deg, '', 1e-2);
+        }
+    }
+
+    public function testDiv()
+    {
+        $tests = [
+          [Angle2::deg(180), Angle2::deg(2), 90],
+          [Angle2::deg(360), Angle2::deg(3), 120],
+          [Angle2::deg(180.5), Angle2::deg(10), 18.05],
+        ];
+
+        /** @var Angle2[] $t */
+        foreach ($tests as $t) {
+            $a = $t[0];
+            $b = $t[1];
+            $this->assertEquals($t[2], $a->div($b)->deg, '', 1e-2);
+        }
+    }
+
+    public function testNegate()
+    {
+        $this->assertEquals(-180, Angle2::deg(180)->neg()->deg);
+        $this->assertEquals(180, Angle2::deg(-180)->neg()->deg);
+    }
+
+    public function testAtan2()
+    {
+        $this->assertEquals(atan2(40, 14), Angle2::atan2(40, 14)->rad);
+    }
 
 }
