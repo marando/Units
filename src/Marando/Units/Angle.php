@@ -20,363 +20,619 @@
 
 namespace Marando\Units;
 
-use \Exception;
-use \Marando\Units\Time;
-
 /**
- * Represents a geometric angle measurement
+ * Represents a geometric angle.
  *
- * @property float $deg    Angle expressed in degrees
- * @property float $rad    Angle expressed in radians
- * @property int   $d      Integer degree segment of the angle
- * @property int   $m      Integer minute segment of the angle
- * @property float $s      Second segment of the angle with decimals
- * @property float $arcmin Angle expressed in arcminutes
- * @property float $arcsec Angle expressed in arcseconds
- * @property float $mas    Angle expressed in milliarcseconds
- *
- * @author Ashley Marando <a.marando@me.com>
+ * @property string $sign   Sign (+/-) of the angle.
+ * @property double $deg    Angle expressed in decimal degrees.
+ * @property double $rad    Angle expressed in decimal radians.
+ * @property double $amin   Angle expressed in decimal arcminutes.
+ * @property double $asec   Angle expressed in decimal arcseconds.
+ * @property double $mas    Angle expressed in decimal milliarcseconds.
+ * @property int    $d      Integer degree component of the angle.
+ * @property int    $m      Integer arcminute component of the angle.
+ * @property int    $s      Integer arcsecond component of the angle.
+ * @property int    $f      Fractional arcsecond component of the angle.
  */
-class Angle {
+class Angle
+{
 
-  use \Marando\Units\Traits\RoundingTrait;
+    //--------------------------------------------------------------------------
+    // Constants
+    //--------------------------------------------------------------------------
 
-  //----------------------------------------------------------------------------
-  // Constants
-  //----------------------------------------------------------------------------
+    /**
+     * Default format, -012°34'56".123
+     */
+    const FORMAT_DEFAULT = '+0d°0m\'0s".3f';
 
-  const Pi = 3.1415926535897932384626433832795028841971693993751058209749445923;
+    /**
+     * Compact format, -12°34'56".1
+     */
+    const FORMAT_COMPACT = 'd°m\'s".1f';
 
-  //----------------------------------------------------------------------------
-  // Constructors
-  //----------------------------------------------------------------------------
+    /**
+     * Spaced format, -012 34 56.123
+     */
+    const FORMAT_SPACED = '+0d 0m 0s.3f';
 
-  /**
-   * Creates a new angle instance
-   */
-  protected function __construct($deg = null, $rad = null) {
-    $this->deg = $deg;
-    $this->rad = $rad;
-  }
+    /**
+     * Colon format, -012:34:56.123
+     */
+    const FORMAT_COLON = '+0d:0m:0s.3f';
 
-  // // // Static
+    /**
+     * Decimal format, 12.5822565
+     */
+    const FORMAT_DECIMAL = '9D';
 
-  /**
-   * Creates a new angle from a number of degrees
-   * @param  float  $deg
-   * @return static
-   */
-  public static function deg($deg) {
-    return new static($deg, deg2rad($deg));
-  }
+    //--------------------------------------------------------------------------
+    // Constructors
+    //--------------------------------------------------------------------------
 
-  /**
-   * Creates a new angle from a number of radians
-   * @param  float  $rad
-   * @return static
-   */
-  public static function rad($rad) {
-    return new static(rad2deg($rad), $rad);
-  }
-
-  /**
-   * Creates a new angle from degree, minute and second components
-   *
-   * @param  int    $d Degree value
-   * @param  int    $m Minute value
-   * @param  float  $s Second value
-   * @return static
-   */
-  public static function dms($d, $m, $s) {
-    if ($d < 0 || $m < 0 || $s < 0)
-    // Negative angle
-      return static::deg($d - (abs($m) / 60) - (abs($s) / 3600));
-    else
-    // Positive angle
-      return static::deg($d + (abs($m) / 60) + (abs($s) / 3600));
-  }
-
-  /**
-   * Creates a new angle from milliarcseconds
-   *
-   * @param  float  $mas
-   * @return static
-   */
-  public static function mas($mas) {
-    return static::deg($mas / 3.6e6);
-  }
-
-  /**
-   * Creates a new angle from arcminutes
-   *
-   * @param  float  $arcmin
-   * @return static
-   */
-  public static function arcmin($arcmin) {
-    return static::deg($arcmin / 60);
-  }
-
-  /**
-   * Creates a new angle from arcseconds
-   *
-   * @param  float  $arcsec
-   * @return static
-   */
-  public static function arcsec($arcsec) {
-    return static::deg($arcsec / 3600);
-  }
-
-  /**
-   * Creates a new angle from a time duration within a specified interval, the
-   * default being the number of seconds in one day. This is usefun in
-   * astronomy applications.
-   *
-   * @param  Time   $time     Time duration
-   * @param  float  $interval Time interval
-   * @return static
-   */
-  public static function time($time, $interval = Time::SEC_IN_DAY) {
-    return static::deg($time->sec / $interval * 360)->norm();
-  }
-
-  /**
-   * Creates a new angle based on the value of π radians
-   * @return static
-   */
-  public static function Pi() {
-    return static::rad(static::Pi);
-  }
-
-  //----------------------------------------------------------------------------
-  // Properties
-  //----------------------------------------------------------------------------
-
-  /**
-   * Holds the the properties of this instance.
-   * @var array
-   */
-  protected $properties = [];
-
-  public function __get($name) {
-    switch ($name) {
-      case 'deg':
-      case 'rad':
-        return $this->properties[$name];
-
-      case 'd':
-        return intval($this->deg);
-
-      case 'm':
-        return $this->calcMinutes();
-
-      case 's':
-        return $this->calcSeconds();
-
-      case 'mas':
-        return $this->calcMAS();
-
-      case 'arcsec':
-        return $this->deg * 3600;
-
-      case 'arcmin':
-        return $this->deg * 60;
-
-      default:
-        throw new Exception("{$name} is not a valid property.");
+    /**
+     * Creates a new angle from a number of milliarcseconds.
+     *
+     * @param double $mas Milliarcseconds
+     */
+    private function __construct($mas)
+    {
+        $this->mas    = $mas;
+        $this->format = static::FORMAT_DEFAULT;
     }
-  }
 
-  public function __set($name, $value) {
-    switch ($name) {
-      case 'deg':
-      case 'rad':
-        $this->properties[$name] = $value;
-        break;
+    // // // Static
 
-      default:
-        throw new Exception("{$name} is not a valid property.");
+    /**
+     * Creates a new angle from a number of degrees.
+     *
+     * @param double $deg Degrees
+     *
+     * @return static
+     */
+    public static function deg($deg)
+    {
+        return new static($deg * 3.6e6);
     }
-  }
 
-  //----------------------------------------------------------------------------
-  // Functions
-  //----------------------------------------------------------------------------
-
-  /**
-   * Normalizes the degrees in this instance to a specified interval
-   *
-   * @param  float $lBound Lower bound
-   * @param  float $uBound Upper bound
-   * @return Angle
-   */
-  public function norm($lBound = 0, $uBound = 360) {
-    $sign = $this->deg < 0 ? -1 : 1;
-
-    if ($this->deg <= $uBound && $this->deg >= $lBound) {
-      return $this;
+    /**
+     * Creates a new angle from a number of radians.
+     *
+     * @param double $rad Radians
+     *
+     * @return static
+     */
+    public static function rad($rad)
+    {
+        return static::deg(rad2deg($rad));
     }
-    else {
-      $revolutions = intval($this->deg / $uBound);
-      $this->deg   = $this->deg - $revolutions * $uBound;
 
-      while ($this->deg > $uBound) {
-        $this->deg -= $uBound;
-      }
+    /**
+     * Creates a new angle from degree, arcminute and arcsecond components.
+     *
+     * @param int        $d Degree component
+     * @param int        $m Arcminute component
+     * @param int|double $s Arcsecond component
+     * @param int|double $f Fractional arcsecond component
+     *
+     * @return static
+     */
+    public static function dms($d, $m = 0, $s = 0, $f = 0)
+    {
+        $asec = static::dmsf2asec($d, $m, $s, $f);
 
-      while ($this->deg < $lBound) {
-        $this->deg += $uBound;
-      }
-
-      $this->deg = $this->deg == 0 ? 360 * $sign : $this->deg;
-      $this->rad = deg2rad($this->deg);
-
-      return $this;
+        return new static($asec * 1000);
     }
-  }
 
-  /**
-   * Converts this instance to a time duration for a specified interval of
-   * seconds, the default being the number of seconds in one day.
-   *
-   * @return Time The time duration representative of this instance.
-   */
-  public function toTime($interval = Time::SEC_IN_DAY) {
-    return new Time(($this->deg / 360) * $interval);
-  }
-
-  /**
-   * Adds an angle to this instance
-   *
-   * @param  Angle  $angle
-   * @return static
-   */
-  public function add(Angle $angle) {
-    $this->deg = $this->deg + $angle->deg;
-    $this->rad = $this->rad + $angle->rad;
-
-    return $this;
-  }
-
-  /**
-   * Multiplies an angle to this instance
-   *
-   * @param  Angle  $angle
-   * @return static
-   */
-  public function multiply(Angle $angle) {
-    $this->deg = $this->deg * $angle->deg;
-    $this->rad = $this->rad * $angle->rad;
-
-    return $this;
-  }
-
-  /**
-   * Subtracts an angle from this instance
-   * @param  Angle  $angle
-   * @return static
-   */
-  public function subtract(Angle $angle) {
-    $this->deg = $this->deg - $angle->deg;
-    $this->rad = $this->rad - $angle->rad;
-
-    return $this;
-  }
-
-  /**
-   * Negates the value of this instance
-   * @return Angle
-   */
-  public function negate() {
-    $this->deg = $this->deg * -1;
-    $this->rad = $this->rad * -1;
-
-    return $this;
-  }
-
-  /**
-   * Copies this instance
-   * @return static
-   */
-  public function copy() {
-    return clone $this;
-  }
-
-  /**
-   * Returns a new angle from the arc tangent of two other angle instances or
-   * float values expressed in radians
-   *
-   * @param  float|Angle $y Dividend parameter
-   * @param  float|Angle $x Divisor parameter
-   * @return Angle
-   */
-  public static function atan2($y, $x) {
-    $y = $y instanceof Angle ? $y->rad : $y;
-    $x = $x instanceof Angle ? $x->rad : $x;
-
-    return Angle::rad(atan2($y, $x));
-  }
-
-  // // // Protected
-
-  /**
-   * Calculates the integer minute segment of this instance
-   * @return int
-   */
-  protected function calcMinutes() {
-    return intval(($this->deg - $this->d) * 60);
-  }
-
-  /**
-   * Calculates the integer second segment of this instance
-   * @return int
-   */
-  protected function calcSeconds() {
-    return ($this->deg - $this->d - $this->m / 60) * 3600;
-  }
-
-  /**
-   * Calculates the angle as expressed in milliarcseconds
-   * @return float
-   */
-  protected function calcMAS() {
-    return $this->deg * 3.6e6;
-  }
-
-  // // // Overrides
-
-  /**
-   * Represents this instance as a string
-   * @return string
-   */
-  public function __toString() {
-    // Figure out numeric sign of the instance
-    $sign = $this->deg < 0 && $this->d == 0 ? '-' : '';
-
-    // Obtain D M S
-    $d = $this->d;
-    $m = abs($this->m);
-    $s = abs($this->s);
-
-    // Split the seconds into integer and decimal components
-    $sint = intval($s);
-    $sdec = str_replace('0.', '', round(($s - $sint), $this->decimalPlaces));
-
-    // Format the string depending on if the seconds has a decimal, value
-    if ($this->decimalPlaces > 0)
-      return "{$sign}{$d}°{$m}'{$sint}\".{$sdec}";
-    else {
-      return "{$sign}{$d}°{$m}'{$sint}\"";
+    /**
+     * Creates a new angle from a number of milliarcseconds.
+     *
+     * @param double $mas Milliarcseconds
+     *
+     * @return static
+     */
+    public static function mas($mas)
+    {
+        return new static($mas);
     }
-  }
 
-  /**
-   * For backwards compatibility
-   */
-  public static function __callStatic($name, $arguments) {
-    switch ($name) {
-      case 'fromTime':
-        return call_user_func_array([static::class, 'time'], $arguments);
+    /**
+     * Creates a new angle from a number of arcseconds.
+     *
+     * @param double $asec Arcseconds
+     *
+     * @return static
+     */
+    public static function asec($asec)
+    {
+        return new static($asec * 1000);
     }
-  }
+
+    /**
+     * Creates a new angle from a number of arcminutes.
+     *
+     * @param double $amin Arcminutes
+     *
+     * @return static
+     */
+    public static function amin($amin)
+    {
+        return new static($amin * 6e4);
+    }
+
+    /**
+     * Creates a new angle equal to the number of revolutions of a duration of
+     * time within a specified time interval.
+     *
+     * @param Time $time
+     * @param Time $interval
+     *
+     * @return Angle
+     */
+    public static function time(Time $time, Time $interval = null)
+    {
+        $interval = $interval ? $interval->sec : Time::SEC_IN_DAY;
+
+        return static::deg($time->sec / $interval * 360);
+    }
+
+    /**
+     * Creates a new angle representing the value of π (Pi).
+     *
+     * @return static
+     */
+    public static function pi()
+    {
+        return static::rad(pi());
+    }
+
+    /**
+     * Creates a new angle from the arc tangent of two Angle instances or float
+     * values expressed in radians.
+     *
+     * @param float|Angle $y Dividend
+     * @param float|Angle $x Divisor
+     *
+     * @return static
+     */
+    public static function atan2($y, $x)
+    {
+        $y = $y instanceof Angle ? $y->rad : $y;
+        $x = $x instanceof Angle ? $x->rad : $x;
+
+        return static::rad(atan2($y, $x));
+    }
+
+    //--------------------------------------------------------------------------
+    // Properties
+    //--------------------------------------------------------------------------
+
+    /**
+     * Value of this instance expressed in milliarcseconds.
+     *
+     * @var double
+     */
+    private $mas;
+
+    /**
+     * String format of this instance.
+     *
+     * @var string
+     */
+    private $format;
+
+    /**
+     * Rounding place of this instance.
+     *
+     * @var int
+     */
+    private $round = 9;
+
+    public function __get($name)
+    {
+        switch ($name) {
+            case 'sign':
+                return $this->mas < 0 ? '-' : '+';
+
+            case 'deg':
+                return $this->mas / 3.6e6;
+
+            case 'rad':
+                return deg2rad($this->deg);
+
+            case 'mas':
+                return $this->mas;
+
+            case 'asec':
+                return $this->mas / 1e3;
+
+            case 'amin':
+                return $this->mas / 1e3 / 60;
+
+            case 'd':
+                return static::asec2dmsf($this->asec, $this->round)[0];
+
+            case 'm':
+                return static::asec2dmsf($this->asec, $this->round)[1];
+
+            case 's':
+                return static::asec2dmsf($this->asec, $this->round)[2];
+
+            case 'f':
+                return static::asec2dmsf($this->asec, $this->round)[3];
+
+            default:
+                throw new Exception("{$name} is not a valid property.");
+        }
+    }
+
+    public function __set($name, $value)
+    {
+        switch ($name) {
+            case 'mas':
+                $this->mas = $value;
+                break;
+
+            case 'asec':
+                $this->mas = $value * 1000;
+                break;
+
+            case 'amin':
+                $this->mas = $value * 6e4;
+                break;
+
+            case 'deg':
+                $this->mas = $value * 3.6e6;
+                break;
+
+            case 'rad':
+                $this->mas = rad2deg($value) * 3.6e6;
+                break;
+
+            default:
+                throw new Exception("{$name} is not a valid property.");
+        }
+    }
+
+    //--------------------------------------------------------------------------
+    // Functions
+    //--------------------------------------------------------------------------
+
+    /**
+     * Normalizes this angle to a specified interval. If an interval is not
+     * supplied then the default used is [0, 2π) (between 0 and 360 degrees).
+     *
+     * @param int $lb Lower bound of the interval (in degrees)
+     * @param int $ub Upper bound of the interval (in degrees)
+     *
+     * @return $this
+     */
+    public function norm($lb = 0, $ub = 360)
+    {
+        // Convert bounds to milliarcseconds.
+        $lb = $lb * 3.6e6;
+        $ub = $ub * 3.6e6;
+
+        // Modulate to interval and adjust for lower bound.
+        $mas       = fmod($this->mas, $ub);
+        $this->mas = $mas < $lb ? $mas += $ub : $mas;
+
+        return $this;
+    }
+
+    /**
+     * Converts this instance to a proportion of time passed within a specified
+     * time interval where 360 degrees is equal to the interval.
+     *
+     * @param Time $interval
+     *
+     * @return Time
+     */
+    public function toTime(Time $interval = null)
+    {
+        $interval = $interval ? $interval->sec : Time::SEC_IN_DAY;
+
+        return new Time(($this->deg / 360) * $interval);
+    }
+
+    /**
+     * Adds an angle to this instance and returns a new instance with the sum.
+     *
+     * @param Angle $b Angle to add
+     *
+     * @return Angle Sum of the two angles
+     */
+    public function add(Angle $b)
+    {
+        return Angle::mas($this->mas + $b->mas);
+    }
+
+    /**
+     * Subtracts an angle from this instance and returns a new instance with the
+     * difference.
+     *
+     * @param Angle $b Angle to subtract
+     *
+     * @return Angle Difference of the two angles
+     */
+    public function sub(Angle $b)
+    {
+        return Angle::mas($this->mas - $b->mas);
+    }
+
+    /**
+     * Multiplies an angle with this instance and returns a new instance with
+     * the product.
+     *
+     * @param Angle $b Angle to multiply
+     *
+     * @return Angle Product of the two angles
+     */
+    public function mul(Angle $b)
+    {
+        return Angle::deg($this->deg * $b->deg);
+    }
+
+    /**
+     * Divides this instance by another angle and returns a new instance with
+     * the quotient.
+     *
+     * @param Angle $b Divisor angle
+     *
+     * @return Angle Quotient of the two angles
+     */
+    public function div(Angle $b)
+    {
+        return Angle::deg($this->deg / $b->deg);
+    }
+
+    /**
+     * Negates this instance.
+     *
+     * @return $this
+     */
+    public function neg()
+    {
+        $this->mas *= -1;
+
+        return $this;
+    }
+
+    /**
+     * Formats this instance in the specified string format.
+     *
+     * @param string $format Formatter string, e.g. +0d°0m'0s".3f
+     *
+     * @return mixed
+     */
+    public function format($format)
+    {
+        $pad    = false;
+        $rChar  = 'dmsaec';
+        $string = $this->format = $format;
+        $string = static::encode($string, $rChar);
+
+        // Perform rounding.
+        $this->round = static::maxRound($format);
+
+        // Add sign.
+        $s = '';
+        if (strstr($string, '+')) {
+            $string = str_replace('+', sprintf('%s', $this->sign), $string);
+        } else {
+            $s = $this->sign == '-' ? '-' : '';
+            if (strstr($string, '0d') && $s == '') {
+                $s = ' ';
+            }
+        }
+
+        // Decimal degrees
+        if (preg_match_all('/([0-9])D/', $string, $m)) {
+            for ($i = 0; $i < count($m[0]); $i++) {
+                $D      = round($this->deg, $m[1][$i]);
+                $string = str_replace($m[0][$i], $D, $string);
+            }
+        }
+
+        // Decimal arcseconds, arcminutes and milliarcseconds.
+        $string = str_replace('asec.', $this->asec, $string);
+        $string = str_replace('amin.', $this->amin, $string);
+        $string = str_replace('mas.', $this->mas, $string);
+
+        // Rounded integer arcseconds, arcminutes and milliarcseconds.
+        $string = str_replace('asec', round($this->asec, 0), $string);
+        $string = str_replace('amin', round($this->amin, 0), $string);
+        $string = str_replace('mas', round($this->mas, 0), $string);
+
+        // Leading zeros before ° ' "
+        $string = str_replace('0d', $s . sprintf('%03d', $this->d), $string);
+        $string = str_replace('0m', sprintf('%02d', $this->m), $string);
+        $string = str_replace('0s', sprintf('%02d', $this->s), $string);
+
+        // No leading zeros before ° ' "
+        $string = str_replace('d', $s . $this->d, $string);
+        $string = str_replace('m', $this->m, $string);
+        $string = str_replace('s', $this->s, $string);
+
+        // Fractional arcseconds.
+        if (preg_match_all('/([0-9])f/', $string, $m)) {
+            for ($i = 0; $i < count($m[0]); $i++) {
+                $f = substr($this->f, 0, $m[1][$i]);
+
+                if ($pad) {
+                    $f      = str_pad($f, $m[1][$i], '0');
+                    $string = str_replace($m[0][$i], $f, $string);
+                } else {
+                    if ($f == 0) {
+                        $string = str_replace('.' . $m[0][$i], '', $string);
+                        $string = str_replace($m[0][$i], '', $string);
+                    } else {
+                        $string = str_replace($m[0][$i], $f, $string);
+                    }
+                }
+            }
+        }
+
+        return static::decode($string, $rChar);
+    }
+
+    // // // Private
+
+
+    // // // Static
+
+    /**
+     * Composes ° ' " into arcseconds.
+     *
+     * @param int        $d Degree component
+     * @param int        $m Arcminute component
+     * @param int|double $s Arcsecond component
+     * @param int|double $f Fractional arcsecond component
+     *
+     * @return int|number
+     */
+    private static function dmsf2asec($d, $m, $s, $f)
+    {
+        // Find the sign.
+        $sign = static::findSign($d, $m, $s, $f);
+
+        // Cast to integers.
+        $d = (int)$d;
+        $m = (int)$m;
+
+        if ($f) {
+            // If fraction is present, seconds should be cast to int.
+            $s = (int)$s;
+
+            if ($f >= 1) {
+                // Fix for fraction given as integer instead of fraction.
+                $f = (double)('0.' . (int)$f);
+            }
+        }
+
+        // Calculate arcseconds
+        $asec = (abs($d) * 3600) + (abs($m) * 60) + abs($s) + abs($f);
+
+        // Return arcseconds with appropriate sign.
+        return $sign == '-' ? -1 * $asec : $asec;
+    }
+
+    /**
+     * Decomposes arcseconds into ° ' "
+     *
+     * @param double $asec  Arcseconds to decompose.
+     * @param int    $round Places to round arcseconds.
+     *
+     * @return array
+     */
+    private static function asec2dmsf($asec, $round)
+    {
+        // Round arcseconds to the desired place.
+        $asec = round($asec, $round);
+
+        // Calculate ° ' "
+        $d = (int)abs($asec / 3600);
+        $m = abs($asec / 60 % 60);
+        $s = abs($asec % 60);
+
+        // asec -> string (no scientific notation), then take only fraction.
+        $asec = number_format($asec, $round, '.', '');
+        $f    = str_replace((int)$asec, '', $asec);
+        $f    = str_replace('.', '', $f);
+
+        //$f = rtrim((string)$f, '0');
+        //$f = rtrim($f, '0');
+
+
+        // Return components
+        return [$d, $m, $s, $f];
+    }
+
+    /**
+     * Finds the sign of a set of ° ' " values
+     *
+     * @param int        $d Degree component
+     * @param int        $m Arcminute component
+     * @param int|double $s Arcsecond component
+     * @param int|double $f Fractional arcsecond component
+     *
+     * @return string + or -
+     */
+    private static function findSign($d, $m, $s, $f)
+    {
+        if ($d != 0) {
+            return $d < 0 ? '-' : '+';
+        } elseif ($m != 0) {
+            return $m < 0 ? '-' : '+';
+        } elseif ($s != 0) {
+            return $s < 0 ? '-' : '+';
+        } elseif ($f != 0) {
+            return $f < 0 ? '-' : '+';
+        } else {
+            return '+';
+        }
+    }
+
+    /**
+     * Encodes reserved characters for formatter strings.
+     *
+     * @param string $string String to encode
+     * @param string $key    Characters to encode
+     *
+     * @return string
+     */
+    private static function encode($string, $key)
+    {
+        for ($i = 0; $i < strlen($key); $i++) {
+            $char   = $key[$i];
+            $string = str_replace("\\{$char}", "%{$i}", $string);
+        }
+
+        return $string;
+    }
+
+    /**
+     * Decodes reserved characters for formatter strings.
+     *
+     * @param string $string String to decode
+     * @param string $key    Characters to decode
+     *
+     * @return string
+     */
+    private static function decode($string, $key)
+    {
+        for ($i = 0; $i < strlen($key); $i++) {
+            $char   = $key[$i];
+            $string = str_replace("%{$i}", "{$char}", $string);
+        }
+
+        return $string;
+    }
+
+    /**
+     * Finds the maximum rounding place of a formatter string.
+     *
+     * @param string $format
+     *
+     * @return int
+     */
+    private static function maxRound($format)
+    {
+        if (preg_match_all('/([0-9])f/', $format, $m)) {
+            return (int)max($m[1]);
+        }
+    }
+
+    // // // Overrides
+
+    /**
+     * Represents this instance as a string.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->format($this->format);
+    }
 
 }
