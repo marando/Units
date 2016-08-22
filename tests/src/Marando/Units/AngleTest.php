@@ -333,6 +333,9 @@ class AngleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(abs($t['m']), $a->m, 'm' . $t['deg']);
         $this->assertEquals(abs($t['s']), $a->s, 's' . $t['deg']);
         $this->assertEquals(abs($t['f']), "0.$a->f", 'f' . $t['deg'], 1e-6);
+
+
+        echo PHP_EOL . $angle . PHP_EOL;
     }
 
 }

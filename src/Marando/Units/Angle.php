@@ -92,7 +92,7 @@ class Angle
      */
     public static function deg($deg)
     {
-        return new static($deg * 3.6e6);
+        return static::mas($deg * 3.6e6);
     }
 
     /**
@@ -121,7 +121,7 @@ class Angle
     {
         $asec = static::dmsf2asec($d, $m, $s, $f);
 
-        return new static($asec * 1000);
+        return static::mas($asec * 1000);
     }
 
     /**
@@ -145,7 +145,7 @@ class Angle
      */
     public static function asec($asec)
     {
-        return new static($asec * 1000);
+        return static::mas($asec * 1000);
     }
 
     /**
@@ -157,7 +157,7 @@ class Angle
      */
     public static function amin($amin)
     {
-        return new static($amin * 6e4);
+        return static::mas($amin * 6e4);
     }
 
     /**
@@ -330,9 +330,9 @@ class Angle
      */
     public function toTime(Time $interval = null)
     {
-        $interval = $interval ? $interval->sec : Time::SEC_IN_DAY;
+        $interval = $interval ? $interval->sec : Time2::SEC_IN_DAY;
 
-        return new Time(($this->deg / 360) * $interval);
+        return Time2::sec(($this->deg / 360) * $interval);
     }
 
     /**
@@ -408,7 +408,7 @@ class Angle
     public function format($format)
     {
         $pad    = false;
-        $rChar  = 'dmsaec';
+        $rChar  = 'dmsfD+';
         $string = $this->format = $format;
         $string = static::encode($string, $rChar);
 
@@ -427,9 +427,9 @@ class Angle
         }
 
         // Decimal degrees
-        if (preg_match_all('/([0-9])D/', $string, $m)) {
+        if (preg_match_all('/([0-9]{0,1})D/', $string, $m)) {
             for ($i = 0; $i < count($m[0]); $i++) {
-                $D      = round($this->deg, $m[1][$i]);
+                $D      = round($this->deg, (int)$m[1][$i]);
                 $string = str_replace($m[0][$i], $D, $string);
             }
         }
@@ -539,10 +539,7 @@ class Angle
         $asec = number_format($asec, $round, '.', '');
         $f    = str_replace((int)$asec, '', $asec);
         $f    = str_replace('.', '', $f);
-
-        //$f = rtrim((string)$f, '0');
-        //$f = rtrim($f, '0');
-
+        $f    = rtrim($f, '0');
 
         // Return components
         return [$d, $m, $s, $f];
