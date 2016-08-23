@@ -23,7 +23,7 @@ namespace Marando\Units;
 use Marando\Units\Angle;
 
 /**
- * Represents a measurement of time duration
+ * Represents an interval of time.
  *
  * @property float $h     Integer hour segment
  * @property float $m     Integer minute segment
@@ -36,219 +36,255 @@ use Marando\Units\Angle;
  *
  * @author Ashley Marando <a.marando@me.com>
  */
-class Time {
+class Time
+{
 
-  use \Marando\Units\Traits\SetUnitTrait,
+    use \Marando\Units\Traits\SetUnitTrait,
       \Marando\Units\Traits\RoundingTrait;
 
-  //----------------------------------------------------------------------------
-  // Constants
-  //----------------------------------------------------------------------------
+    //----------------------------------------------------------------------------
+    // Constants
+    //----------------------------------------------------------------------------
 
-  /**
-   * The number of seconds in one minute
-   */
-  const SEC_IN_MIN = 60;
+    /**
+     * The number of seconds in one minute
+     */
+    const SEC_IN_MIN = 60;
 
-  /**
-   * The number of seconds in one hour
-   */
-  const SEC_IN_HOUR = 3600;
+    /**
+     * The number of seconds in one hour
+     */
+    const SEC_IN_HOUR = 3600;
 
-  /**
-   * The number of seconds in one day
-   */
-  const SEC_IN_DAY    = 86400;
-  const JulianYear    = 365.25;
-  const JulianCentury = 36525;
+    /**
+     * The number of seconds in one day
+     */
+    const SEC_IN_DAY = 86400;
+    const JulianYear = 365.25;
+    const JulianCentury = 36525;
 
-  //----------------------------------------------------------------------------
-  // Constructors
-  //----------------------------------------------------------------------------
+    //----------------------------------------------------------------------------
+    // Constructors
+    //----------------------------------------------------------------------------
 
-  /**
-   * Creates a new Time instance from a number of seconds
-   * @param float $sec
-   */
-  public function __construct($sec) {
-    $this->sec = $sec;
-  }
-
-  /**
-   * Creates a new Time instance from a number of seconds
-   * @param  float  $sec
-   * @return static
-   */
-  public static function sec($sec) {
-    return (new static($sec))->setUnit('s');
-  }
-
-  /**
-   * Creates a new Time instance from a number of minutes
-   * @param  float  $min
-   * @return static
-   */
-  public static function min($min) {
-    return (new static($min * static::SEC_IN_MIN))->setUnit('m');
-  }
-
-  /**
-   * Creates a new Time instance from a number of hours
-   * @param  float  $hours
-   * @return static
-   */
-  public static function hours($hours) {
-    return (new static($hours * static::SEC_IN_HOUR))->setUnit('h');
-  }
-
-  /**
-   * Creates a new Time instance from a number of days
-   * @param  float  $days
-   * @return static
-   */
-  public static function days($days) {
-    return (new static($days * static::SEC_IN_DAY))->setUnit('d');
-  }
-
-  /**
-   * Creates a new Time instance from hour minute and second components
-   * @param  int    $h Hours
-   * @param  int    $m Minutes
-   * @param  float  $s Seconds
-   * @return static
-   */
-  public static function hms($h, $m, $s) {
-    if ($h < 0 || $m < 0 || $s < 0)
-    // Negative time
-      return new static($h * static::SEC_IN_HOUR - abs($m) * static::SEC_IN_MIN - abs($s));
-    else
-    // Positive time
-      return new static($h * static::SEC_IN_HOUR + abs($m) * static::SEC_IN_MIN + abs($s));
-  }
-
-  /**
-   * Copies  this   instance
-   * @return static
-   */
-  public function copy() {
-    return clone $this;
-  }
-
-  //----------------------------------------------------------------------------
-  // Properties
-  //----------------------------------------------------------------------------
-
-  public function __get($name) {
-    switch ($name) {
-      case 'sec':
-        return $this->sec;
-
-      case 'min':
-        return $this->sec / Time::SEC_IN_MIN;
-
-      case 'hours':
-        return $this->sec / Time::SEC_IN_HOUR;
-
-      case 'days':
-        return $this->sec / Time::SEC_IN_DAY;
-
-      case 'h':
-        return intval($this->sec / Time::SEC_IN_HOUR);
-
-      case 'm':
-        return intval($this->sec % Time::SEC_IN_HOUR / Time::SEC_IN_MIN);
-
-      case 's':
-        return intval($this->sec % Time::SEC_IN_HOUR % Time::SEC_IN_MIN);
-
-      case 'micro':
-        return $this->sec - ($this->h * Time::SEC_IN_HOUR + $this->m *
-                Time::SEC_IN_MIN + $this->s);
-    }
-  }
-
-  //----------------------------------------------------------------------------
-  // Functions
-  //----------------------------------------------------------------------------
-
-  /**
-   * Subtracts from this instance another Time instance
-   *
-   * @param  Time   $time
-   * @return static
-   */
-  public function subtract(Time $time) {
-    $this->sec = $this->sec - $time->sec;
-    return $this;
-  }
-
-  /**
-   * Adds to this instance another Time instance
-   *
-   * @param  Time   $time
-   * @return static
-   */
-  public function add(Time $time) {
-    $this->sec = $this->sec + $time->sec;
-    return $this;
-  }
-
-  /**
-   * Converts this instance to an angle within a specified time interval, the
-   * default being the number of seconds in one day. This is usefun in
-   * astronomy applications.
-   *
-   * @return Angle
-   */
-  public function toAngle($interval = Time::SEC_IN_DAY) {
-    return Angle::time($this, $interval);
-  }
-
-  // // // Overrides
-
-  /**
-   * Represents this instance as a string
-   * @return string
-   */
-  public function __toString() {
-    switch (strtolower($this->unit)) {
-      case 's':
-      case 'sec':
-      case 'second':
-      case 'seconds':
-        return round($this->sec, $this->decimalPlaces) . " sec";
-
-      case 'm':
-      case 'min':
-      case 'minutes':
-        return round($this->min, $this->decimalPlaces) . " min";
-
-      case 'h':
-      case 'hour':
-      case 'hours':
-        $hours = round($this->hours, $this->decimalPlaces);
-        return $hours == 1 ? "{$hours} hour" : "{$hours} hours";
-
-      case 'd':
-      case 'day':
-      case 'days':
-        $days = round($this->days, $this->decimalPlaces);
-        return $days == 1 ? "{$days} day" : "{$days} days";
+    /**
+     * Creates a new Time instance from a number of seconds
+     *
+     * @param float $sec
+     */
+    public function __construct($sec)
+    {
+        $this->sec = $sec;
     }
 
-    $decimals = 4;
-    $micro    = substr(round($this->micro, $decimals), 1, $decimals);
+    /**
+     * Creates a new Time instance from a number of seconds
+     *
+     * @param  float $sec
+     *
+     * @return static
+     */
+    public static function sec($sec)
+    {
+        return (new static($sec))->setUnit('s');
+    }
 
-    $h = abs($this->h);
-    $m = abs($this->m);
-    $s = abs($this->s);
+    /**
+     * Creates a new Time instance from a number of minutes
+     *
+     * @param  float $min
+     *
+     * @return static
+     */
+    public static function min($min)
+    {
+        return (new static($min * static::SEC_IN_MIN))->setUnit('m');
+    }
 
-    $sign = $this->sec < 0 ? '-' : '';
+    /**
+     * Creates a new Time instance from a number of hours
+     *
+     * @param  float $hours
+     *
+     * @return static
+     */
+    public static function hours($hours)
+    {
+        return (new static($hours * static::SEC_IN_HOUR))->setUnit('h');
+    }
 
-    if ($micro)
-      return "{$sign}{$h}ʰ{$m}ᵐ{$s}ˢ{$micro}";
-    else
-      return "{$sign}{$h}ʰ{$m}ᵐ{$s}ˢ";
-  }
+    /**
+     * Creates a new Time instance from a number of days
+     *
+     * @param  float $days
+     *
+     * @return static
+     */
+    public static function days($days)
+    {
+        return (new static($days * static::SEC_IN_DAY))->setUnit('d');
+    }
+
+    /**
+     * Creates a new Time instance from hour minute and second components
+     *
+     * @param  int   $h Hours
+     * @param  int   $m Minutes
+     * @param  float $s Seconds
+     *
+     * @return static
+     */
+    public static function hms($h, $m, $s)
+    {
+        if ($h < 0 || $m < 0 || $s < 0) // Negative time
+        {
+            return new static($h * static::SEC_IN_HOUR - abs($m) * static::SEC_IN_MIN - abs($s));
+        } else // Positive time
+        {
+            return new static($h * static::SEC_IN_HOUR + abs($m) * static::SEC_IN_MIN + abs($s));
+        }
+    }
+
+    /**
+     * Copies  this   instance
+     *
+     * @return static
+     */
+    public function copy()
+    {
+        return clone $this;
+    }
+
+    //----------------------------------------------------------------------------
+    // Properties
+    //----------------------------------------------------------------------------
+
+    public function __get($name)
+    {
+        switch ($name) {
+            case 'sec':
+                return $this->sec;
+
+            case 'min':
+                return $this->sec / Time2::SEC_IN_MIN;
+
+            case 'hours':
+                return $this->sec / Time2::SEC_IN_HOUR;
+
+            case 'days':
+                return $this->sec / Time2::SEC_IN_DAY;
+
+            case 'h':
+                return intval($this->sec / Time2::SEC_IN_HOUR);
+
+            case 'm':
+                return intval($this->sec % Time2::SEC_IN_HOUR / Time2::SEC_IN_MIN);
+
+            case 's':
+                return intval($this->sec % Time2::SEC_IN_HOUR % Time2::SEC_IN_MIN);
+
+            case 'micro':
+                return $this->sec - ($this->h * Time2::SEC_IN_HOUR + $this->m *
+                  Time2::SEC_IN_MIN + $this->s);
+        }
+    }
+
+    //----------------------------------------------------------------------------
+    // Functions
+    //----------------------------------------------------------------------------
+
+    /**
+     * Subtracts from this instance another Time instance
+     *
+     * @param  Time2 $time
+     *
+     * @return static
+     */
+    public function subtract(Time2 $time)
+    {
+        $this->sec = $this->sec - $time->sec;
+
+        return $this;
+    }
+
+    /**
+     * Adds to this instance another Time instance
+     *
+     * @param  Time2 $time
+     *
+     * @return static
+     */
+    public function add(Time2 $time)
+    {
+        $this->sec = $this->sec + $time->sec;
+
+        return $this;
+    }
+
+    /**
+     * Converts this instance to an angle within a specified time interval, the
+     * default being the number of seconds in one day. This is usefun in
+     * astronomy applications.
+     *
+     * @return Time
+     */
+    public function toAngle(Time2 $interval = null)
+    {
+        $interval = $interval ? $interval : Time2::days(1);
+
+        return Angle::time($this, $interval);
+    }
+
+    // // // Overrides
+
+    /**
+     * Represents this instance as a string
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        switch (strtolower($this->unit)) {
+            case 's':
+            case 'sec':
+            case 'second':
+            case 'seconds':
+                return round($this->sec, $this->decimalPlaces) . " sec";
+
+            case 'm':
+            case 'min':
+            case 'minutes':
+                return round($this->min, $this->decimalPlaces) . " min";
+
+            case 'h':
+            case 'hour':
+            case 'hours':
+                $hours = round($this->hours, $this->decimalPlaces);
+
+                return $hours == 1 ? "{$hours} hour" : "{$hours} hours";
+
+            case 'd':
+            case 'day':
+            case 'days':
+                $days = round($this->days, $this->decimalPlaces);
+
+                return $days == 1 ? "{$days} day" : "{$days} days";
+        }
+
+        $decimals = 4;
+        $micro    = substr(round($this->micro, $decimals), 1, $decimals);
+
+        $h = abs($this->h);
+        $m = abs($this->m);
+        $s = abs($this->s);
+
+        $sign = $this->sec < 0 ? '-' : '';
+
+        if ($micro) {
+            return "{$sign}{$h}ʰ{$m}ᵐ{$s}ˢ{$micro}";
+        } else {
+            return "{$sign}{$h}ʰ{$m}ᵐ{$s}ˢ";
+        }
+    }
 
 }

@@ -241,7 +241,7 @@ class AngleTest extends \PHPUnit_Framework_TestCase
           [Angle::dms(1, 1, 1), Angle::dms(1, 1, 1.1), 2.0391666667],
         ];
 
-        /** @var Angle[] $t */
+        /** @var Time[] $t */
         foreach ($tests as $t) {
             $a = $t[0];
             $b = $t[1];
@@ -257,7 +257,7 @@ class AngleTest extends \PHPUnit_Framework_TestCase
           [Angle::dms(2, 2, 2), Angle::dms(1, 1, 1.1), 1.0169166667],
         ];
 
-        /** @var Angle[] $t */
+        /** @var Time[] $t */
         foreach ($tests as $t) {
             $a = $t[0];
             $b = $t[1];
@@ -273,7 +273,7 @@ class AngleTest extends \PHPUnit_Framework_TestCase
           [Angle::rad(2), Angle::rad(0.01), 65.656127002],
         ];
 
-        /** @var Angle[] $t */
+        /** @var Time[] $t */
         foreach ($tests as $t) {
             $a = $t[0];
             $b = $t[1];
@@ -289,7 +289,7 @@ class AngleTest extends \PHPUnit_Framework_TestCase
           [Angle::deg(180.5), Angle::deg(10), 18.05],
         ];
 
-        /** @var Angle[] $t */
+        /** @var Time[] $t */
         foreach ($tests as $t) {
             $a = $t[0];
             $b = $t[1];
@@ -310,7 +310,7 @@ class AngleTest extends \PHPUnit_Framework_TestCase
 
     public function testTime()
     {
-        $angle = Angle::time(Time::hours(12));
+        $angle = Angle::time(Time2::hours(12));
 
         $this->assertEquals(180, $angle->deg);
     }
@@ -322,20 +322,43 @@ class AngleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(6, $angle->toTime()->hours);
     }
 
+    public function testSign()
+    {
+        $this->assertEquals('-', Angle::deg(-10)->sign);
+        $this->assertEquals('-', Angle::rad(-10)->sign);
+        $this->assertEquals('-', Angle::asec(-10)->sign);
+        $this->assertEquals('-', Angle::amin(-10)->sign);
+        $this->assertEquals('-', Angle::mas(-10)->sign);
+
+        $this->assertEquals('-', Angle::dms(-10, 0, 0, 0)->sign);
+        $this->assertEquals('-', Angle::dms(0, -10, 0, 0)->sign);
+        $this->assertEquals('-', Angle::dms(0, 0, -10, 0)->sign);
+        $this->assertEquals('-', Angle::dms(0, 0, 0, -10)->sign);
+
+        $this->assertEquals('+', Angle::dms(10, 0, 0, 0)->sign);
+        $this->assertEquals('+', Angle::dms(1, -10, 0, 0)->sign);
+        $this->assertEquals('+', Angle::dms(1, 0, -10, 0)->sign);
+        $this->assertEquals('+', Angle::dms(1, 0, 0, -10)->sign);
+
+        $this->assertEquals('+', Angle::deg(10)->sign);
+        $this->assertEquals('+', Angle::rad(10)->sign);
+        $this->assertEquals('+', Angle::asec(10)->sign);
+        $this->assertEquals('+', Angle::amin(10)->sign);
+        $this->assertEquals('+', Angle::mas(10)->sign);
+    }
+
     // // //
 
-    private function assertAngle($angle, $test)
+    private function assertAngle(Angle $angle, $test)
     {
         $t = $test;
         $a = $angle;
 
+        $this->assertEquals($t['deg'], $a->deg, 'deg' . $t['deg'], 1e-9);
         $this->assertEquals(abs($t['d']), $a->d, 'd' . $t['deg']);
         $this->assertEquals(abs($t['m']), $a->m, 'm' . $t['deg']);
         $this->assertEquals(abs($t['s']), $a->s, 's' . $t['deg']);
         $this->assertEquals(abs($t['f']), "0.$a->f", 'f' . $t['deg'], 1e-6);
-
-
-        echo PHP_EOL . $angle . PHP_EOL;
     }
 
 }

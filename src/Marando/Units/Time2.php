@@ -20,11 +20,12 @@
 
 namespace Marando\Units;
 
-use Marando\Units\Angle;
-
-
 /**
+ * Represents an interval of time.
+ *
  * @property string $sign  Sign (+/-) of the time duration.
+ * @property double $years Time expressed in decimal years.
+ * @property double $weeks Time expressed in decimal weeks.
  * @property double $days  Time expressed in decimal days.
  * @property double $hours Time expressed in decimal hours.
  * @property double $min   Time expressed in decimal minutes.
@@ -34,66 +35,207 @@ use Marando\Units\Angle;
  * @property int    $s     Integer second component of the time duration.
  * @property int    $f     Fractional second component of the time duration.
  */
-class Time2
+class Time2 extends TimeBase
 {
 
     //--------------------------------------------------------------------------
     // Constants
     //--------------------------------------------------------------------------
 
-    const SEC_IN_DAY = 86400;
+    /**
+     * Number of days in a Julian year.
+     */
+    const JulianYear = 365.25;
 
+    /**
+     * Default format, 07:47:16.8
+     */
     const FORMAT_DEFAULT = "0h:0m:0s.3f";
+
+    /**
+     * HMS format, 07ʰ47ᵐ16ˢ.8
+     */
     const FORMAT_HMS = "0hʰ0mᵐ0sˢ.3f";
+
+    /**
+     * Spaced format, 7h 47m 16.8s
+     */
     const FORMAT_SPACED = "h\h m\m s.3f\s";
+
+    /**
+     * Year format, 1.767 years
+     */
+    const FORMAT_YEARS = '3Y year\s';
+
+    /**
+     * Week format, 2.046 weeks
+     */
+    const FORMAT_WEEKS = '3W week\s';
+
+    /**
+     * Day format, 1.325 days
+     */
     const FORMAT_DAYS = '3D day\s';
+
+    /**
+     * Hour format, 7.788 hours
+     */
     const FORMAT_HOURS = '3H \hour\s';
+
+    /**
+     * Minute format, 467.28 min
+     */
     const FORMAT_MIN = '3M \min';
+
+    /**
+     * Second format, 86.4 sec
+     */
     const FORMAT_SEC = '3S \sec';
 
     //--------------------------------------------------------------------------
     // Constructors
     //--------------------------------------------------------------------------
 
-    public function __construct($sec)
+    /**
+     * Creates a new Time instance from a number of seconds.
+     *
+     * @param double $sec Seconds
+     */
+    private function __construct($sec)
     {
         $this->sec    = $sec;
         $this->format = static::FORMAT_DEFAULT;
     }
 
+    // // // Static
+
+    /**
+     * Creates a new Time instance from a number of seconds.
+     *
+     * @param double $sec Seconds
+     *
+     * @return static
+     */
     public static function sec($sec)
     {
         return new static($sec);
     }
 
+    /**
+     * Creates a new Time instance from a number of minutes.
+     *
+     * @param double $min Minutes
+     *
+     * @return static
+     */
     public static function min($min)
     {
         return static::sec($min * 60);
     }
 
+    /**
+     * Creates a new Time instance from a number of hours.
+     *
+     * @param double $hours Hours
+     *
+     * @return static
+     */
     public static function hours($hours)
     {
         return static::sec($hours * 3600);
     }
 
+    /**
+     * Creates a new Time instance from a number of days.
+     *
+     * @param double $days Days
+     *
+     * @return static
+     */
     public static function days($days)
     {
         return static::sec($days * 86400);
     }
 
-    public static function hms($h, $m, $s, $f)
+    /**
+     * Creates a new Time instance from a number of weeks.
+     *
+     * @param double $weeks Weeks
+     *
+     * @return static
+     */
+    public static function weeks($weeks)
+    {
+        return static::sec($weeks * 86400 * 7);
+    }
+
+    /**
+     * Creates a new Time instance from a number of years.
+     *
+     * @param double $years       Years
+     * @param double $daysPerYear Optional override to number of days per year
+     *
+     * @return Time2
+     */
+    public static function years($years, $daysPerYear = 365.25)
+    {
+        return static::sec($years * 86400 * $daysPerYear);
+    }
+
+    /**
+     * Creates a new Time instance from hour, minute and second components.
+     *
+     * @param            $h Hour component
+     * @param int        $m Minute component
+     * @param int|double $s Second component
+     * @param int|double $f Fractional second component
+     *
+     * @return Time2
+     */
+    public static function hms($h, $m = 0, $s = 0, $f = 0)
     {
         $sec = static::hmsf2sec($h, $m, $s, $f);
 
         return static::sec($sec);
     }
 
+    /**
+     * Creates a new Time instance from an angle representing the proportion of
+     * time passed within a defined interval.
+     *
+     * @param Angle $angle
+     * @param Time2 $interval
+     *
+     * @return Time2
+     */
+    public static function angle(Angle $angle, Time2 $interval)
+    {
+        return $angle->toTime($interval);
+    }
+
     //--------------------------------------------------------------------------
     // Properties
     //--------------------------------------------------------------------------
 
+    /**
+     * Value of this instance expressed in seconds.
+     *
+     * @var double
+     */
     private $sec;
+
+    /**
+     * String format of this instance.
+     *
+     * @var string
+     */
     private $format;
+
+    /**
+     * Rounding place of this instance.
+     *
+     * @var int
+     */
     private $round = 9;
 
     public function __get($name)
@@ -101,6 +243,12 @@ class Time2
         switch ($name) {
             case 'sign':
                 return $this->sec < 0 ? '-' : '+';
+
+            case 'years':
+                return $this->sec / 86400 / 365.25;
+
+            case 'weeks':
+                return $this->sec / 86400 / 7;
 
             case 'days':
                 return $this->sec / 86400;
@@ -128,10 +276,105 @@ class Time2
         }
     }
 
+    public function __set($name, $value)
+    {
+        switch ($name) {
+            case 'sec':
+                $this->sec = $value;
+                break;
+
+            case 'min':
+                $this->sec = $value * 60;
+                break;
+
+            case 'hours':
+                $this->sec = $value * 3600;
+                break;
+
+            case 'days':
+                $this->sec = $value * 86400;
+                break;
+
+            default:
+                throw new Exception("{$name} is not a valid property.");
+        }
+    }
+
     //--------------------------------------------------------------------------
     // Functions
     //--------------------------------------------------------------------------
 
+    /**
+     * Adds another Time instance to this instance and returns a new instance
+     * with the sum.
+     *
+     * @param Time2 $b Time instance to add
+     *
+     * @return Time2 Sum of the two Time instances
+     */
+    public function add(Time2 $b)
+    {
+        return Time2::sec($this->sec + $b->sec);
+    }
+
+    /**
+     * Subtracts another Time instance from this instance and returns a new
+     * instance with the difference.
+     *
+     * @param Time2 $b Time instance to subtract
+     *
+     * @return Time2 Difference of the two Time instances
+     */
+    public function sub(Time2 $b)
+    {
+        return Time2::sec($this->sec - $b->sec);
+    }
+
+    /**
+     * Multiplies another Time instance with this instance and returns a new
+     * instance with the product.
+     *
+     * @param Time2 $b Time instance to multiply
+     *
+     * @return Time2 Product of the two Time instances
+     */
+    public function mul(Time2 $b)
+    {
+        return Time2::sec($this->sec * $b->sec);
+    }
+
+    /**
+     * Divides this instance by another Time instance and returns a new instance
+     * with the quotient.
+     *
+     * @param Time2 $b Divisor Time instance
+     *
+     * @return Time2 Quotient of the two Time instances
+     */
+    public function div(Time2 $b)
+    {
+        return Time2::sec($this->sec / $b->sec);
+    }
+
+    /**
+     * Negates this instance.
+     *
+     * @return $this
+     */
+    public function neg()
+    {
+        $this->sec *= -1;
+
+        return $this;
+    }
+
+    /**
+     * Formats this instance in the specified string format.
+     *
+     * @param string $format Formatter string, e.g. 0h:0m:0s.3f
+     *
+     * @return string
+     */
     public function format($format)
     {
         $pad    = false;
@@ -142,37 +385,13 @@ class Time2
         // Perform rounding.
         $this->round = static::maxRound($format);
 
-        // Decimal days
-        if (preg_match_all('/([0-9]{0,1})D/', $string, $m)) {
-            for ($i = 0; $i < count($m[0]); $i++) {
-                $D      = round($this->days, (int)$m[1][$i]);
-                $string = str_replace($m[0][$i], $D, $string);
-            }
-        }
-
-        // Decimal hours
-        if (preg_match_all('/([0-9]{0,1})H/', $string, $m)) {
-            for ($i = 0; $i < count($m[0]); $i++) {
-                $H      = round($this->hours, (int)$m[1][$i]);
-                $string = str_replace($m[0][$i], $H, $string);
-            }
-        }
-
-        // Decimal minutes
-        if (preg_match_all('/([0-9]{0,1})M/', $string, $m)) {
-            for ($i = 0; $i < count($m[0]); $i++) {
-                $M      = round($this->min, (int)$m[1][$i]);
-                $string = str_replace($m[0][$i], $M, $string);
-            }
-        }
-
-        // Decimal seconds
-        if (preg_match_all('/([0-9]{0,1})S/', $string, $m)) {
-            for ($i = 0; $i < count($m[0]); $i++) {
-                $S      = round($this->sec, (int)$m[1][$i]);
-                $string = str_replace($m[0][$i], $S, $string);
-            }
-        }
+        // Decimal years, weeks, days, hours, minutes, and seconds
+        static::rep('Y', $string, $this->years);
+        static::rep('W', $string, $this->weeks);
+        static::rep('D', $string, $this->days);
+        static::rep('H', $string, $this->hours);
+        static::rep('M', $string, $this->min);
+        static::rep('S', $string, $this->sec);
 
         // Leading zeros h m s
         $string = str_replace('0h', sprintf('%02d', $this->h), $string);
@@ -206,123 +425,13 @@ class Time2
         return static::decode($string, $rChar);
     }
 
-    // // // Static
-
-    private static function hmsf2sec($h, $m, $s, $f)
-    {
-        // Find the sign.
-        $sign = static::findSign($h, $m, $s, $f);
-
-        // Cast to integers.
-        $h = (int)$h;
-        $m = (int)$m;
-
-        if ($f) {
-            // If fraction is present, seconds should be cast to int.
-            $s = (int)$s;
-
-            if ($f >= 1) {
-                // Fix for fraction given as integer instead of fraction.
-                $f = (double)('0.' . (int)$f);
-            }
-        }
-
-        // Calculate seconds
-        $sec = (abs($h) * 3600) + (abs($m) * 60) + abs($s) + abs($f);
-
-        // Return arcseconds with appropriate sign.
-        return $sign == '-' ? -1 * $sec : $sec;
-    }
-
-    private static function sec2hmsf($sec, $round)
-    {
-        // Round seconds to the desired place.
-        $sec = round($sec, $round);
-
-        // Calculate h m s
-        $h = (int)abs($sec / 3600);
-        $m = abs($sec / 60 % 60);
-        $s = abs($sec % 60);
-
-        // sec -> string (no scientific notation), then take only fraction.
-        $sec = number_format($sec, $round, '.', '');
-        $f   = str_replace((int)$sec, '', $sec);
-        $f   = str_replace('.', '', $f);
-        $f   = rtrim($f, '0');
-
-        // Return components
-        return [$h, $m, $s, $f];
-    }
-
-    private static function findSign($h, $m, $s, $f)
-    {
-        if ($h != 0) {
-            return $h < 0 ? '-' : '+';
-        } elseif ($m != 0) {
-            return $m < 0 ? '-' : '+';
-        } elseif ($s != 0) {
-            return $s < 0 ? '-' : '+';
-        } elseif ($f != 0) {
-            return $f < 0 ? '-' : '+';
-        } else {
-            return '+';
-        }
-    }
+    // // // Overrides
 
     /**
-     * Encodes reserved characters for formatter strings.
-     *
-     * @param string $string String to encode
-     * @param string $key    Characters to encode
+     * Represents this instance as a string.
      *
      * @return string
      */
-    private static function encode($string, $key)
-    {
-        for ($i = 0; $i < strlen($key); $i++) {
-            $char   = $key[$i];
-            $string = str_replace("\\{$char}", "%{$i}", $string);
-        }
-
-        return $string;
-    }
-
-    /**
-     * Decodes reserved characters for formatter strings.
-     *
-     * @param string $string String to decode
-     * @param string $key    Characters to decode
-     *
-     * @return string
-     */
-    private static function decode($string, $key)
-    {
-        for ($i = 0; $i < strlen($key); $i++) {
-            $char   = $key[$i];
-            $string = str_replace("%{$i}", "{$char}", $string);
-        }
-
-        return $string;
-    }
-
-    /**
-     * Finds the maximum rounding place of a formatter string.
-     *
-     * @param string $format
-     *
-     * @return int
-     */
-    private static function maxRound($format)
-    {
-        if (preg_match_all('/([0-9])f/', $format, $m)) {
-            return (int)max($m[1]);
-        } else {
-            return 9;
-        }
-    }
-
-    // // //
-
     public function __toString()
     {
         return $this->format($this->format);

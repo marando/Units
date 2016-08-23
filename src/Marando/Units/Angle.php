@@ -32,9 +32,9 @@ namespace Marando\Units;
  * @property int    $d      Integer degree component of the angle.
  * @property int    $m      Integer arcminute component of the angle.
  * @property int    $s      Integer arcsecond component of the angle.
- * @property int    $f      Fractional arcsecond component of the angle.
+ * @property string $f      Fractional arcsecond component of the angle.
  */
-class Angle
+class Angle extends TimeBase
 {
 
     //--------------------------------------------------------------------------
@@ -164,14 +164,15 @@ class Angle
      * Creates a new angle equal to the number of revolutions of a duration of
      * time within a specified time interval.
      *
-     * @param Time $time
-     * @param Time $interval
+     * @param Time2 $time
+     * @param Time2 $interval
      *
      * @return Angle
      */
-    public static function time(Time $time, Time $interval = null)
+    public static function time(Time2 $time, Time2 $interval = null)
     {
-        $interval = $interval ? $interval->sec : Time::SEC_IN_DAY;
+        $secInDay = Time2::days(1)->sec;
+        $interval = $interval ? $interval->sec : $secInDay;
 
         return static::deg($time->sec / $interval * 360);
     }
@@ -324,13 +325,14 @@ class Angle
      * Converts this instance to a proportion of time passed within a specified
      * time interval where 360 degrees is equal to the interval.
      *
-     * @param Time $interval
+     * @param Time2 $interval
      *
-     * @return Time
+     * @return Time2
      */
-    public function toTime(Time $interval = null)
+    public function toTime(Time2 $interval = null)
     {
-        $interval = $interval ? $interval->sec : Time2::SEC_IN_DAY;
+        $secInDay = Time2::days(1)->sec;
+        $interval = $interval ? $interval->sec : $secInDay;
 
         return Time2::sec(($this->deg / 360) * $interval);
     }
@@ -403,7 +405,7 @@ class Angle
      *
      * @param string $format Formatter string, e.g. +0d°0m'0s".3f
      *
-     * @return mixed
+     * @return string
      */
     public function format($format)
     {
@@ -426,13 +428,9 @@ class Angle
             }
         }
 
-        // Decimal degrees
-        if (preg_match_all('/([0-9]{0,1})D/', $string, $m)) {
-            for ($i = 0; $i < count($m[0]); $i++) {
-                $D      = round($this->deg, (int)$m[1][$i]);
-                $string = str_replace($m[0][$i], $D, $string);
-            }
-        }
+        // Decimal degrees and radians
+        static::rep('D', $string, $this->deg);
+        static::rep('R', $string, $this->rad);
 
         // Decimal arcseconds, arcminutes and milliarcseconds.
         $string = str_replace('asec.', $this->asec, $string);
@@ -474,150 +472,6 @@ class Angle
         }
 
         return static::decode($string, $rChar);
-    }
-
-    // // // Private
-
-
-    // // // Static
-
-    /**
-     * Composes ° ' " into arcseconds.
-     *
-     * @param int        $d Degree component
-     * @param int        $m Arcminute component
-     * @param int|double $s Arcsecond component
-     * @param int|double $f Fractional arcsecond component
-     *
-     * @return int|number
-     */
-    private static function dmsf2asec($d, $m, $s, $f)
-    {
-        // Find the sign.
-        $sign = static::findSign($d, $m, $s, $f);
-
-        // Cast to integers.
-        $d = (int)$d;
-        $m = (int)$m;
-
-        if ($f) {
-            // If fraction is present, seconds should be cast to int.
-            $s = (int)$s;
-
-            if ($f >= 1) {
-                // Fix for fraction given as integer instead of fraction.
-                $f = (double)('0.' . (int)$f);
-            }
-        }
-
-        // Calculate arcseconds
-        $asec = (abs($d) * 3600) + (abs($m) * 60) + abs($s) + abs($f);
-
-        // Return arcseconds with appropriate sign.
-        return $sign == '-' ? -1 * $asec : $asec;
-    }
-
-    /**
-     * Decomposes arcseconds into ° ' "
-     *
-     * @param double $asec  Arcseconds to decompose.
-     * @param int    $round Places to round arcseconds.
-     *
-     * @return array
-     */
-    private static function asec2dmsf($asec, $round)
-    {
-        // Round arcseconds to the desired place.
-        $asec = round($asec, $round);
-
-        // Calculate ° ' "
-        $d = (int)abs($asec / 3600);
-        $m = abs($asec / 60 % 60);
-        $s = abs($asec % 60);
-
-        // asec -> string (no scientific notation), then take only fraction.
-        $asec = number_format($asec, $round, '.', '');
-        $f    = str_replace((int)$asec, '', $asec);
-        $f    = str_replace('.', '', $f);
-        $f    = rtrim($f, '0');
-
-        // Return components
-        return [$d, $m, $s, $f];
-    }
-
-    /**
-     * Finds the sign of a set of ° ' " values
-     *
-     * @param int        $d Degree component
-     * @param int        $m Arcminute component
-     * @param int|double $s Arcsecond component
-     * @param int|double $f Fractional arcsecond component
-     *
-     * @return string + or -
-     */
-    private static function findSign($d, $m, $s, $f)
-    {
-        if ($d != 0) {
-            return $d < 0 ? '-' : '+';
-        } elseif ($m != 0) {
-            return $m < 0 ? '-' : '+';
-        } elseif ($s != 0) {
-            return $s < 0 ? '-' : '+';
-        } elseif ($f != 0) {
-            return $f < 0 ? '-' : '+';
-        } else {
-            return '+';
-        }
-    }
-
-    /**
-     * Encodes reserved characters for formatter strings.
-     *
-     * @param string $string String to encode
-     * @param string $key    Characters to encode
-     *
-     * @return string
-     */
-    private static function encode($string, $key)
-    {
-        for ($i = 0; $i < strlen($key); $i++) {
-            $char   = $key[$i];
-            $string = str_replace("\\{$char}", "%{$i}", $string);
-        }
-
-        return $string;
-    }
-
-    /**
-     * Decodes reserved characters for formatter strings.
-     *
-     * @param string $string String to decode
-     * @param string $key    Characters to decode
-     *
-     * @return string
-     */
-    private static function decode($string, $key)
-    {
-        for ($i = 0; $i < strlen($key); $i++) {
-            $char   = $key[$i];
-            $string = str_replace("%{$i}", "{$char}", $string);
-        }
-
-        return $string;
-    }
-
-    /**
-     * Finds the maximum rounding place of a formatter string.
-     *
-     * @param string $format
-     *
-     * @return int
-     */
-    private static function maxRound($format)
-    {
-        if (preg_match_all('/([0-9])f/', $format, $m)) {
-            return (int)max($m[1]);
-        }
     }
 
     // // // Overrides
