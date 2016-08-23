@@ -238,7 +238,7 @@ class Distance
         }
 
         // Find the number of meters in one light-year
-        $secInYear         = Time2::days(1)->sec * $year;
+        $secInYear         = Time::days(1)->sec * $year;
         $dist->def['m/ly'] = $secInYear * $dist->def['c'];
 
         $dist->m = $ly * $dist->def['m/ly'];

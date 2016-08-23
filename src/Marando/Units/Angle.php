@@ -164,14 +164,14 @@ class Angle extends TimeBase
      * Creates a new angle equal to the number of revolutions of a duration of
      * time within a specified time interval.
      *
-     * @param Time2 $time
-     * @param Time2 $interval
+     * @param Time $time
+     * @param Time $interval
      *
      * @return Angle
      */
-    public static function time(Time2 $time, Time2 $interval = null)
+    public static function time(Time $time, Time $interval = null)
     {
-        $secInDay = Time2::days(1)->sec;
+        $secInDay = Time::days(1)->sec;
         $interval = $interval ? $interval->sec : $secInDay;
 
         return static::deg($time->sec / $interval * 360);
@@ -325,16 +325,16 @@ class Angle extends TimeBase
      * Converts this instance to a proportion of time passed within a specified
      * time interval where 360 degrees is equal to the interval.
      *
-     * @param Time2 $interval
+     * @param Time $interval
      *
-     * @return Time2
+     * @return Time
      */
-    public function toTime(Time2 $interval = null)
+    public function toTime(Time $interval = null)
     {
-        $secInDay = Time2::days(1)->sec;
+        $secInDay = Time::days(1)->sec;
         $interval = $interval ? $interval->sec : $secInDay;
 
-        return Time2::sec(($this->deg / 360) * $interval);
+        return Time::sec(($this->deg / 360) * $interval);
     }
 
     /**

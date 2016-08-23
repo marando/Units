@@ -20,7 +20,7 @@
 
 namespace Marando\Units;
 
-use \Marando\Units\Time2;
+use \Marando\Units\Time;
 use \Marando\Units\Distance;
 
 /**
@@ -34,7 +34,7 @@ use \Marando\Units\Distance;
  * @property float    $pcy Velocity in parsecs per year (pc/y)
  * @property float    $aud Velocity in AU per day (AU/y)
  * @property Distance $dist
- * @property Time2    $time
+ * @property Time     $time
  */
 class Velocity
 {
@@ -66,9 +66,9 @@ class Velocity
      * Creates a new velocity instance form distance and time components
      *
      * @param Distance $distance
-     * @param Time2    $time
+     * @param Time     $time
      */
-    public function __construct(Distance $distance, Time2 $time)
+    public function __construct(Distance $distance, Time $time)
     {
         $this->dist = $distance;
         $this->time = $time;
@@ -85,7 +85,7 @@ class Velocity
      */
     public static function ms($ms)
     {
-        return (new static(Distance::m($ms), Time2::sec(1)))->setUnit('ms');
+        return (new static(Distance::m($ms), Time::sec(1)))->setUnit('ms');
     }
 
     /**
@@ -97,7 +97,7 @@ class Velocity
      */
     public static function kms($kms)
     {
-        return (new static(Distance::km($kms), Time2::sec(1)))->setUnit('km/s');
+        return (new static(Distance::km($kms), Time::sec(1)))->setUnit('km/s');
     }
 
     /**
@@ -110,7 +110,7 @@ class Velocity
     public static function kmh($kmh)
     {
         return (new static(Distance::km($kmh),
-          Time2::hours(1)))->setUnit('km/h');
+          Time::hours(1)))->setUnit('km/h');
     }
 
     /**
@@ -123,7 +123,7 @@ class Velocity
     public static function kmd($kmd)
     {
         return (new static(Distance::km($kmd),
-          Time2::days(1)))->setUnit('km/d');
+          Time::days(1)))->setUnit('km/d');
     }
 
     /**
@@ -136,7 +136,7 @@ class Velocity
     public static function mph($mph)
     {
         return (new static(Distance::mi($mph),
-          Time2::hours(1)))->setUnit('mph');
+          Time::hours(1)))->setUnit('mph');
     }
 
     /**
@@ -149,7 +149,7 @@ class Velocity
     public static function aud($aud)
     {
         return (new static(Distance::au($aud),
-          Time2::days(1)))->setUnit('au/d');
+          Time::days(1)))->setUnit('au/d');
     }
 
     /**
@@ -159,10 +159,10 @@ class Velocity
      *
      * @return static
      */
-    public static function pcy($pcy, $year = Time2::JulianYear)
+    public static function pcy($pcy, $year = Time::JulianYear)
     {
         return (new static(Distance::pc($pcy),
-          Time2::days($year)))->setUnit('pc/y');
+          Time::days($year)))->setUnit('pc/y');
     }
 
     //----------------------------------------------------------------------------
@@ -179,7 +179,7 @@ class Velocity
     /**
      * Holds the time component of this instance
      *
-     * @var Time2
+     * @var Time
      */
     protected $time;
 
@@ -238,7 +238,7 @@ class Velocity
      *
      * @param  Distance $dist
      *
-     * @return Time2
+     * @return Time
      */
     public function time(Distance $dist)
     {
@@ -252,11 +252,11 @@ class Velocity
      * Calculates the distance traveled in provided time duration at the
      * velocity of this instance
      *
-     * @param  Time2 $time
+     * @param  Time $time
      *
      * @return Distance
      */
-    public function dist(Time2 $time)
+    public function dist(Time $time)
     {
         // Find distance covered in provided time
         $dist    = $this->dist->copy();
@@ -318,9 +318,9 @@ class Velocity
     /**
      * Sets the time component of this instance
      *
-     * @param Time2 $time
+     * @param Time $time
      */
-    protected function setTime(Time2 $time)
+    protected function setTime(Time $time)
     {
         $this->properties['time'] = $time;
     }

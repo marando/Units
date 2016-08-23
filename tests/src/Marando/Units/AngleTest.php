@@ -310,7 +310,7 @@ class AngleTest extends \PHPUnit_Framework_TestCase
 
     public function testTime()
     {
-        $angle = Angle::time(Time2::hours(12));
+        $angle = Angle::time(Time::hours(12));
 
         $this->assertEquals(180, $angle->deg);
     }
