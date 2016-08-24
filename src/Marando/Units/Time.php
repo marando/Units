@@ -34,6 +34,8 @@ namespace Marando\Units;
  * @property int    $m     Integer minute component of the time duration.
  * @property int    $s     Integer second component of the time duration.
  * @property int    $f     Fractional second component of the time duration.
+ *
+ * @author Ashley Marando <a.marando@me.com>
  */
 class Time extends TimeBase
 {
@@ -330,31 +332,31 @@ class Time extends TimeBase
         return Time::sec($this->sec - $b->sec);
     }
 
-    /**
-     * Multiplies another Time instance with this instance and returns a new
-     * instance with the product.
-     *
-     * @param Time $b Time instance to multiply
-     *
-     * @return Time Product of the two Time instances
-     */
-    public function mul(Time $b)
-    {
-        return Time::sec($this->sec * $b->sec);
-    }
-
-    /**
-     * Divides this instance by another Time instance and returns a new instance
-     * with the quotient.
-     *
-     * @param Time $b Divisor Time instance
-     *
-     * @return Time Quotient of the two Time instances
-     */
-    public function div(Time $b)
-    {
-        return Time::sec($this->sec / $b->sec);
-    }
+//    /**
+//     * Multiplies another Time instance with this instance and returns a new
+//     * instance with the product.
+//     *
+//     * @param Time $b Time instance to multiply
+//     *
+//     * @return Time Product of the two Time instances
+//     */
+//    public function mul(Time $b)
+//    {
+//        return Time::sec($this->sec * $b->sec);
+//    }
+//
+//    /**
+//     * Divides this instance by another Time instance and returns a new instance
+//     * with the quotient.
+//     *
+//     * @param Time $b Divisor Time instance
+//     *
+//     * @return Time Quotient of the two Time instances
+//     */
+//    public function div(Time $b)
+//    {
+//        return Time::sec($this->sec / $b->sec);
+//    }
 
     /**
      * Negates this instance.

@@ -22,6 +22,8 @@ namespace Marando\Units;
 
 /**
  * Provides base time and angular functionality.
+ *
+ * @author Ashley Marando <a.marando@me.com>
  */
 abstract class TimeBase
 {

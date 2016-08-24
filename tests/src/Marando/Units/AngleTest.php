@@ -265,37 +265,37 @@ class AngleTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testMul()
-    {
-        $tests = [
-          [Angle::deg(180), Angle::deg(2), 360],
-          [Angle::deg(-10), Angle::deg(40), -400],
-          [Angle::rad(2), Angle::rad(0.01), 65.656127002],
-        ];
-
-        /** @var Time[] $t */
-        foreach ($tests as $t) {
-            $a = $t[0];
-            $b = $t[1];
-            $this->assertEquals($t[2], $a->mul($b)->deg, '', 1e-2);
-        }
-    }
-
-    public function testDiv()
-    {
-        $tests = [
-          [Angle::deg(180), Angle::deg(2), 90],
-          [Angle::deg(360), Angle::deg(3), 120],
-          [Angle::deg(180.5), Angle::deg(10), 18.05],
-        ];
-
-        /** @var Time[] $t */
-        foreach ($tests as $t) {
-            $a = $t[0];
-            $b = $t[1];
-            $this->assertEquals($t[2], $a->div($b)->deg, '', 1e-2);
-        }
-    }
+//    public function testMul()
+//    {
+//        $tests = [
+//          [Angle::deg(180), Angle::deg(2), 360],
+//          [Angle::deg(-10), Angle::deg(40), -400],
+//          [Angle::rad(2), Angle::rad(0.01), 65.656127002],
+//        ];
+//
+//        /** @var Time[] $t */
+//        foreach ($tests as $t) {
+//            $a = $t[0];
+//            $b = $t[1];
+//            $this->assertEquals($t[2], $a->mul($b)->deg, '', 1e-2);
+//        }
+//    }
+//
+//    public function testDiv()
+//    {
+//        $tests = [
+//          [Angle::deg(180), Angle::deg(2), 90],
+//          [Angle::deg(360), Angle::deg(3), 120],
+//          [Angle::deg(180.5), Angle::deg(10), 18.05],
+//        ];
+//
+//        /** @var Time[] $t */
+//        foreach ($tests as $t) {
+//            $a = $t[0];
+//            $b = $t[1];
+//            $this->assertEquals($t[2], $a->div($b)->deg, '', 1e-2);
+//        }
+//    }
 
     public function testNegate()
     {

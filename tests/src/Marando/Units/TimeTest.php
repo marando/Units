@@ -225,37 +225,37 @@ class TimeTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testMul()
-    {
-        $tests = [
-          [Time::sec(10356), Time::sec(2), 20712],
-          [Time::hms(10, 4, 32, 0.5), Time::sec(0.5), 18136.25],
-        ];
-
-        /** @var Time[] $test */
-        foreach ($tests as $test) {
-            $a = $test[0];
-            $b = $test[1];
-
-            $this->assertEquals($test[2], $a->mul($b)->sec);
-        }
-    }
-
-    public function testDiv()
-    {
-        $tests = [
-          [Time::sec(10356), Time::sec(2), 5178],
-          [Time::hms(10, 4, 32, 0.5), Time::sec(0.5), 72545],
-        ];
-
-        /** @var Time[] $test */
-        foreach ($tests as $test) {
-            $a = $test[0];
-            $b = $test[1];
-
-            $this->assertEquals($test[2], $a->div($b)->sec);
-        }
-    }
+//    public function testMul()
+//    {
+//        $tests = [
+//          [Time::sec(10356), Time::sec(2), 20712],
+//          [Time::hms(10, 4, 32, 0.5), Time::sec(0.5), 18136.25],
+//        ];
+//
+//        /** @var Time[] $test */
+//        foreach ($tests as $test) {
+//            $a = $test[0];
+//            $b = $test[1];
+//
+//            $this->assertEquals($test[2], $a->mul($b)->sec);
+//        }
+//    }
+//
+//    public function testDiv()
+//    {
+//        $tests = [
+//          [Time::sec(10356), Time::sec(2), 5178],
+//          [Time::hms(10, 4, 32, 0.5), Time::sec(0.5), 72545],
+//        ];
+//
+//        /** @var Time[] $test */
+//        foreach ($tests as $test) {
+//            $a = $test[0];
+//            $b = $test[1];
+//
+//            $this->assertEquals($test[2], $a->div($b)->sec);
+//        }
+//    }
 
     public function testNeg()
     {
@@ -300,72 +300,7 @@ class TimeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(abs($t['s']), $a->s, 's' . $t['sec']);
         $this->assertEquals(abs($t['f']), "0.$a->f", 'f' . $t['sec']);
     }
-
-
-    public function test()
-    {
-        return;
-        echo PHP_EOL . Time::days(0.3245)->format(Time::FORMAT_DEFAULT);
-        echo PHP_EOL . Time::days(0.3245)->format(Time::FORMAT_HMS);
-        echo PHP_EOL . Time::days(0.3245)->format(Time::FORMAT_SPACED);
-        echo PHP_EOL . Time::days(0.001)->format(Time::FORMAT_SEC);
-        echo PHP_EOL . Time::days(0.3245)->format(Time::FORMAT_MIN);
-        echo PHP_EOL . Time::days(0.3245)->format(Time::FORMAT_HOURS);
-        echo PHP_EOL . Time::days(1.3245)->format(Time::FORMAT_DAYS);
-        echo PHP_EOL . Time::days(14.3245)->format(Time::FORMAT_WEEKS);
-        echo PHP_EOL . Time::days(645.3245)->format(Time::FORMAT_YEARS);
-
-
-        dd(1);
-        $a = Time::years(4);
-        $b = Time::years(89);
-
-        //dd(PHP_EOL, $a->sec, $b->sec);
-
-        $ra = Angle::deg(129.543)->toTime();
-        $ra->format(Time::FORMAT_HMS);
-        $dec = Angle::deg(-12.3545);
-
-
-        echo PHP_EOL;
-        echo PHP_EOL;
-        echo "{$ra} {$dec}";
-        echo PHP_EOL;
-        echo PHP_EOL;
-
-
-        $ra = Time::hms(10, 4, 23.542);
-        $ra->format(Time::FORMAT_HMS);
-        $dec = Angle::dms(30, 23, 12.432);
-
-
-        echo PHP_EOL;
-        echo PHP_EOL;
-        echo "{$ra} {$dec}";
-        echo PHP_EOL;
-        echo PHP_EOL;
-
-
-        echo PHP_EOL;
-        echo Time::weeks(1);
-        echo PHP_EOL;
-        echo Time::days(12)->format('3W week\s');
-        echo PHP_EOL;
-
-        echo Time::days(502)->format('3Y year\s');
-        echo PHP_EOL;
-
-
-        echo Time::years(20)->format('9M \min');
-        echo PHP_EOL;
-        echo Time::years(29)->format('9M \min');
-        echo PHP_EOL;
-
-        echo Time::years(1)->format(Time::FORMAT_DEFAULT);
-        echo PHP_EOL;
-    }
-
-
+    
 }
 
 

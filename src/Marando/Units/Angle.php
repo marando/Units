@@ -33,6 +33,8 @@ namespace Marando\Units;
  * @property int    $m      Integer arcminute component of the angle.
  * @property int    $s      Integer arcsecond component of the angle.
  * @property string $f      Fractional arcsecond component of the angle.
+ *
+ * @author Ashley Marando <a.marando@me.com>
  */
 class Angle extends TimeBase
 {
@@ -362,31 +364,31 @@ class Angle extends TimeBase
         return Angle::mas($this->mas - $b->mas);
     }
 
-    /**
-     * Multiplies an angle with this instance and returns a new instance with
-     * the product.
-     *
-     * @param Angle $b Angle to multiply
-     *
-     * @return Angle Product of the two angles
-     */
-    public function mul(Angle $b)
-    {
-        return Angle::deg($this->deg * $b->deg);
-    }
-
-    /**
-     * Divides this instance by another angle and returns a new instance with
-     * the quotient.
-     *
-     * @param Angle $b Divisor angle
-     *
-     * @return Angle Quotient of the two angles
-     */
-    public function div(Angle $b)
-    {
-        return Angle::deg($this->deg / $b->deg);
-    }
+//    /**
+//     * Multiplies an angle with this instance and returns a new instance with
+//     * the product.
+//     *
+//     * @param Angle $b Angle to multiply
+//     *
+//     * @return Angle Product of the two angles
+//     */
+//    public function mul(Angle $b)
+//    {
+//        return Angle::deg($this->deg * $b->deg);
+//    }
+//
+//    /**
+//     * Divides this instance by another angle and returns a new instance with
+//     * the quotient.
+//     *
+//     * @param Angle $b Divisor angle
+//     *
+//     * @return Angle Quotient of the two angles
+//     */
+//    public function div(Angle $b)
+//    {
+//        return Angle::deg($this->deg / $b->deg);
+//    }
 
     /**
      * Negates this instance.
