@@ -20,24 +20,30 @@
 
 namespace Marando\Units\Traits;
 
-trait CopyTrait {
+trait CopyTrait
+{
 
-  /**
-   * Creates a deep copy of this instance
-   * @return static
-   */
-  public function copy() {
-    return clone $this;
-  }
+    /**
+     * Creates a deep copy of this instance
+     *
+     * @return static
+     */
+    public function copy()
+    {
+        return clone $this;
+    }
 
-  /**
-   * Implements the __clone magic method by cloning all object children of this
-   * instance
-   */
-  function __clone() {
-    foreach ($this as $key => $value)
-      if (is_object($value))
-        $this->{$key} = clone $value;
-  }
+    /**
+     * Implements the __clone magic method by cloning all object children of
+     * this instance
+     */
+    function __clone()
+    {
+        foreach ($this as $key => $value) {
+            if (is_object($value)) {
+                $this->{$key} = clone $value;
+            }
+        }
+    }
 
 }

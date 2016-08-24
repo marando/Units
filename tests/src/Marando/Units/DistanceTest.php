@@ -2,7 +2,7 @@
 
 namespace Marando\Units;
 
-class Distance2Test extends \PHPUnit_Framework_TestCase
+class DistanceTest extends \PHPUnit_Framework_TestCase
 {
 
     private $tests;
@@ -46,7 +46,7 @@ class Distance2Test extends \PHPUnit_Framework_TestCase
     {
         foreach ($this->tests as $from => $test) {
             $dist = call_user_func_array(
-              '\Marando\Units\Distance2::' . $from, [$test]);
+              '\Marando\Units\Distance::' . $from, [$test]);
 
             //echo PHP_EOL . $dist;
 
@@ -71,7 +71,7 @@ class Distance2Test extends \PHPUnit_Framework_TestCase
             $parsecs  = $data[1];
             $accuracy = $data[2];
 
-            $dist = Distance2::parallax($parallax);
+            $dist = Distance::parallax($parallax);
 
             $this->assertEquals($parsecs, $dist->pc, $star, $accuracy);
         }
@@ -91,7 +91,7 @@ class Distance2Test extends \PHPUnit_Framework_TestCase
             $parsecs  = $data[1];
             $accuracy = $data[2];
 
-            $dist = Distance2::pc($parsecs);
+            $dist = Distance::pc($parsecs);
 
             $this->assertEquals($parallax->mas, $dist->parallax->mas, $star,
               $accuracy);
@@ -101,8 +101,8 @@ class Distance2Test extends \PHPUnit_Framework_TestCase
     public function testAdd()
     {
         $tests = [
-          [Distance2::m(1000)->add(Distance2::km(1))->m, 2000],
-          [Distance2::km(10)->add(Distance2::m(200))->m, 10200],
+          [Distance::m(1000)->add(Distance::km(1))->m, 2000],
+          [Distance::km(10)->add(Distance::m(200))->m, 10200],
         ];
 
         foreach ($tests as $test) {
@@ -113,8 +113,8 @@ class Distance2Test extends \PHPUnit_Framework_TestCase
     public function testSub()
     {
         $tests = [
-          [Distance2::m(1000)->sub(Distance2::km(1))->m, 0],
-          [Distance2::km(10)->sub(Distance2::m(200))->m, 9800],
+          [Distance::m(1000)->sub(Distance::km(1))->m, 0],
+          [Distance::km(10)->sub(Distance::m(200))->m, 9800],
         ];
 
         foreach ($tests as $test) {
@@ -124,7 +124,7 @@ class Distance2Test extends \PHPUnit_Framework_TestCase
 
     public function testNegate()
     {
-        $this->assertEquals(Distance2::m(10)->neg()->m, -10);
+        $this->assertEquals(Distance::m(10)->neg()->m, -10);
     }
 
     // // //

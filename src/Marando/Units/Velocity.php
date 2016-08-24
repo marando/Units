@@ -259,8 +259,7 @@ class Velocity
     public function dist(Time $time)
     {
         // Find distance covered in provided time
-        $dist    = $this->dist->copy();
-        $dist->m = $this->dist->m * $time->sec / $this->time->sec;
+        $dist = Distance::m($this->dist->m * $time->sec / $this->time->sec);
 
         return $dist;
     }
