@@ -20,199 +20,238 @@
 
 namespace Marando\Units;
 
-use \Marando\Units\Time;
-use \Marando\Units\Distance;
+use Marando\Units\Distance;
+use Marando\Units\Time;
 
 /**
- * Represents a measure of velocity
+ * Represents a velocity.
  *
- * @property float    $ms  Velocity in meters per second (m/s)
- * @property float    $kms Velocity in kilometers per second (km/s)
- * @property float    $kmh Velocity in kilometers per hour (km/h)
- * @property float    $kmd Velocity in kilometers per day (km/d)
- * @property float    $mph Velocity in miles per hour (mph)
- * @property float    $pcy Velocity in parsecs per year (pc/y)
- * @property float    $aud Velocity in AU per day (AU/y)
- * @property Distance $dist
- * @property Time     $time
+ * @property double   $ms   Meters per second, m/s
+ * @property double   $kms  Kilometers per second, km/s
+ * @property double   $kmh  Kilometers per hour, km/h
+ * @property double   $kmd  Kilometers per day, km/d
+ * @property double   $fts  Feet per second, ft/s
+ * @property double   $aud  Astronomical units per day, au/d
+ * @property double   $pcy  Parsecs per year, pc/y
+ * @property double   $mph  Miles per hour, mph
+ * @property Distance $dist Distance component
+ * @property Time     $time Time component
+ *
+ * @author Ashley Marando <a.marando@me.com>
  */
 class Velocity
 {
 
-    use Traits\SetUnitTrait,
-      Traits\RoundingTrait,
-      \Marando\Units\Traits\CopyTrait;
-
-    //----------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Constants
-    //----------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     /**
-     * Represents the speed of light in a vacuum in m/s
+     * Default string format.
      */
-    const c_ms = 299792458;
+    const FORMAT_DEFAULT = '%1.3f ';
 
-    /**
-     * Represents the value provided by Jean Meeus, being the number of km/s in
-     * one pc/y (parsecs per year)
-     */
-    const kms_in_pcy = 977792;
-
-    //----------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Constructors
-    //----------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     /**
-     * Creates a new velocity instance form distance and time components
+     * Creates a new velocity from a distance and time.
      *
-     * @param Distance $distance
+     * @param Distance $dist
      * @param Time     $time
      */
-    public function __construct(Distance $distance, Time $time)
+    public function __construct(Distance $dist, Time $time)
     {
-        $this->dist = $distance;
-        $this->time = $time;
+        // Set distance and time, and make sure time is positive.
+        $this->dist = $dist;
+        $this->time = $time->hours < 0 ? $time->neg() : $time;
+
+        // Use this by default.
+        $this->format = static::FORMAT_DEFAULT . 'm/s';
     }
 
     // // // Static
 
     /**
-     * Creates a new velocity instance from meters per second (m/s)
+     * Creates a new velocity from a value and velocity unit.
      *
-     * @param  float $ms
+     * @param $value Value of the velocity
+     * @param $units Unit of measurement, e.g. m/s
      *
      * @return static
      */
-    public static function ms($ms)
+    public static function create($value, $units)
     {
-        return (new static(Distance::m($ms), Time::sec(1)))->setUnit('ms');
+        // Explode units...
+        list($distUnit, $timeUnit) = static::explUnits($units);
+
+        // Create distance and time placeholders.
+        $dist = Distance::m(0);
+        $time = Time::sec(0);
+
+        // Set each distance/time unit.
+        $dist->{$distUnit} = $value;
+        $time->{$timeUnit} = 1;
+
+        // Create the velocity and set the format.
+        $velocity         = new Velocity($dist, $time);
+        $velocity->format = static::FORMAT_DEFAULT . $units;
+
+        return $velocity;
     }
 
     /**
-     * Creates a new velocity instance from kilometers per second (km/s)
+     * Creates a new velocity from a number of kilometers per second, km/s
      *
-     * @param  float $kms
+     * @param $kms
      *
      * @return static
      */
     public static function kms($kms)
     {
-        return (new static(Distance::km($kms), Time::sec(1)))->setUnit('km/s');
+        return static::create($kms, 'km/s');
     }
 
     /**
-     * Creates a new velocity instance from kilometers per hour (km/h)
+     * Creates a new velocity from a number of kilometers per hour, km/h
      *
-     * @param  float $kmh
+     * @param $kmh
      *
      * @return static
      */
     public static function kmh($kmh)
     {
-        return (new static(Distance::km($kmh),
-          Time::hours(1)))->setUnit('km/h');
+        return static::create($kmh, 'km/h');
     }
 
     /**
-     * Creates a new velocity instance from kilometers per day (km/d)
+     * Creates a new velocity from a number of kilometers per day, km/d
      *
-     * @param  float $kmd
+     * @param $kmd
      *
      * @return static
      */
     public static function kmd($kmd)
     {
-        return (new static(Distance::km($kmd),
-          Time::days(1)))->setUnit('km/d');
+        return static::create($kmd, 'km/d');
     }
 
     /**
-     * Creates a new velocity instance from miles per hour (mph)
+     * Creates a new velocity from a number of meters per second, m/s
      *
-     * @param  float $mph
+     * @param $ms
+     *
+     * @return static
+     */
+    public static function ms($ms)
+    {
+        return static::create($ms, 'm/s');
+    }
+
+    /**
+     * Creates a new velocity from a number of miles per hours, mph
+     *
+     * @param $mph
      *
      * @return static
      */
     public static function mph($mph)
     {
-        return (new static(Distance::mi($mph),
-          Time::hours(1)))->setUnit('mph');
+        return static::create($mph, 'mph');
     }
 
     /**
-     * Creates a new velocity instance from astronomical units per day (AU/d)
+     * Creates a new velocity from a number of feet per second, ft/s
      *
-     * @param  float $aud
+     * @param $fts
+     *
+     * @return static
+     */
+    public static function fts($fts)
+    {
+        return static::create($fts, 'ft/s');
+    }
+
+    /**
+     * Creates a new velocity from a number of astronomical units per day, au/d
+     *
+     * @param $aud
      *
      * @return static
      */
     public static function aud($aud)
     {
-        return (new static(Distance::au($aud),
-          Time::days(1)))->setUnit('au/d');
+        return static::create($aud, 'au/d');
     }
 
     /**
-     * Creates a new velocity instance from parsecs per year (pc/y)
+     * Creates a new velocity from a number of parsecs per year, pc/y
      *
-     * @param  float $ms
+     * @param $pcy
      *
      * @return static
      */
-    public static function pcy($pcy, $year = Time::JulianYear)
+    public static function pcy($pcy)
     {
-        return (new static(Distance::pc($pcy),
-          Time::days($year)))->setUnit('pc/y');
+        return static::create($pcy, 'pc/s');
     }
 
-    //----------------------------------------------------------------------------
+    /**
+     * Creates a new velocity instance with the speed of light in a vacuum.
+     *
+     * @return static
+     */
+    public static function c()
+    {
+        return static::ms(299792458);
+    }
+
+    //--------------------------------------------------------------------------
     // Properties
-    //----------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
     /**
-     * Holds the distance component of this instance
+     * Distance component of this velocity.
      *
      * @var Distance
      */
-    protected $dist;
+    private $dist;
 
     /**
-     * Holds the time component of this instance
+     * Time component of this velocity.
      *
      * @var Time
      */
-    protected $time;
+    private $time;
+
+    /**
+     * String format of this velocity.
+     *
+     * @var string
+     */
+    private $format;
 
     public function __get($name)
     {
-        switch ($name) {
+        switch ($n = $name) {
             case 'ms':
-                return $this->dist->m / $this->time->sec;
+                return $this->units(substr($n, 0, 1) . '/' . substr($n, 1, 1));
 
             case 'kms':
-                return $this->dist->km / $this->time->sec;
-
             case 'kmh':
-                return $this->dist->km / $this->time->hours;
-
             case 'kmd':
-                return $this->dist->km / $this->time->days;
+            case 'fts':
+            case 'aud':
+            case 'pcy':
+                return $this->units(substr($n, 0, 2) . '/' . substr($n, 2, 1));
 
             case 'mph':
-                return $this->dist->mi / $this->time->hours;
-
-            case 'pcy':
-                return $this->kms / static::kms_in_pcy;
-
-            case 'aud':
-                return $this->dist->au / $this->time->days;
+                return $this->units('mph');
 
             case 'dist':
             case 'time':
                 return $this->{$name};
-
-            default:
-                throw new \Exception("{$name} is not a valid property.");
         }
     }
 
@@ -220,152 +259,239 @@ class Velocity
     {
         switch ($name) {
             case 'dist':
-            case 'time':
+            case 'time' :
                 $this->{$name} = $value;
-
-            default:
-                throw new \Exception("{$name} is not a valid property.");
         }
     }
 
-    //----------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
     // Functions
-    //----------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+
+    /**
+     * Gets the value of this instance at the specified units.
+     *
+     * @param      $units  Units, e.g. m/s
+     * @param bool $string True to return as string for higher precision
+     *
+     * @return double|string
+     */
+    public function units($units, $string = false)
+    {
+        // Explode units
+        list($distUnit, $timeUnit) = static::explUnits($units);
+
+        // Get and format the distance and time unit values
+        $distVal = $this->dist->unit($distUnit);
+        $timeVal = $this->time->{$timeUnit};
+        $distVal = number_format($distVal, 99, '.', '');
+        $timeVal = number_format($timeVal, 99, '.', '');
+
+        // Calculate the velocity value
+        $velocity = bcdiv($distVal, $timeVal, 999);
+        $velocity = static::removeTrailingZeros($velocity);
+
+        // Return either string or double
+        return $string ? $velocity : (double)$velocity;
+    }
+
+    /**
+     * Formats this instance as a string with the provided format.
+     *
+     * @param $format Format, e.g. %1.3f m/s
+     *
+     * @return string
+     */
+    public function format($format)
+    {
+        // Sprintf and unit regex
+        $pattern = '/(%(?:\d+\$)?[+-]?(?:[ 0]|\'.{1})?-?\d*(?:\.\d+)?[bcdeEufFgGosxX])([ ]*)(.*)/';
+
+        // Check if string has sprintf and unit...
+        if (preg_match_all($pattern, $format, $m)) {
+            $sprintf = $m[1][0];
+            $space   = $m[2][0];
+            $units   = $m[3][0];
+
+            $velocity = $this->units($units);
+
+            // Should just display as scientific notation?
+            if (sprintf($sprintf, $velocity) == 0 || $velocity > 10e9) {
+                // Change sprintf to use e for scientific notation
+                $sprintf = preg_replace('/[bcdeEufFgGosxX]/', 'e', $sprintf);
+            }
+
+            // Return format
+            return sprintf($sprintf, $velocity) . $space . $units;
+        }
+    }
+
+    /**
+     * Adds another velocity to this instance and returns a new instance with
+     * the sum.
+     *
+     * @param Velocity $b Velocity to add
+     *
+     * @return static Sum of the two velocity instances
+     */
+    public function add(Velocity $b)
+    {
+        $dist     = $this->dist->add($b->dist);
+        $velocity = new Velocity($dist, $this->time);
+
+        $velocity->format = $this->format;
+
+        return $velocity;
+    }
+
+    /**
+     * Subtracts another velocity from this instance and returns a new instance
+     * with the difference.
+     *
+     * @param Velocity $b Velocity to subtract
+     *
+     * @return static Difference of the two velocity instances
+     */
+    public function sub(Velocity $b)
+    {
+        $dist     = $this->dist->sub($b->dist);
+        $velocity = new Velocity($dist, $this->time);
+
+        $velocity->format = $this->format;
+
+        return $velocity;
+    }
 
     /**
      * Calculates the time required to travel the provided distance at the
-     * velocity of this instance
+     * velocity of this instance.
      *
-     * @param  Distance $dist
+     * @param Distance $dist
      *
      * @return Time
      */
     public function time(Distance $dist)
     {
-        $time      = $this->time;
-        $time->sec = ($dist->m / $this->dist->m) * $this->time->sec;
-
-        return $time;
+        return Time::sec(($dist->m / $this->dist->m) * $this->time->sec);
     }
 
     /**
-     * Calculates the distance traveled in provided time duration at the
-     * velocity of this instance
+     * Calculates the distance traveled in the provided time at the velocity of
+     * this instance.
      *
-     * @param  Time $time
+     * @param Time $time
      *
      * @return Distance
      */
     public function dist(Time $time)
     {
-        // Find distance covered in provided time
-        $dist = Distance::m($this->dist->m * $time->sec / $this->time->sec);
+        return Distance::m($this->dist->m * $time->sec / $this->time->sec);
+    }
 
-        return $dist;
+    // // // Private
+
+    /**
+     * Explodes a string of units divided by / and converts them to the
+     * appropriate value for usage in this class.
+     *
+     * @param $units
+     *
+     * @return array
+     */
+    private static function explUnits($units)
+    {
+        $units = explode('/', $units);
+        if ($units[0] == 'mph') {
+            $distUnit = 'mi';
+            $timeUnit = 'hours';
+        } elseif (count($units) == 2) {
+            //Get units
+            $distUnit = $units[0];
+            $timeUnit = static::findTimeUnit($units[1]);
+        }
+
+        return [$distUnit, $timeUnit];
     }
 
     /**
-     * Adds another velocity to this instance
+     * For a time unit expressed as a string returns the string value that will
+     * provide that unit as a property of the Time class.
      *
-     * @param  Velocity $b
+     * @param $unit
      *
-     * @return static
+     * @return string
      */
-    public function add(Velocity $b)
+    private static function findTimeUnit($unit)
     {
-        // Add the two instances in comparable units
-        $c = Velocity::ms($this->ms + $b->ms);
+        switch (strtolower($unit)) {
+            case 'y':
+            case 'yr':
+            case 'year':
+            case 'years':
+                return 'years';
 
-        // Alter this instance
-        $this->dist = $c->dist;
-        $this->time = $c->time;
+            case 'w':
+            case 'wk':
+            case 'week':
+            case 'weeks':
+                return 'weeks';
 
-        return $this;
+            case 'd':
+            case 'day':
+            case 'days':
+                return 'days';
+
+            case 'h':
+            case 'hour':
+            case 'hours':
+                return 'hours';
+
+            case 'm':
+            case 'min':
+            case 'minutes':
+                return 'min';
+
+            case 's':
+            case 'sec':
+            case 'seconds':
+                return 'sec';
+        }
     }
 
-    /**
-     * Subtracts another velocity from this instance
-     *
-     * @param  Velocity $b
-     *
-     * @return static
-     */
-    public function subtract(Velocity $b)
-    {
-        // Add the two instances in comparable units
-        $c = Velocity::ms($this->ms - $b->ms);
-
-        // Alter this instance
-        $this->dist = $c->dist;
-        $this->time = $c->time;
-
-        return $this;
-    }
-
-    // // // Protected
+    // // // Static
 
     /**
-     * Sets the distance component of this instance
+     * Removes trailing zeros for a numeric value expressed as a string.
      *
-     * @param Distance $distance
+     * @param $num
+     *
+     * @return string
      */
-    protected function setDistance(Distance $distance)
+    private static function removeTrailingZeros($num)
     {
-        $this->properties['distance'] = $distance;
-    }
+        // Only do this if number has a decimal value.
+        if (strstr($num, '.')) {
+            $num  = rtrim($num, '0');
+            $last = substr($num, strlen($num) - 1, 1) == '.';
+            $num  = $last ? substr($num, 0, strlen($num) - 1) : $num;
 
-    /**
-     * Sets the time component of this instance
-     *
-     * @param Time $time
-     */
-    protected function setTime(Time $time)
-    {
-        $this->properties['time'] = $time;
+            return $num;
+        } else {
+            // No decimal value, don't modify number
+            return $num;
+        }
     }
 
     // // // Overrides
 
     /**
-     * Represents this instance as a string
+     * Represents this instance as a string.
      *
      * @return string
      */
-    public function __toString()
+    function __toString()
     {
-        switch (strtolower($this->unit)) {
-            case 'kms':
-            case 'km/s':
-                return round($this->kms, $this->decimalPlaces) . ' km/s';
-
-            case 'kmh':
-            case 'kph':
-            case 'km/h':
-                return round($this->kmh, $this->decimalPlaces) . ' km/h';
-
-            case 'mi/h':
-            case 'mph':
-                return round($this->mph, $this->decimalPlaces) . ' mph';
-
-            case 'pcy':
-            case 'pc/y':
-                return round($this->pcy, $this->decimalPlaces) . ' pc/y';
-
-            case 'aud':
-            case 'au/d':
-                return round($this->aud, $this->decimalPlaces) . ' AU/d';
-
-            default:
-            case 'ms':
-            case 'm/s':
-                return round($this->ms, $this->decimalPlaces) . ' m/s';
-        }
+        return $this->format($this->format);
     }
 
 }
-
-/*
-// format works like this...
-// do vector calculations to have dynamic units....
-$velocity->format('%1.5f', 'km', 'h');
-*/
