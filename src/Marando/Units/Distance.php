@@ -426,10 +426,10 @@ class Distance
             case 'au':
             case 'ly':
             case 'pc':
-                return $this->unit($name);
+                $this->m = static::factorToMeters($name) * $value;
 
-            //default:
-            //    throw new Exception("{$name} is not a valid property.");
+                //default:
+                //    throw new Exception("{$name} is not a valid property.");
         }
     }
 
@@ -544,15 +544,13 @@ class Distance
 //    }
 
     /**
-     * Negates this instance.
+     * Returns a new distance with the negation of this instance.
      *
-     * @return $this
+     * @return static
      */
     public function neg()
     {
-        $this->m = bcmul($this->m, -1, static::$s);
-
-        return $this;
+        return Distance::m(bcmul($this->m, -1), static::$s);
     }
 
     /**
@@ -624,7 +622,7 @@ class Distance
      */
     private static function factorToMeters($symbol)
     {
-        $si = [
+        $units = [
             // SI
           'km'  => 1e3,
           'hm'  => 1e2,
@@ -647,7 +645,7 @@ class Distance
           'pc'  => '30856776376340067',
         ];
 
-        return $si[$symbol];
+        return $units[$symbol];
     }
 
     // // // Overrides

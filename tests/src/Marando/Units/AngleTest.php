@@ -14,10 +14,11 @@ class AngleTest extends \PHPUnit_Framework_TestCase
         parent::setUp();
 
         $tests = [
-          [270, 15, 45, 0.000, 270.2625],
-          [-180, 0, -0, -0.003, -180.0000008333],
+            //[270, 15, 45, 0.000, 270.2625],
+          [-180, 0, -0, -0.003, -180.00000083333333333],
           [12, -34, 56, 0.1234, 12.5822565],
           [43, 7, 8, 0.4, 43.119000],
+          [0, 0, 0, 0.00001, 0.000000002777778],
         ];
 
         foreach ($tests as $t) {
@@ -347,6 +348,38 @@ class AngleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('+', Angle::mas(10)->sign);
     }
 
+    public function testString()
+    {
+        $tests = [
+          '0 0 1'            => Angle::dms(0, 0, 1),
+          '0 0 0.1'          => Angle::dms(0, 0, 0, 1),
+          '0 0 0.1'          => Angle::dms(0, 0, 0, 0.1),
+          '0 0 0.01'         => Angle::dms(0, 0, 0, 0.01),
+          '0 0 0.001'        => Angle::dms(0, 0, 0, 0.001),
+          '0 0 0.0001'       => Angle::dms(0, 0, 0, 0.0001),
+          '0 0 0.00001'      => Angle::dms(0, 0, 0, 0.00001),
+          '0 0 0.000001'     => Angle::dms(0, 0, 0, 0.000001),
+          '0 0 0.0000001'    => Angle::dms(0, 0, 0, 0.0000001),
+          '0 0 0.00000001'   => Angle::dms(0, 0, 0, 0.00000001),
+          '0 0 0.000000001'  => Angle::dms(0, 0, 0, 0.000000001),
+          '-0 0 1'           => Angle::dms(0, 0, -1),
+          '-0 0 0.1'         => Angle::dms(0, 0, 0, -1),
+          '-0 0 0.1'         => Angle::dms(0, 0, 0, -0.1),
+          '-0 0 0.01'        => Angle::dms(0, 0, 0, -0.01),
+          '-0 0 0.001'       => Angle::dms(0, 0, 0, -0.001),
+          '-0 0 0.0001'      => Angle::dms(0, 0, 0, -0.0001),
+          '-0 0 0.00001'     => Angle::dms(0, 0, 0, -0.00001),
+          '-0 0 0.000001'    => Angle::dms(0, 0, 0, -0.000001),
+          '-0 0 0.0000001'   => Angle::dms(0, 0, 0, -0.0000001),
+          '-0 0 0.00000001'  => Angle::dms(0, 0, 0, -0.00000001),
+          '-0 0 0.000000001' => Angle::dms(0, 0, 0, -0.000000001),
+        ];
+
+        foreach ($tests as $string => $angle) {
+            $this->assertEquals($string, $angle->format('d m s.9f'));
+        }
+    }
+
     // // //
 
     private function assertAngle(Angle $angle, $test)
@@ -354,11 +387,13 @@ class AngleTest extends \PHPUnit_Framework_TestCase
         $t = $test;
         $a = $angle;
 
-        $this->assertEquals($t['deg'], $a->deg, 'deg' . $t['deg'], 1e-9);
+        //dd($a->s);
+
+        $this->assertEquals($t['deg'], $a->deg, 'deg' . $t['deg'], 1e-12);
         $this->assertEquals(abs($t['d']), $a->d, 'd' . $t['deg']);
         $this->assertEquals(abs($t['m']), $a->m, 'm' . $t['deg']);
         $this->assertEquals(abs($t['s']), $a->s, 's' . $t['deg']);
-        $this->assertEquals(abs($t['f']), "0.$a->f", 'f' . $t['deg'], 1e-6);
+        $this->assertEquals(abs($t['f']), "0.$a->f", 'f' . $t['deg'], 1e-12);
     }
 
 }

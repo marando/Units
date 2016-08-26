@@ -36,7 +36,7 @@ abstract class TimeBase
      * @param $string String being replaced
      * @param $value  Value to replace
      */
-    protected static function rep($char, &$string, $value)
+    protected static function fmtRep($char, &$string, $value)
     {
         if (preg_match_all('/([0-9]{0,1})' . $char . '/', $string, $m)) {
             for ($i = 0; $i < count($m[0]); $i++) {
@@ -111,18 +111,31 @@ abstract class TimeBase
     protected static function asec2dmsf($asec, $round)
     {
         // Round arcseconds to the desired place.
-        $asec = round($asec, $round);
+        $asec = abs(round($asec, $round));
 
         // Calculate ° ' "
         $d = (int)abs($asec / 3600);
         $m = abs($asec / 60 % 60);
-        $s = abs($asec % 60);
+        $s = abs(fmod($asec, 60));
 
         // asec -> string (no scientific notation), then take only fraction.
-        $asec = number_format($asec, $round, '.', '');
-        $f    = str_replace((int)$asec, '', $asec);
-        $f    = str_replace('.', '', $f);
-        $f    = rtrim($f, '0');
+        $s = number_format($s, $round, '.', '');
+
+        // Calculate fraction of second.
+        $f = 0;
+        if ($s < 1) {
+            // Less than 1 second, so second is fraction, and second = 0
+            $f = $s;
+            $s = 0;
+        } else {
+            // Fraction = difference, and second is intval.
+            $f = bcsub($s, (int)$s, 999);
+            $s = (int)$s;
+        }
+
+        // Remove trailing zeros and leading 0.
+        $f = str_replace('0.', '', $f);
+        $f = rtrim($f, '0');
 
         // Return components
         return [$d, $m, $s, $f];
@@ -173,6 +186,8 @@ abstract class TimeBase
 
         // Calculate arcseconds
         $asec = (abs($d) * 3600) + (abs($m) * 60) + abs($s) + abs($f);
+
+        //dd($asec, $d, $m, $s, $f);
 
         // Return arcseconds with appropriate sign.
         return $sign == '-' ? -1 * $asec : $asec;

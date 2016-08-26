@@ -391,15 +391,13 @@ class Angle extends TimeBase
 //    }
 
     /**
-     * Negates this instance.
+     * Returns a new angle with the negation of this instance.
      *
-     * @return $this
+     * @return static
      */
     public function neg()
     {
-        $this->mas *= -1;
-
-        return $this;
+        return Angle::mas($this->mas * -1);
     }
 
     /**
@@ -431,8 +429,8 @@ class Angle extends TimeBase
         }
 
         // Decimal degrees and radians
-        static::rep('D', $string, $this->deg);
-        static::rep('R', $string, $this->rad);
+        static::fmtRep('D', $string, $this->deg);
+        static::fmtRep('R', $string, $this->rad);
 
         // Decimal arcseconds, arcminutes and milliarcseconds.
         $string = str_replace('asec.', $this->asec, $string);

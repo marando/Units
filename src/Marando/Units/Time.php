@@ -34,8 +34,6 @@ namespace Marando\Units;
  * @property int    $m     Integer minute component of the time duration.
  * @property int    $s     Integer second component of the time duration.
  * @property int    $f     Fractional second component of the time duration.
- *
- * @author Ashley Marando <a.marando@me.com>
  */
 class Time extends TimeBase
 {
@@ -359,15 +357,13 @@ class Time extends TimeBase
 //    }
 
     /**
-     * Negates this instance.
+     * Returns a new time with the negation of this instance.
      *
-     * @return $this
+     * @return static
      */
     public function neg()
     {
-        $this->sec *= -1;
-
-        return $this;
+        return Time::sec($this->sec * -1);
     }
 
     /**
@@ -388,12 +384,12 @@ class Time extends TimeBase
         $this->round = static::maxRound($format);
 
         // Decimal years, weeks, days, hours, minutes, and seconds
-        static::rep('Y', $string, $this->years);
-        static::rep('W', $string, $this->weeks);
-        static::rep('D', $string, $this->days);
-        static::rep('H', $string, $this->hours);
-        static::rep('M', $string, $this->min);
-        static::rep('S', $string, $this->sec);
+        static::fmtRep('Y', $string, $this->years);
+        static::fmtRep('W', $string, $this->weeks);
+        static::fmtRep('D', $string, $this->days);
+        static::fmtRep('H', $string, $this->hours);
+        static::fmtRep('M', $string, $this->min);
+        static::fmtRep('S', $string, $this->sec);
 
         // Leading zeros h m s
         $string = str_replace('0h', sprintf('%02d', $this->h), $string);
