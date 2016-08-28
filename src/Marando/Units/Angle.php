@@ -316,6 +316,11 @@ class Angle extends TimeBase
         $lb = $lb * 3.6e6;
         $ub = $ub * 3.6e6;
 
+        // Check if already within bounds.
+        if ($this->mas == $lb || $this->mas == $ub) {
+            return $this;
+        }
+
         // Modulate to interval and adjust for lower bound.
         $mas       = fmod($this->mas, $ub);
         $this->mas = $mas < $lb ? $mas += $ub : $mas;
