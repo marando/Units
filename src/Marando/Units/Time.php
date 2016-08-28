@@ -330,31 +330,18 @@ class Time extends TimeBase
         return Time::sec($this->sec - $b->sec);
     }
 
-//    /**
-//     * Multiplies another Time instance with this instance and returns a new
-//     * instance with the product.
-//     *
-//     * @param Time $b Time instance to multiply
-//     *
-//     * @return Time Product of the two Time instances
-//     */
-//    public function mul(Time $b)
-//    {
-//        return Time::sec($this->sec * $b->sec);
-//    }
-//
-//    /**
-//     * Divides this instance by another Time instance and returns a new instance
-//     * with the quotient.
-//     *
-//     * @param Time $b Divisor Time instance
-//     *
-//     * @return Time Quotient of the two Time instances
-//     */
-//    public function div(Time $b)
-//    {
-//        return Time::sec($this->sec / $b->sec);
-//    }
+    /**
+     * Converts this instance to an angle representing the number of
+     * revolutions of a duration of time within a specified time interval.
+     *
+     * @param Time $interval
+     *
+     * @return Angle
+     */
+    public function toAngle(Time $interval = null)
+    {
+        return Angle::time($this, $interval);
+    }
 
     /**
      * Returns a new time with the negation of this instance.

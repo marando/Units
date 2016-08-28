@@ -364,32 +364,6 @@ class Angle extends TimeBase
         return Angle::mas($this->mas - $b->mas);
     }
 
-//    /**
-//     * Multiplies an angle with this instance and returns a new instance with
-//     * the product.
-//     *
-//     * @param Angle $b Angle to multiply
-//     *
-//     * @return Angle Product of the two angles
-//     */
-//    public function mul(Angle $b)
-//    {
-//        return Angle::deg($this->deg * $b->deg);
-//    }
-//
-//    /**
-//     * Divides this instance by another angle and returns a new instance with
-//     * the quotient.
-//     *
-//     * @param Angle $b Divisor angle
-//     *
-//     * @return Angle Quotient of the two angles
-//     */
-//    public function div(Angle $b)
-//    {
-//        return Angle::deg($this->deg / $b->deg);
-//    }
-
     /**
      * Returns a new angle with the negation of this instance.
      *
