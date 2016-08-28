@@ -85,7 +85,7 @@ class Distance
      *
      * @return static
      */
-    private static function create($value, $symbol)
+    public static function create($value, $symbol)
     {
         // Find the conversion factor to meters
         $factor = static::factorToMeters($symbol);
